@@ -8,7 +8,7 @@ namespace SFGF {
 		A = a.x - b.x;
 		B = a.y - b.y;
 		C = std::pow(A * A + B * B, 0.5);
-		return std::asin(A / C) * 180 / PI;
+		return std::asin(A / C) * 180 / M_PI;
 	}
 
 }

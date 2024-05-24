@@ -190,9 +190,75 @@ namespace SFGF {
 		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale,sf::Sound& mouseEnteredSound,sf::Sound& clickSound, F func);
 	};
 
-	////////////////////////////////
-	/// 
-	///////////////////////////////
+	class SwitchOption {
+	private:
+		std::wstring name;
+	public:
+		SwitchOption();
+		~SwitchOption();
+
+		SwitchOption(std::wstring name) : name(name) {}
+
+		[[nodiscard]]
+		std::wstring getName() { return name; }
+
+		void setName(std::wstring name) { this->name = name; }
+	};
+
+	class SwitchEnum {
+	private:
+		std::vector<SwitchOption> options;
+		uint8_t actualElement;
+
+	public:
+		SwitchEnum() { actualElement = 0; }
+		~SwitchEnum();
+
+		SwitchEnum(const SwitchEnum& original) : options(original.options), actualElement(original.actualElement) {}
+
+		void AddOption(const SwitchOption& option) { this->options.push_back(option); }
+
+		void Next() { if (actualElement + 1 < options.size()) actualElement++; else actualElement = 0; }
+		void Last() { if (actualElement > 0) actualElement--; else actualElement = options.size() - 1;}
+
+		[[nodiscard]]
+		SwitchOption getActualOption() { return this->options[actualElement]; }
+
+		void setActualOption(uint8_t index) { if(index < options.size()) actualElement = index; }
+	};
+
+	class Switch  : public UI{
+	private:
+		sf::RectangleShape background;
+		TextButton leftButton;
+		TextButton rightButton;
+		sf::Text text;
+		SwitchEnum states;
+	public:
+		Switch();
+		~Switch();
+
+		//TODO: constructors
+
+		[[nodiscard]]
+		SwitchOption getActualOption() { return this->states.getActualOption(); }
+
+		[[nodiscard]]
+		SwitchEnum getOptions() { return this->states; }
+
+		[[nodiscard]]
+		std::wstring getActualText() { return this->states.getActualOption().getName(); }
+	};
+
+	class ScroolView : public UI {
+
+	};
+
+	class TextBox : public UI {
+
+	};
+
+	
 
 }
 

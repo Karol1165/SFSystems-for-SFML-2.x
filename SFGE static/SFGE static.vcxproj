@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Components.hpp" />
+    <ClInclude Include="definitions.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="pch.h" />

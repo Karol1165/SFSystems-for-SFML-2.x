@@ -256,4 +256,7 @@ namespace SFGF {
 		this->clickSound = clickSound;
 		this->func = func;
 	}
+	///Switch
+
+
 }
