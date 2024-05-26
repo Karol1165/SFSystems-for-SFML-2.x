@@ -7,6 +7,10 @@
 
 namespace SFGF {
 
+	/// <summary>
+	/// Base class for all UI elements
+	/// </summary>
+
 	class UI : public sf::Drawable {
 	public:
 		virtual void CheckStatus(sf::Vector2f& mousePos, bool isLeftMousePressed, bool isRightMousePressed) {}
@@ -190,6 +194,10 @@ namespace SFGF {
 		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale,sf::Sound& mouseEnteredSound,sf::Sound& clickSound, F func);
 	};
 
+	///////////
+	/// Button switch
+	///////////
+
 	class SwitchOption {
 	private:
 		std::wstring name;
@@ -234,11 +242,13 @@ namespace SFGF {
 		TextButton rightButton;
 		sf::Text text;
 		SwitchEnum states;
+
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	public:
 		Switch();
 		~Switch();
 
-		//TODO: constructors
+		Switch(sf::Vector2f pos, sf::Vector2f size, sf::Texture& mouseOutButtonsTexture, sf::Texture& mouseOnButtonsTexture);
 
 		[[nodiscard]]
 		SwitchOption getActualOption() { return this->states.getActualOption(); }
@@ -250,15 +260,25 @@ namespace SFGF {
 		std::wstring getActualText() { return this->states.getActualOption().getName(); }
 	};
 
-	class ScroolView : public UI {
+	///Text box
 
-	};
+	/// <summary>
+	/// Class of text box.
+	/// </summary>
 
 	class TextBox : public UI {
 
 	};
 
-	
+	///Views
+
+	/// <summary>
+	/// Class of ScroolView
+	/// </summary>
+
+	class ScroolView : public UI {
+
+	};
 
 }
 
