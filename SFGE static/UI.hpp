@@ -102,10 +102,7 @@ namespace SFGF {
 
 		void TextPosUpdate() { buttonText.setPosition(centerText(buttonText, buttonBackground)); }
 
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-			target.draw(buttonBackground);
-			target.draw(buttonText);
-		}
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 		virtual bool CheckClick(sf::Vector2f mousePos, bool isClicked);
 	public:

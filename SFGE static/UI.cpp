@@ -57,12 +57,12 @@ namespace SFGF {
 	/// </summary>
 	/// <param name="target"></param>
 	/// 
-	/*
-	virtual void TextButton::draw(sf::RenderTarget& target) const override{
+	
+	void TextButton::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		target.draw(buttonBackground);
 		target.draw(buttonText);
 	}
-	*/
+	
 
 	bool TextButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
 		if (mousePos.x > buttonBackground.getPosition().x &&
