@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Components.hpp"
+#include "Math.hpp"
 
 namespace SFGF {
 
@@ -43,16 +44,16 @@ namespace SFGF {
 
 		buttonFunc func;
 
-		virtual void draw(sf::RenderTarget&);
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		virtual bool CheckClick (sf::Vector2f, bool);
 	public:
-		BaseButton();
-		~BaseButton();
+		BaseButton() = default;
+		~BaseButton() = default;
 
 		
 
 		[[nodiscard]]
-		sf::Vector2f getPos() {
+		sf::Vector2f getPos()  {
 			return buttonBackground.getPosition();
 		}
 
@@ -98,7 +99,7 @@ namespace SFGF {
 		ButtonTxtStatesData buttonTxtData;
 
 
-		sf::Vector2f centerText(const sf::Text&, const sf::Sprite&);
+
 		void TextPosUpdate() { buttonText.setPosition(centerText(buttonText, buttonBackground)); }
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -109,8 +110,8 @@ namespace SFGF {
 		virtual bool CheckClick(sf::Vector2f mousePos, bool isClicked);
 	public:
 		//Constructors
-		TextButton();
-		~TextButton();
+		TextButton() = default;
+		~TextButton() = default;
 		template <typename F>
 		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
 			std::wstring string, F func);
@@ -179,8 +180,6 @@ namespace SFGF {
 	private:
 		sf::Sprite buttonImage;
 
-		sf::Vector2f centerSprite(sf::Sprite& spriteToCenter, sf::Sprite& referenceSprite);
-
 		virtual void draw(sf::RenderTarget& target)const;
 
 	public:
@@ -202,8 +201,8 @@ namespace SFGF {
 	private:
 		std::wstring name;
 	public:
-		SwitchOption();
-		~SwitchOption();
+		SwitchOption() = default;
+		~SwitchOption() = default;
 
 		SwitchOption(std::wstring name) : name(name) {}
 
@@ -220,7 +219,7 @@ namespace SFGF {
 
 	public:
 		SwitchEnum() { actualElement = 0; }
-		~SwitchEnum();
+		~SwitchEnum() = default;
 
 		SwitchEnum(const SwitchEnum& original) : options(original.options), actualElement(original.actualElement) {}
 
@@ -245,10 +244,11 @@ namespace SFGF {
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	public:
-		Switch();
-		~Switch();
+		Switch() = default;
+		~Switch() = default;
 
-		Switch(sf::Vector2f pos, sf::Vector2f size, sf::Texture& mouseOutButtonsTexture, sf::Texture& mouseOnButtonsTexture);
+		Switch(sf::RectangleShape background, TextButton leftButton, TextButton rightButton, SwitchEnum states);
+		Switch(sf::RectangleShape background, TextButton leftButton, TextButton rightButton);
 
 		[[nodiscard]]
 		SwitchOption getActualOption() { return this->states.getActualOption(); }
@@ -258,6 +258,8 @@ namespace SFGF {
 
 		[[nodiscard]]
 		std::wstring getActualText() { return this->states.getActualOption().getName(); }
+
+		void setOptions(SwitchEnum newOptions) { this->states = newOptions; }
 	};
 
 	///Text box
@@ -277,6 +279,18 @@ namespace SFGF {
 	/// </summary>
 
 	class ScroolView : public UI {
+	private:
+		std::vector<UI> elements;
+		sf::View view;
+	public:
+		ScroolView() = default;
+		~ScroolView() = default;
+
+	};
+
+	///Other
+
+	class GameDialog : public UI {
 
 	};
 

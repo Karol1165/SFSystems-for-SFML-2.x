@@ -37,6 +37,10 @@ namespace SFGF {
 		}
 	}
 
+	void BaseButton::draw(sf::RenderTarget& target, sf::RenderStates states) const{
+		target.draw(buttonBackground);
+	}
+
 	//TextButton
 
 	/// <summary>
@@ -46,11 +50,7 @@ namespace SFGF {
 	/// <param name="button"></param>
 	/// <returns></returns>
 
-	sf::Vector2f TextButton::centerText(const sf::Text& Text, const sf::Sprite& button) {
-		sf::FloatRect textRect = Text.getLocalBounds();
-		return sf::Vector2f(button.getPosition().x + (button.getGlobalBounds().width - textRect.width) / 2.0f - textRect.left,
-			button.getPosition().y + (button.getGlobalBounds().height - textRect.height) / 2.0f - textRect.top);
-	}
+
 
 	/// <summary>
 	/// Draw button
@@ -189,18 +189,7 @@ namespace SFGF {
 
 	//ImageButton
 
-	/// <summary>
-	/// Returns position of sprite, where this sprite is on center of other sprite
-	/// </summary>
-	/// <param name="spriteToCenter"></param>
-	/// <param name="referenceSprite"></param>
-	/// <returns>Centered position of sprite</returns>
-	sf::Vector2f ImageButton::centerSprite(sf::Sprite& spriteToCenter, sf::Sprite& referenceSprite) {
-		float xPos = referenceSprite.getPosition().x + (referenceSprite.getLocalBounds().width - spriteToCenter.getLocalBounds().width) / 2;
-		float yPos = referenceSprite.getPosition().y + (referenceSprite.getLocalBounds().height - spriteToCenter.getLocalBounds().height) / 2;
 
-		return sf::Vector2f(xPos, yPos);
-	}
 
 	/// <summary>
 	/// Draw button
@@ -258,5 +247,24 @@ namespace SFGF {
 	}
 	///Switch
 
+	void Switch::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+		target.draw(this->background, states);
+		target.draw(this->leftButton, states);
+		target.draw(this->rightButton, states);
+		target.draw(this->text, states);
+	}
+
+	Switch::Switch(sf::RectangleShape background, TextButton leftButton, TextButton rightButton, SwitchEnum states) {
+		this->background = background;
+		this->leftButton = leftButton;
+		this->rightButton = rightButton;
+		this->states = states;
+	}
+
+	Switch::Switch(sf::RectangleShape background, TextButton leftButton, TextButton rightButton) {
+		this->background = background;
+		this->leftButton = leftButton;
+		this->rightButton = rightButton;
+	}
 
 }
