@@ -11,7 +11,10 @@ namespace SFGF {
 	double Angle_Between_Points(sf::Vector2f a, sf::Vector2f b);
 
 	[[nodiscard]]
-	sf::Vector2f centerText(const sf::Text& Text, const sf::Sprite& button);
+	sf::Vector2f centerText(const sf::Text& text, const sf::Sprite& button);
+
+	[[nodiscard]]
+	sf::Vector2f centerText(const sf::Text& text, const sf::RectangleShape& shape);
 
 	/// <summary>
 	/// Returns position of sprite, where this sprite is on center of other sprite

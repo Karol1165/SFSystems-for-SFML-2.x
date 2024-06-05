@@ -2,7 +2,8 @@
 #include "UI.hpp"
 
 namespace SFGF {
-	
+
+	/////////////////////////////////////////////////////////
 	//BaseButton
 	
 
@@ -14,26 +15,31 @@ namespace SFGF {
 	/// <returns></returns>
 
 	bool BaseButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
-		if (mousePos.x > buttonBackground.getPosition().x &&
-			mousePos.x < buttonBackground.getPosition().x + buttonBackground.getGlobalBounds().width &&
-			mousePos.y > buttonBackground.getPosition().y &&
-			mousePos.y < buttonBackground.getPosition().y + buttonBackground.getGlobalBounds().height) {
+		bool isButtonClicked = false;
+		if (buttonBackground.getGlobalBounds().contains(mousePos)) {
 			buttonBackground.setTexture(buttonBgrData.mouseOn);
+
 			if (isClicked) {
 				clickSound.play();
-				return true;
+				isButtonClicked = true;
 			}
-			else
-				return false;
 			if (!isMouseOn) {
-				isMouseOn = true;
 				mouseEnteredSound.play();
 			}
+			isMouseOn = true;
 		}
 		else {
 			isMouseOn = false;
 			buttonBackground.setTexture(buttonBgrData.mouseOut); 
-			return false;
+		}
+		return isButtonClicked;
+	}
+
+	void BaseButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+			//Do button function
+			if(this->func != nullptr)
+				this->func();
 		}
 	}
 
@@ -41,6 +47,32 @@ namespace SFGF {
 		target.draw(buttonBackground);
 	}
 
+	BaseButton::BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func) {
+		this->buttonBgrData.mouseOut = mouseOut;
+		this->buttonBgrData.mouseOn = mouseOn;
+		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
+		this->buttonBackground.setPosition(pos);
+		this->buttonBackground.setScale(scale, scale);
+		this->func = func;
+		isMouseOn = false;
+	}
+
+	BaseButton::BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func, sf::SoundBuffer& mouseEnteredSound,
+		sf::SoundBuffer& clickSound) {
+		this->buttonBgrData.mouseOut = mouseOut;
+		this->buttonBgrData.mouseOn = mouseOn;
+		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
+		this->buttonBackground.setPosition(pos);
+		this->buttonBackground.setScale(scale, scale);
+		this->func = func;
+		this->mouseEnteredSound.setBuffer(mouseEnteredSound);
+		this->clickSound.setBuffer(clickSound);
+		this->mouseEnteredSound.setVolume(100);
+		this->clickSound.setVolume(100);
+		this->isMouseOn = false;
+	}
+
+	/////////////////////////////////////////////////////
 	//TextButton
 
 	/// <summary>
@@ -65,39 +97,29 @@ namespace SFGF {
 	
 
 	bool TextButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
-		if (mousePos.x > buttonBackground.getPosition().x &&
-			mousePos.x < buttonBackground.getPosition().x + buttonBackground.getGlobalBounds().width &&
-			mousePos.y > buttonBackground.getPosition().y &&
-			mousePos.y < buttonBackground.getPosition().y + buttonBackground.getGlobalBounds().height) {
+		bool isButtonClicked = false;
+		if (buttonBackground.getGlobalBounds().contains(mousePos)) {
 			buttonBackground.setTexture(buttonBgrData.mouseOn);
 			buttonText.setFillColor(buttonTxtData.mouseOn);
 			if (isClicked) {
 				clickSound.play();
-				return true;
+				isButtonClicked = true;
 			}
-			else
-				return false;
 			if (!isMouseOn) {
-				isMouseOn = true;
 				mouseEnteredSound.play();
 			}
+			isMouseOn = true;
 		}
 		else {
 			isMouseOn = false;
 			buttonBackground.setTexture(buttonBgrData.mouseOut);
 			buttonText.setFillColor(buttonTxtData.mouseOut);
-			return false;
 		}
+		return isButtonClicked;
 	}
 
-	template <typename F>
 	TextButton::TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-		std::wstring string, F func) {
-		this->buttonBgrData.mouseOut = mouseOut;
-		this->buttonBgrData.mouseOn = mouseOn;
-		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
-		this->buttonBackground.setPosition(pos);
-		this->buttonBackground.setScale(scale);
+		std::wstring string, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
 		this->buttonTxtData.mouseOut = mouseOutColor;
 		this->buttonTxtData.mouseOn = mouseOnColor;
 		this->buttonText.setFont(font);
@@ -105,30 +127,19 @@ namespace SFGF {
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 		this->buttonText.setString(string);
 		TextPosUpdate();
-		this->func = func;
 	}
-	template <typename F>
+
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-		 F func) {
-		this->buttonBgrData.mouseOut = mouseOut;
-		this->buttonBgrData.mouseOn = mouseOn;
-		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
-		this->buttonBackground.setPosition(pos);
-		this->buttonBackground.setScale(scale);
+		 buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
 		this->buttonTxtData.mouseOut = mouseOutColor;
 		this->buttonTxtData.mouseOn = mouseOnColor;
 		this->buttonText.setFont(font);
 		this->buttonText.setCharacterSize(fontSize);
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
-		this->func = func;
 	}
-	template <typename F>
-	TextButton::TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color,std::wstring string, F func) {
-		this->buttonBgrData.mouseOut = sprite;
-		this->buttonBgrData.mouseOn = sprite;
-		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
-		this->buttonBackground.setPosition(pos);
-		this->buttonBackground.setScale(scale);
+
+	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color,std::wstring string, buttonFunc func)
+		: BaseButton(pos, texture, texture, scale, func) {
 		this->buttonTxtData.mouseOut = color;
 		this->buttonTxtData.mouseOn = color;
 		this->buttonText.setFont(font);
@@ -136,30 +147,19 @@ namespace SFGF {
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 		this->buttonText.setString(string);
 		TextPosUpdate();
-		this->func = func;
 	}
-	template <typename F>
-	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color, F func) {
-		this->buttonBgrData.mouseOut = texture;
-		this->buttonBgrData.mouseOn = texture;
-		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
-		this->buttonBackground.setPosition(pos);
-		this->buttonBackground.setScale(scale);
+
+	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color, buttonFunc func) : BaseButton(pos, texture, texture, scale, func) {
 		this->buttonTxtData.mouseOut = color;
 		this->buttonTxtData.mouseOn = color;
 		this->buttonText.setFont(font);
 		this->buttonText.setCharacterSize(fontSize);
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
-		this->func = func;
 	}
-	template<typename F>
+
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-		std::wstring string, sf::Sound& mouseEnteredSound, sf::Sound& clickSound, F func){
-		this->buttonBgrData.mouseOut = mouseOut;
-		this->buttonBgrData.mouseOn = mouseOn;
-		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
-		this->buttonBackground.setPosition(pos);
-		this->buttonBackground.setScale(scale);
+		std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func,
+			mouseEnteredSound, clickSound) {
 		this->buttonTxtData.mouseOut = mouseOutColor;
 		this->buttonTxtData.mouseOn = mouseOnColor;
 		this->buttonText.setFont(font);
@@ -167,26 +167,13 @@ namespace SFGF {
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 		this->buttonText.setString(string);
 		TextPosUpdate();
-		this->mouseEnteredSound = mouseEnteredSound;
-		this->clickSound = clickSound;
-		this->func = func;
 	}
 
-	
 
-	/// <summary>
-	/// Update method of button. Checks click and doing other operations
-	/// </summary>
-	/// <param name="mousePos"></param>
-	/// <param name="isLeftMousePressed"></param>
-	/// <param name="isRightMousePressed"></param>
-	void TextButton::CheckStatus(sf::Vector2f& mousePos, bool isLeftMousePressed, bool isRightMousePressed) {
-		if (CheckClick(mousePos, isLeftMousePressed)) {
-			//Do button function
-			this->func();
-		}
-	}
 
+
+
+	////////////////////////////////////////////////////////
 	//ImageButton
 
 
@@ -200,52 +187,56 @@ namespace SFGF {
 		target.draw(buttonImage);
 	}
 
-	void ImageButton::CheckStatus(sf::Vector2f mousePos, bool isLeftMouseClicked, bool isRightMouseClicked) {
-		if (CheckClick(mousePos, isLeftMouseClicked)) {
-			this->func();
-		}
+
+
+
+	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, buttonFunc func) : BaseButton(pos, mouseOut,
+		mouseOn, scale, func) {
+		this->buttonImage.setTexture(image);
+		this->buttonImage.setScale(scale, scale);
+		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
 	}
 
-	template<typename F>
-	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, F func) {
-		this->buttonBackground.setPosition(pos);
-		this->buttonBgrData.mouseOut = mouseOut;
-		this->buttonBgrData.mouseOn = mouseOn;
-		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
-		this->buttonBackground.setScale(scale);
+	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, buttonFunc func) : BaseButton(pos, texture,
+		texture, scale, func) {
 		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(scale);
+		this->buttonImage.setScale(scale, scale);
 		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
-		this->func = func;
 	}
-	template<typename F>
-	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, F func) {
-		this->buttonBackground.setPosition(pos);
-		this->buttonBgrData.mouseOn = texture;
-		this->buttonBgrData.mouseOut = texture;
-		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
-		this->buttonBackground.setScale(scale);
+
+	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::SoundBuffer& mouseEnteredSound,
+		sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func, mouseEnteredSound, clickSound) {
 		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(scale);
+		this->buttonImage.setScale(scale, scale);
 		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
-		this->func = func;
 	}
-	template<typename F>
-	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::Sound& mouseEnteredSound,
-		sf::Sound& clickSound, F func) {
-		this->buttonBackground.setPosition(pos);
-		this->buttonBgrData.mouseOut = mouseOut;
-		this->buttonBgrData.mouseOn = mouseOn;
-		this->buttonBackground.setTexture(buttonBgrData.mouseOut);
-		this->buttonBackground.setScale(scale);
-		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(scale);
-		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
-		this->mouseEnteredSound = mouseEnteredSound;
-		this->clickSound = clickSound;
-		this->func = func;
-	}
+
+	//////////////////////////////////////////////////////////
 	///Switch
+
+	//Switch button
+
+	void Switch::switchButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+			if (this->buttonMode == mode::last) {
+				this->owner->states.Last();
+				this->owner->UpdateText();
+			}
+			else {
+				this->owner->states.Next();
+				this->owner->UpdateText();
+			}
+		}
+	}
+	void Switch::switchButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+		target.draw(buttonBackground);
+		target.draw(buttonText);
+	}
+
+	void Switch::UpdateText() {
+		this->text.setString(this->states.getActualOption().getName());
+		this->text.setPosition(centerText(this->text, this->background));
+	}
 
 	void Switch::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(this->background, states);
@@ -254,17 +245,26 @@ namespace SFGF {
 		target.draw(this->text, states);
 	}
 
-	Switch::Switch(sf::RectangleShape background, TextButton leftButton, TextButton rightButton, SwitchEnum states) {
+	Switch::Switch(sf::RectangleShape background, switchButton leftButton, switchButton rightButton, SwitchEnum states) {
 		this->background = background;
 		this->leftButton = leftButton;
+		this->leftButton.setMode(switchButton::mode::last);
 		this->rightButton = rightButton;
+		this->rightButton.setMode(switchButton::mode::next);
 		this->states = states;
 	}
 
-	Switch::Switch(sf::RectangleShape background, TextButton leftButton, TextButton rightButton) {
+	Switch::Switch(sf::RectangleShape background, switchButton leftButton, switchButton rightButton) {
 		this->background = background;
 		this->leftButton = leftButton;
+		this->leftButton.setMode(switchButton::mode::last);
 		this->rightButton = rightButton;
+		this->rightButton.setMode(switchButton::mode::next);
+	}
+	
+	void Switch::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		this->leftButton.CheckStatus(e, deltaTime, mousePos);
+		this->rightButton.CheckStatus(e, deltaTime, mousePos);
 	}
 
 }

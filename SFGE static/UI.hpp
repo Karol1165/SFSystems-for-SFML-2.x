@@ -8,18 +8,15 @@
 
 namespace SFGF {
 
-	/// <summary>
-	/// Base class for all UI elements
-	/// </summary>
 
-	class UI : public sf::Drawable {
-	public:
-		virtual void CheckStatus(sf::Vector2f& mousePos, bool isLeftMousePressed, bool isRightMousePressed) {}
-	};
+
 
 	//////////////////////////////////////////////////////////////////
 	/// Buttons
 	/////////////////////////////////////////////////////////////////
+
+	/////////////////////////////////////////////////////////////////
+	//BaseButton
 
 	/// <summary>
 	/// Base class for all buttons
@@ -50,6 +47,10 @@ namespace SFGF {
 		BaseButton() = default;
 		~BaseButton() = default;
 
+		BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func);
+		BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func, sf::SoundBuffer& mouseEnteredSound,
+			sf::SoundBuffer& clickSound);
+
 		
 
 		[[nodiscard]]
@@ -79,16 +80,22 @@ namespace SFGF {
 		virtual void setScale(int newScale) {
 			this->buttonBackground.setScale(newScale, newScale);
 		}
-		virtual void setMouseEnteredSound(sf::Sound& newSound) {
-			this->mouseEnteredSound = newSound;
+		virtual void setMouseEnteredSound(sf::SoundBuffer& newSound) {
+			this->mouseEnteredSound.setBuffer(newSound);
 		}
-		virtual void setClickSound(sf::Sound& newSound) {
-			this->clickSound = newSound;
+		virtual void setClickSound(sf::SoundBuffer& newSound) {
+			this->clickSound.setBuffer(newSound);
 		}
+
+		virtual void setFunction(buttonFunc newFunc) {
+			this->func = newFunc;
+		}
+
+		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f & mousePos = sf::Vector2f(0, 0));
 	};
 
 	class TextButton : public BaseButton {
-	private:
+	protected:
 		struct ButtonTxtStatesData {
 			sf::Color mouseOn;
 			sf::Color mouseOut;
@@ -109,19 +116,19 @@ namespace SFGF {
 		//Constructors
 		TextButton() = default;
 		~TextButton() = default;
-		template <typename F>
+
 		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-			std::wstring string, F func);
-		template<typename F>
+			std::wstring string, buttonFunc func = nullptr);
+
 		TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-			F func);
-		template<typename F>
-		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color, std::wstring string, F func);
-		template<typename F>
-		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color, F func);
-		template<typename F>
+			buttonFunc func = nullptr);
+
+		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color, std::wstring string, buttonFunc func = nullptr);
+
+		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color, buttonFunc func = nullptr);
+
 		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,int scale, sf::Font& font,int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-			std::wstring string, sf::Sound& mouseEnteredSound, sf::Sound& clickSound, F func);
+			std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
 		//Get
 
 		[[nodiscard]]
@@ -164,14 +171,8 @@ namespace SFGF {
 			TextPosUpdate();
 		}
 
-
-
-
-
-
-
 		//Check Status
-		virtual void CheckStatus(sf::Vector2f& mousePos, bool isLeftMousePressed, bool isRightMousePressed);
+
 	};
 	class ImageButton : public BaseButton {
 	private:
@@ -180,14 +181,15 @@ namespace SFGF {
 		virtual void draw(sf::RenderTarget& target)const;
 
 	public:
-		virtual void CheckStatus(sf::Vector2f mousePos, bool isLeftMousePressed, bool isRightMousePressed);
 
-		template<typename F>
-		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale, F func);
-		template<typename F>
-		ImageButton(sf::Vector2f pos, sf::Texture& texture,sf::Texture& image, int scale, F func);
-		template<typename F>
-		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale,sf::Sound& mouseEnteredSound,sf::Sound& clickSound, F func);
+
+
+		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale, buttonFunc func = nullptr);
+
+		ImageButton(sf::Vector2f pos, sf::Texture& texture,sf::Texture& image, int scale, buttonFunc func = nullptr);
+
+		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale,sf::SoundBuffer& mouseEnteredSound,
+			sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
 	};
 
 	///////////
@@ -228,27 +230,48 @@ namespace SFGF {
 		[[nodiscard]]
 		SwitchOption getActualOption() { return this->options[actualElement]; }
 
+		[[nodiscard]]
+		uint8_t getActualOptionIndex() { return this->actualElement; }
+
 		void setActualOption(uint8_t index) { if(index < options.size()) actualElement = index; }
 	};
 
 	class Switch  : public UI{
+	protected:
+		class switchButton : public TextButton {
+		public:
+			enum mode { last, next };
+			void setMode(mode newMode) { this->buttonMode = newMode; }
+			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
+		private:
+			Switch* owner;
+
+			mode buttonMode;
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		};
+
 	private:
 		sf::RectangleShape background;
-		TextButton leftButton;
-		TextButton rightButton;
+		switchButton leftButton;
+		switchButton rightButton;
 		sf::Text text;
 		SwitchEnum states;
+
+		void UpdateText();
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	public:
 		Switch() = default;
 		~Switch() = default;
 
-		Switch(sf::RectangleShape background, TextButton leftButton, TextButton rightButton, SwitchEnum states);
-		Switch(sf::RectangleShape background, TextButton leftButton, TextButton rightButton);
+		Switch(sf::RectangleShape background, switchButton leftButton, switchButton rightButton, SwitchEnum states);
+		Switch(sf::RectangleShape background, switchButton leftButton, switchButton rightButton);
 
 		[[nodiscard]]
 		SwitchOption getActualOption() { return this->states.getActualOption(); }
+
+		[[nodiscard]]
+		uint8_t getActualOptionIndex() { return this->states.getActualOptionIndex(); }
 
 		[[nodiscard]]
 		SwitchEnum getOptions() { return this->states; }
@@ -257,6 +280,8 @@ namespace SFGF {
 		std::wstring getActualText() { return this->states.getActualOption().getName(); }
 
 		void setOptions(SwitchEnum newOptions) { this->states = newOptions; }
+
+		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 	};
 
 	///Text box
@@ -279,6 +304,8 @@ namespace SFGF {
 	private:
 		std::vector<UI> elements;
 		sf::View view;
+		sf::RectangleShape scroolBackground;
+		sf::CircleShape scroolCircle;
 	public:
 		ScroolView() = default;
 		~ScroolView() = default;

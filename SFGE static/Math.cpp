@@ -11,10 +11,16 @@ namespace SFGF {
 		return std::asin(A / C) * M_RADIANS_TO_DEGREES_CONVERTER;
 	}
 
-	sf::Vector2f centerText(const sf::Text& Text, const sf::Sprite& button) {
-		sf::FloatRect textRect = Text.getLocalBounds();
+	sf::Vector2f centerText(const sf::Text& text, const sf::Sprite& button) {
+		sf::FloatRect textRect = text.getLocalBounds();
 		return sf::Vector2f(button.getPosition().x + (button.getGlobalBounds().width - textRect.width) / 2.0f - textRect.left,
 			button.getPosition().y + (button.getGlobalBounds().height - textRect.height) / 2.0f - textRect.top);
+	}
+
+	sf::Vector2f centerText(const sf::Text& text, const sf::RectangleShape& shape) {
+		sf::FloatRect textRect = text.getLocalBounds();
+		return sf::Vector2f(shape.getPosition().x + (shape.getGlobalBounds().width - textRect.width) / 2.0f - textRect.left,
+			shape.getPosition().y + (shape.getGlobalBounds().height - textRect.height) / 2.0f - textRect.top);
 	}
 
 	sf::Vector2f centerSprite(sf::Sprite& spriteToCenter, sf::Sprite& referenceSprite) {

@@ -3,27 +3,59 @@
 
 namespace SFGF {
 	///Scene
-	void Scene::Update(sf::Event& e) {
-		bool isLeftMousePressed = false;
-		bool isRightMousePressed = false;
-		sf::Vector2f mousePos = owner->mapPixelToCoords(sf::Mouse::getPosition());
+
+	/// <summary>
+	/// Shloud be putted in while(Window.pollEvent(event)) loop
+	/// </summary>
+	/// <param name="e"></param>
+	void Scene::UpdateUI(sf::Event& e) {
+		
+		mousePos = owner->mapPixelToCoords(sf::Mouse::getPosition(*owner));
 		
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				isLeftMousePressed = true;
 		}
-		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+		else
+		{
+			isLeftMousePressed = false;
+		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 			isRightMousePressed = true;
 		}
-		
-		
-		for (int i = 0; i < ui.size(); i++) {
-			ui[i].CheckStatus(mousePos, isLeftMousePressed, isRightMousePressed);
+		else {
+			isRightMousePressed = false;
 		}
+		
+		
+		for (auto& i : ui) {
+			i->CheckStatus(e, clock.getElapsedTime(), mousePos);
+		}
+
+		for (auto& i : gameObjects) {
+			i->Update();
+		}
+
+
+	}
+
+	/// <summary>
+	/// Shloud be putted in main loop
+	/// </summary>
+	/// <param name="event"></param>
+
+	void Scene::Update(sf::Event& event) {
+		for (auto& i : controlableObjects) {
+			i->Update(event, clock.getElapsedTime(), mousePos);
+		}
+		clock.restart();
 	}
 
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-		for (int i = 0; i < this->ui.size(); i++) {
-			target.draw(ui[i]);
+		for (auto& i : ui) {
+			target.draw(*i);
+		}
+		for (auto& i : staticUI) {
+			target.draw(*i);
 		}
 	}
 
@@ -37,14 +69,26 @@ namespace SFGF {
 		this->owner = scene.owner;
 	}
 
+
 	void Scene::SetActive(sf::RenderWindow& owner) {
-		sceneInit();
+		ui.clear();
+		staticUI.clear();
+		gameObjects.clear();
+		controlableObjects.clear();
+		if (initFunc != nullptr)
+			initFunc();
 		this->owner = &owner;
 		sceneTheme.play();
 	}
 
 	void Scene::DisableActive() {
 		sceneTheme.pause();
+	}
+
+	Scene& Scene::operator=(const Scene& scene) {
+		if(scene.initFunc != nullptr)
+			this->initFunc = scene.initFunc;
+		return *this;
 	}
 
 	///Window
@@ -55,9 +99,9 @@ namespace SFGF {
 		return window.mapPixelToCoords(pixels);
 	}
 
-	void Window::Update() {
+	void Window::UpdateUI() {
 		this->window.pollEvent(this->event);
-		this->activeScene->Update(this->event);
+		this->activeScene->UpdateUI(this->event);
 		window.clear();
 		window.draw(*activeScene);
 		window.display();

@@ -6,21 +6,25 @@
 #include <SFML/Graphics.hpp>
 
 namespace SFGF {
-	//Settings
-	
-
-
-
-
 
 
 	class Scene : public sf::Drawable {
 	protected:
+
+		bool isLeftMousePressed = false;
+		bool isRightMousePressed = false;
+		sf::Vector2f mousePos;
+
 		typedef void(*sceneInit) ();
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	public:
-		std::vector<UI> ui;
+		std::vector<std::shared_ptr<sf::Drawable>> staticUI;
+		std::vector<std::shared_ptr<UI>> ui;
+		std::vector<std::shared_ptr<GameObject>> gameObjects;
+		std::vector<std::shared_ptr<ControlableObject>> controlableObjects;
+
+		sf::Clock clock;
 
 		[[maybe_unused]]
 		sf::Music sceneTheme;
@@ -29,20 +33,26 @@ namespace SFGF {
 
 		sceneInit initFunc;
 
+		virtual void UpdateUI(sf::Event& event);
 		virtual void Update(sf::Event& event);
+		template<typename F>
+		void SetInitFunc(F func) { this->initFunc = func; }
 		virtual void SetActive(sf::RenderWindow& owner);
 		virtual void DisableActive();
 
 		
 
 
-		Scene();
-		~Scene();
+		Scene() = default;
+		~Scene() = default;
 
 		template<typename F>
 		Scene(F func);
 
 		Scene(Scene& scene);
+
+		Scene& operator=(const Scene& scene);
+
 		
 	};
 
@@ -66,7 +76,7 @@ namespace SFGF {
 		void Close() { this->window.close(); }
 
 		[[likely]]
-		void Update();
+		void UpdateUI();
 
 		[[nodiscard]]
 		sf::Vector2f mapPixelToCoords(sf::Vector2i pixels);
