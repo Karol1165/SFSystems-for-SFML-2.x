@@ -1,4 +1,4 @@
-SFGE is "Simple and fast game framework" based on SFML 2.5.1
+SFGE is "Simple and fast game framework" based on SFML 2.5.1 (compatible with later versions)
 
 Framework has many game elements (scenes, buttons etc.).
 
