@@ -206,7 +206,7 @@ namespace SFGF {
 		SwitchOption(std::wstring name) : name(name) {}
 
 		[[nodiscard]]
-		std::wstring getName() { return name; }
+		std::wstring getName() const { return name; }
 
 		void setName(std::wstring name) { this->name = name; }
 	};
@@ -228,10 +228,10 @@ namespace SFGF {
 		void Last() { if (actualElement > 0) actualElement--; else actualElement = options.size() - 1;}
 
 		[[nodiscard]]
-		SwitchOption getActualOption() { return this->options[actualElement]; }
+		SwitchOption getActualOption() const { return this->options[actualElement]; }
 
 		[[nodiscard]]
-		uint8_t getActualOptionIndex() { return this->actualElement; }
+		uint8_t getActualOptionIndex() const  { return this->actualElement; }
 
 		void setActualOption(uint8_t index) { if(index < options.size()) actualElement = index; }
 	};
@@ -252,6 +252,9 @@ namespace SFGF {
 		static class textSwitchButton : public baseSwitchButton, public TextButton  {
 		public:
 			textSwitchButton() = default;
+
+		};
+		static class imageSwitchButton : public baseSwitchButton, public ImageButton {
 
 		};
 

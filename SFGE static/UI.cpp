@@ -215,7 +215,7 @@ namespace SFGF {
 	///Switch
 
 	//Switch button
-
+	/*
 	void Switch::switchButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->buttonMode == mode::last) {
@@ -228,7 +228,7 @@ namespace SFGF {
 			}
 		}
 	}
-
+	*/
 
 	void Switch::UpdateText() {
 		this->text.setString(this->states.getActualOption().getName());
@@ -237,31 +237,29 @@ namespace SFGF {
 
 	void Switch::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(this->background, states);
-		target.draw(this->leftButton, states);
-		target.draw(this->rightButton, states);
 		target.draw(this->text, states);
 	}
 
-	Switch::Switch(sf::RectangleShape background, switchButton leftButton, switchButton rightButton, SwitchEnum states) {
+	Switch::Switch(sf::RectangleShape background, baseSwitchButton* leftButton, baseSwitchButton* rightButton, SwitchEnum states) {
 		this->background = background;
-		this->leftButton = leftButton;
-		this->leftButton.setMode(switchButton::mode::last);
-		this->rightButton = rightButton;
-		this->rightButton.setMode(switchButton::mode::next);
+		this->leftButton = std::shared_ptr<baseSwitchButton>(leftButton);
+		this->leftButton->setMode(baseSwitchButton::mode::last);
+		this->rightButton = std::shared_ptr<baseSwitchButton>(rightButton);
+		this->rightButton->setMode(baseSwitchButton::mode::next);
 		this->states = states;
 	}
 
-	Switch::Switch(sf::RectangleShape background, switchButton leftButton, switchButton rightButton) {
+	Switch::Switch(sf::RectangleShape background, baseSwitchButton* leftButton, baseSwitchButton* rightButton) {
 		this->background = background;
-		this->leftButton = leftButton;
-		this->leftButton.setMode(switchButton::mode::last);
-		this->rightButton = rightButton;
-		this->rightButton.setMode(switchButton::mode::next);
+		this->leftButton = std::shared_ptr<baseSwitchButton>(leftButton);
+		this->leftButton->setMode(baseSwitchButton::mode::last);
+		this->rightButton = std::shared_ptr<baseSwitchButton>(rightButton);
+		this->rightButton->setMode(baseSwitchButton::mode::next);
 	}
 	
 	void Switch::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
-		this->leftButton.CheckStatus(e, deltaTime, mousePos);
-		this->rightButton.CheckStatus(e, deltaTime, mousePos);
+		this->leftButton->CheckStatus(e, deltaTime, mousePos);
+		this->rightButton->CheckStatus(e, deltaTime, mousePos);
 	}
 
 }
