@@ -91,6 +91,11 @@ namespace SFGF {
 		return *this;
 	}
 
+
+	void SceneManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+		target.draw(*activeScene, states);
+	}
+
 	///Window
 
 

@@ -228,10 +228,7 @@ namespace SFGF {
 			}
 		}
 	}
-	void Switch::switchButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-		target.draw(buttonBackground);
-		target.draw(buttonText);
-	}
+
 
 	void Switch::UpdateText() {
 		this->text.setString(this->states.getActualOption().getName());

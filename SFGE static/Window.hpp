@@ -56,6 +56,22 @@ namespace SFGF {
 		
 	};
 
+	class SceneManager : public sf::Drawable {
+	private:
+		Scene* activeScene;
+	public:
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		void setActiveScene(Scene& scene, sf::RenderWindow& owner) {
+			if (this->activeScene != nullptr)
+				this->activeScene->DisableActive();
+			this->activeScene = &scene;
+			this->activeScene->SetActive(owner);
+		}
+
+		[[nodiscard]]
+		Scene* getActiveScene() { return this->activeScene; }
+	};
+
 	/*
 	class Window : public sf::RenderWindow {
 	private:

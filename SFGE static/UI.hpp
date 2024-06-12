@@ -237,35 +237,29 @@ namespace SFGF {
 	};
 
 	class Switch  : public UI{
-	protected:
-		class switchButton : public TextButton {
+	public:
+		static class baseSwitchButton : public UI {
 		public:
 			enum mode { last, next };
 			void setMode(mode newMode) { this->buttonMode = newMode; }
-			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
-		private:
+			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override = 0;
+		protected:
 			Switch* owner;
 
 			mode buttonMode;
-			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
+		};
+		static class textSwitchButton : public baseSwitchButton, public TextButton  {
+		public:
+			textSwitchButton() = default;
+
 		};
 
-	private:
-		sf::RectangleShape background;
-		switchButton leftButton;
-		switchButton rightButton;
-		sf::Text text;
-		SwitchEnum states;
-
-		void UpdateText();
-
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
-	public:
 		Switch() = default;
 		~Switch() = default;
 
-		Switch(sf::RectangleShape background, switchButton leftButton, switchButton rightButton, SwitchEnum states);
-		Switch(sf::RectangleShape background, switchButton leftButton, switchButton rightButton);
+		Switch(sf::RectangleShape background, baseSwitchButton* leftButton, baseSwitchButton* rightButton, SwitchEnum states);
+		Switch(sf::RectangleShape background, baseSwitchButton* leftButton, baseSwitchButton* rightButton);
 
 		[[nodiscard]]
 		SwitchOption getActualOption() { return this->states.getActualOption(); }
@@ -282,6 +276,18 @@ namespace SFGF {
 		void setOptions(SwitchEnum newOptions) { this->states = newOptions; }
 
 		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
+
+	private:
+		sf::RectangleShape background;
+		std::shared_ptr<baseSwitchButton> leftButton;
+		std::shared_ptr<baseSwitchButton> rightButton;
+		sf::Text text;
+		SwitchEnum states;
+
+		void UpdateText();
+
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
+
 	};
 
 	///Text box
