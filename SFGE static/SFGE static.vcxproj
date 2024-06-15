@@ -157,7 +157,7 @@
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="UI.hpp" />
-    <ClInclude Include="Window.hpp" />
+    <ClInclude Include="Scene.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math.cpp" />
@@ -168,7 +168,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UI.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

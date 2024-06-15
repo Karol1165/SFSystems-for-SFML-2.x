@@ -252,10 +252,13 @@ namespace SFGF {
 		static class textSwitchButton : public baseSwitchButton, public TextButton  {
 		public:
 			textSwitchButton() = default;
+			~textSwitchButton() = default;
 
 		};
 		static class imageSwitchButton : public baseSwitchButton, public ImageButton {
-
+		public:
+			imageSwitchButton() = default;
+			~imageSwitchButton() = default;
 		};
 
 		Switch() = default;

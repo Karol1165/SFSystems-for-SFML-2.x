@@ -12,7 +12,7 @@ namespace SFGF {
 	/// </summary>
 	/// <param name="mousePos"></param>
 	/// <param name="isClicked"></param>
-	/// <returns></returns>
+	/// <returns>if button is clicked: true, if not: false</returns>
 
 	bool BaseButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
 		bool isButtonClicked = false;
@@ -34,7 +34,14 @@ namespace SFGF {
 		}
 		return isButtonClicked;
 	}
+	
 
+	/// <summary>
+	/// An update func of button, checks click of button and doing actions
+	/// </summary>
+	/// <param name="e"></param>
+	/// <param name="deltaTime"></param>
+	/// <param name="mousePos"></param>
 	void BaseButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			//Do button function
@@ -43,10 +50,25 @@ namespace SFGF {
 		}
 	}
 
+
+	/// <summary>
+	/// Draws button
+	/// </summary>
+	/// <param name="target"></param>
+	/// <param name="states"></param>
 	void BaseButton::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		target.draw(buttonBackground);
 	}
 
+
+	/// <summary>
+	/// Simple constructor
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="mouseOut"></param>
+	/// <param name="mouseOn"></param>
+	/// <param name="scale"></param>
+	/// <param name="func"></param>
 	BaseButton::BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func) {
 		this->buttonBgrData.mouseOut = mouseOut;
 		this->buttonBgrData.mouseOn = mouseOn;
@@ -57,6 +79,17 @@ namespace SFGF {
 		isMouseOn = false;
 	}
 
+
+	/// <summary>
+	/// Fully constructor
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="mouseOut"></param>
+	/// <param name="mouseOn"></param>
+	/// <param name="scale"></param>
+	/// <param name="func"></param>
+	/// <param name="mouseEnteredSound"></param>
+	/// <param name="clickSound"></param>
 	BaseButton::BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func, sf::SoundBuffer& mouseEnteredSound,
 		sf::SoundBuffer& clickSound) {
 		this->buttonBgrData.mouseOut = mouseOut;
@@ -75,17 +108,11 @@ namespace SFGF {
 	/////////////////////////////////////////////////////
 	//TextButton
 
-	/// <summary>
-	/// Returns position of text on the center of sprite
-	/// </summary>
-	/// <param name="Text"></param>
-	/// <param name="button"></param>
-	/// <returns></returns>
 
 
 
 	/// <summary>
-	/// Draw button
+	/// Draws button
 	/// </summary>
 	/// <param name="target"></param>
 	/// 
@@ -118,6 +145,19 @@ namespace SFGF {
 		return isButtonClicked;
 	}
 
+	/// <summary>
+	/// Constructor without sounds
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="mouseOut"></param>
+	/// <param name="mouseOn"></param>
+	/// <param name="scale"></param>
+	/// <param name="font"></param>
+	/// <param name="fontSize"></param>
+	/// <param name="mouseOutColor"></param>
+	/// <param name="mouseOnColor"></param>
+	/// <param name="string"></param>
+	/// <param name="func"></param>
 	TextButton::TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
 		std::wstring string, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
 		this->buttonTxtData.mouseOut = mouseOutColor;
@@ -129,6 +169,19 @@ namespace SFGF {
 		TextPosUpdate();
 	}
 
+
+	/// <summary>
+	/// Constructor without, buttontext and sounds
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="mouseOut"></param>
+	/// <param name="mouseOn"></param>
+	/// <param name="scale"></param>
+	/// <param name="font"></param>
+	/// <param name="fontSize"></param>
+	/// <param name="mouseOutColor"></param>
+	/// <param name="mouseOnColor"></param>
+	/// <param name="func"></param>
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
 		 buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
 		this->buttonTxtData.mouseOut = mouseOutColor;
@@ -138,6 +191,17 @@ namespace SFGF {
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 	}
 
+	/// <summary>
+	/// Simple constructor
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="texture"></param>
+	/// <param name="scale"></param>
+	/// <param name="font"></param>
+	/// <param name="fontSize"></param>
+	/// <param name="color"></param>
+	/// <param name="string"></param>
+	/// <param name="func"></param>
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color,std::wstring string, buttonFunc func)
 		: BaseButton(pos, texture, texture, scale, func) {
 		this->buttonTxtData.mouseOut = color;
@@ -149,6 +213,16 @@ namespace SFGF {
 		TextPosUpdate();
 	}
 
+	/// <summary>
+	/// Simple constructor without buttontext and sounds
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="texture"></param>
+	/// <param name="scale"></param>
+	/// <param name="font"></param>
+	/// <param name="fontSize"></param>
+	/// <param name="color"></param>
+	/// <param name="func"></param>
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color, buttonFunc func) : BaseButton(pos, texture, texture, scale, func) {
 		this->buttonTxtData.mouseOut = color;
 		this->buttonTxtData.mouseOn = color;
@@ -157,6 +231,21 @@ namespace SFGF {
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 	}
 
+	/// <summary>
+	/// Fully constructor
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="mouseOut"></param>
+	/// <param name="mouseOn"></param>
+	/// <param name="scale"></param>
+	/// <param name="font"></param>
+	/// <param name="fontSize"></param>
+	/// <param name="mouseOutColor"></param>
+	/// <param name="mouseOnColor"></param>
+	/// <param name="string"></param>
+	/// <param name="mouseEnteredSound"></param>
+	/// <param name="clickSound"></param>
+	/// <param name="func"></param>
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
 		std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func,
 			mouseEnteredSound, clickSound) {

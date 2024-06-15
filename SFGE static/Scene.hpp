@@ -1,6 +1,6 @@
 #pragma once
-#ifndef WINDOW_HPP_
-#define WINDOW_HPP_
+#ifndef SCENE_HPP_
+#define SCENE_HPP_
 #include "UI.hpp"
 #include "Components.hpp"
 #include <SFML/Graphics.hpp>

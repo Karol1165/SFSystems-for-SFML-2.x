@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "Window.hpp"
+#include "Scene.hpp"
 
 namespace SFGF {
 	///Scene
 
 	/// <summary>
-	/// Shloud be putted in while(Window.pollEvent(event)) loop
+	/// Shloud be put in while(Window.pollEvent(event)) loop
 	/// </summary>
 	/// <param name="e"></param>
 	void Scene::UpdateUI(sf::Event& e) {
@@ -39,7 +39,7 @@ namespace SFGF {
 	}
 
 	/// <summary>
-	/// Shloud be putted in main loop
+	/// Shloud be put in main loop
 	/// </summary>
 	/// <param name="event"></param>
 
@@ -50,6 +50,12 @@ namespace SFGF {
 		clock.restart();
 	}
 
+
+	/// <summary>
+	/// Draw scene
+	/// </summary>
+	/// <param name="target"></param>
+	/// <param name="states"></param>
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		for (auto& i : ui) {
 			target.draw(*i);
@@ -59,17 +65,34 @@ namespace SFGF {
 		}
 	}
 
+
+	/// <summary>
+	/// Constructor that set scene initializing function
+	/// </summary>
+	/// <typeparam name="F"></typeparam>
+	/// <param name="func"></param>
 	template<typename F>
 	Scene::Scene(F func) {
 		initFunc = func;
 	}
 
+
+	/// <summary>
+	/// Copy constructor
+	/// </summary>
+	/// <param name="scene"></param>
 	Scene::Scene(Scene& scene) {
-		this->initFunc = scene.initFunc;
-		this->owner = scene.owner;
+		if(scene.initFunc != nullptr)
+			this->initFunc = scene.initFunc;
+		if(scene.owner != nullptr)
+			this->owner = scene.owner;
 	}
 
-
+	/// <summary>
+	/// Starts playing scene music, and initialize scene.
+	/// If scene is not actually used, do not call this method
+	/// </summary>
+	/// <param name="owner"></param>
 	void Scene::SetActive(sf::RenderWindow& owner) {
 		ui.clear();
 		staticUI.clear();
@@ -77,7 +100,7 @@ namespace SFGF {
 		controlableObjects.clear();
 		if (initFunc != nullptr)
 			initFunc();
-		this->owner = &owner;
+			this->owner = &owner;
 		sceneTheme.play();
 	}
 
@@ -91,6 +114,15 @@ namespace SFGF {
 		return *this;
 	}
 
+
+	//////////////////////////////////////////////
+	/// SceneManager
+
+	/// <summary>
+	/// Draws actually active scene
+	/// </summary>
+	/// <param name="target"></param>
+	/// <param name="states"></param>
 
 	void SceneManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(*activeScene, states);
