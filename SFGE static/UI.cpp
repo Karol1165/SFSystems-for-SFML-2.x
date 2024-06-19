@@ -304,9 +304,9 @@ namespace SFGF {
 	///Switch
 
 	//Switch button
-	/*
-	void Switch::switchButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
-		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+	
+	void Switch::textSwitchButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		if (this->TextButton::CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->buttonMode == mode::last) {
 				this->owner->states.Last();
 				this->owner->UpdateText();
@@ -317,7 +317,19 @@ namespace SFGF {
 			}
 		}
 	}
-	*/
+	void Switch::imageSwitchButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		if (this->ImageButton::CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+			if (this->buttonMode == mode::last) {
+				this->owner->states.Last();
+				this->owner->UpdateText();
+			}
+			else {
+				this->owner->states.Next();
+				this->owner->UpdateText();
+			}
+		}
+	}
+	
 
 	void Switch::UpdateText() {
 		this->text.setString(this->states.getActualOption().getName());

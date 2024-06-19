@@ -94,6 +94,14 @@ namespace SFGF {
 		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f & mousePos = sf::Vector2f(0, 0));
 	};
 
+	///////////////////////////////////////////
+	// TextButton
+
+
+	/// <summary>
+	/// Class for a buttons that have text on it
+	/// </summary>
+
 	class TextButton : public BaseButton {
 	protected:
 		struct ButtonTxtStatesData {
@@ -174,6 +182,14 @@ namespace SFGF {
 		//Check Status
 
 	};
+
+	///////////////////////////////////////////////////
+	//ImageButton
+
+	/// <summary>
+	/// Class for buttons that have icon/image on it
+	/// </summary>
+
 	class ImageButton : public BaseButton {
 	private:
 		sf::Sprite buttonImage;
@@ -192,10 +208,16 @@ namespace SFGF {
 			sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
 	};
 
-	///////////
+	///////////////////////////////////////////////////
 	/// Button switch
-	///////////
+	//////////////////////////////////////////////////
 
+	////////////////////////////////////
+	//SwitchOption
+
+	/// <summary>
+	/// Single option for a switch
+	/// </summary>
 	class SwitchOption {
 	private:
 		std::wstring name;
@@ -210,6 +232,13 @@ namespace SFGF {
 
 		void setName(std::wstring name) { this->name = name; }
 	};
+
+	//////////////////////////////////
+	//SwitchEnum
+
+	/// <summary>
+	/// Class for a special enums for switch
+	/// </summary>
 
 	class SwitchEnum {
 	private:
@@ -236,8 +265,23 @@ namespace SFGF {
 		void setActualOption(uint8_t index) { if(index < options.size()) actualElement = index; }
 	};
 
+	///////////////////////////////////////////
+	//Switch
+
+	/// <summary>
+	/// Class for a horizontal switch with buttons on left and right
+	/// </summary>
+
 	class Switch  : public UI{
 	public:
+
+		///////////////////////////////////////
+		//baseSwitchButton
+
+		/// <summary>
+		/// base class for buttons on switch
+		/// </summary>
+
 		static class baseSwitchButton : public UI {
 		public:
 			enum mode { last, next };
@@ -249,16 +293,43 @@ namespace SFGF {
 			mode buttonMode;
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
 		};
+
+		//////////////////////////////////////
+		//textSwitchButton
+
+		/// <summary>
+		/// class for a switch buttons that have text on it
+		/// </summary>
+		
 		static class textSwitchButton : public baseSwitchButton, public TextButton  {
 		public:
 			textSwitchButton() = default;
 			~textSwitchButton() = default;
+			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+				std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound);
+			textSwitchButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color);
+			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+				std::wstring string);
+			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 
 		};
+
+		////////////////////////////////////
+		//imageSwitchButton
+
+		/// <summary>
+		/// Class for a switch buttons that have icon/image on it
+		/// </summary>
+		
 		static class imageSwitchButton : public baseSwitchButton, public ImageButton {
 		public:
 			imageSwitchButton() = default;
 			~imageSwitchButton() = default;
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale);
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale);
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::SoundBuffer& mouseEnteredSound,
+				sf::SoundBuffer& clickSound);
+			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 		};
 
 		Switch() = default;
@@ -284,6 +355,7 @@ namespace SFGF {
 		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 
 	private:
+
 		sf::RectangleShape background;
 		std::shared_ptr<baseSwitchButton> leftButton;
 		std::shared_ptr<baseSwitchButton> rightButton;
@@ -293,9 +365,9 @@ namespace SFGF {
 		void UpdateText();
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
-
 	};
 
+	///////////////////////////////////////////
 	///Text box
 
 	/// <summary>
@@ -306,7 +378,12 @@ namespace SFGF {
 
 	};
 
+	/////////////////////////////////////////////
 	///Views
+	////////////////////////////////////////////
+
+	////////////////////////////////////////////
+	//ScroolView
 
 	/// <summary>
 	/// Class of ScroolView
