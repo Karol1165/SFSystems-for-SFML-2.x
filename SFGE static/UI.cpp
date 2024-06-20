@@ -145,19 +145,7 @@ namespace SFGF {
 		return isButtonClicked;
 	}
 
-	/// <summary>
-	/// Constructor without sounds
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="mouseOut"></param>
-	/// <param name="mouseOn"></param>
-	/// <param name="scale"></param>
-	/// <param name="font"></param>
-	/// <param name="fontSize"></param>
-	/// <param name="mouseOutColor"></param>
-	/// <param name="mouseOnColor"></param>
-	/// <param name="string"></param>
-	/// <param name="func"></param>
+
 	TextButton::TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
 		std::wstring string, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
 		this->buttonTxtData.mouseOut = mouseOutColor;
@@ -170,18 +158,7 @@ namespace SFGF {
 	}
 
 
-	/// <summary>
-	/// Constructor without, buttontext and sounds
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="mouseOut"></param>
-	/// <param name="mouseOn"></param>
-	/// <param name="scale"></param>
-	/// <param name="font"></param>
-	/// <param name="fontSize"></param>
-	/// <param name="mouseOutColor"></param>
-	/// <param name="mouseOnColor"></param>
-	/// <param name="func"></param>
+
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
 		 buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
 		this->buttonTxtData.mouseOut = mouseOutColor;
@@ -191,17 +168,7 @@ namespace SFGF {
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 	}
 
-	/// <summary>
-	/// Simple constructor
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="texture"></param>
-	/// <param name="scale"></param>
-	/// <param name="font"></param>
-	/// <param name="fontSize"></param>
-	/// <param name="color"></param>
-	/// <param name="string"></param>
-	/// <param name="func"></param>
+
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color,std::wstring string, buttonFunc func)
 		: BaseButton(pos, texture, texture, scale, func) {
 		this->buttonTxtData.mouseOut = color;
@@ -213,16 +180,7 @@ namespace SFGF {
 		TextPosUpdate();
 	}
 
-	/// <summary>
-	/// Simple constructor without buttontext and sounds
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="texture"></param>
-	/// <param name="scale"></param>
-	/// <param name="font"></param>
-	/// <param name="fontSize"></param>
-	/// <param name="color"></param>
-	/// <param name="func"></param>
+
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color, buttonFunc func) : BaseButton(pos, texture, texture, scale, func) {
 		this->buttonTxtData.mouseOut = color;
 		this->buttonTxtData.mouseOn = color;
@@ -231,21 +189,7 @@ namespace SFGF {
 		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 	}
 
-	/// <summary>
-	/// Fully constructor
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="mouseOut"></param>
-	/// <param name="mouseOn"></param>
-	/// <param name="scale"></param>
-	/// <param name="font"></param>
-	/// <param name="fontSize"></param>
-	/// <param name="mouseOutColor"></param>
-	/// <param name="mouseOnColor"></param>
-	/// <param name="string"></param>
-	/// <param name="mouseEnteredSound"></param>
-	/// <param name="clickSound"></param>
-	/// <param name="func"></param>
+
 	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
 		std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func,
 			mouseEnteredSound, clickSound) {
@@ -267,11 +211,7 @@ namespace SFGF {
 
 
 
-	/// <summary>
-	/// Draw button
-	/// </summary>
-	/// <param name="target"></param>
-	void ImageButton::draw(sf::RenderTarget& target) const {
+	void ImageButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(buttonBackground);
 		target.draw(buttonImage);
 	}
@@ -317,6 +257,24 @@ namespace SFGF {
 			}
 		}
 	}
+
+	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+		std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, mode buttonMode) : TextButton(pos, mouseOut, mouseOn, scale, font, fontSize, mouseOutColor,
+		mouseOnColor, string, mouseEnteredSound, clickSound) {
+		this->buttonMode = buttonMode;
+	}
+
+	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, std::wstring string, sf::Color color, mode buttonMode) :
+		TextButton(pos, texture, scale, font, fontSize, color, string) {
+		this->buttonMode = buttonMode;
+	}
+
+	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+		std::wstring string, mode buttonMode) : TextButton(pos, mouseOut, mouseOn, scale, font, fontSize, mouseOutColor,
+			mouseOnColor, string) {
+		this->buttonMode = buttonMode;
+	}
+
 	void Switch::imageSwitchButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->ImageButton::CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->buttonMode == mode::last) {
@@ -328,6 +286,21 @@ namespace SFGF {
 				this->owner->UpdateText();
 			}
 		}
+	}
+
+	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, mode buttonMode) : ImageButton (pos, mouseOut,
+		mouseOn, image, scale) {
+		this->buttonMode = buttonMode;
+	}
+
+	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, mode buttonMode) : ImageButton(pos, texture, image, scale) {
+		this->buttonMode = buttonMode;
+	}
+
+	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::SoundBuffer& mouseEnteredSound,
+		sf::SoundBuffer& clickSound, mode buttonMode) : ImageButton(pos, mouseOut,
+			mouseOn, image, scale, mouseEnteredSound, clickSound) {
+		this->buttonMode = buttonMode;
 	}
 	
 

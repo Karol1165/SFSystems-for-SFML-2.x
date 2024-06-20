@@ -194,11 +194,18 @@ namespace SFGF {
 	private:
 		sf::Sprite buttonImage;
 
-		virtual void draw(sf::RenderTarget& target)const;
+		/// <summary>
+		/// Draws button
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="states"></param>
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 
 	public:
 
+		ImageButton() = default;
 
+		~ImageButton() = default;
 
 		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale, buttonFunc func = nullptr);
 
@@ -282,16 +289,18 @@ namespace SFGF {
 		/// base class for buttons on switch
 		/// </summary>
 
-		static class baseSwitchButton : public UI {
+		class baseSwitchButton : public UI {
 		public:
 			enum mode { last, next };
 			void setMode(mode newMode) { this->buttonMode = newMode; }
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override = 0;
+		private:
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override  {}
 		protected:
 			Switch* owner;
 
 			mode buttonMode;
-			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
+
 		};
 
 		//////////////////////////////////////
@@ -301,15 +310,20 @@ namespace SFGF {
 		/// class for a switch buttons that have text on it
 		/// </summary>
 		
-		static class textSwitchButton : public baseSwitchButton, public TextButton  {
+		class textSwitchButton : public baseSwitchButton, public TextButton  {
 		public:
 			textSwitchButton() = default;
+
 			~textSwitchButton() = default;
+
 			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-				std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound);
-			textSwitchButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color);
+				std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, mode buttonMode);
+
+			textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, std::wstring string, sf::Color color, mode buttonMode);
+
 			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-				std::wstring string);
+				std::wstring string, mode buttonMode);
+
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 
 		};
@@ -321,14 +335,19 @@ namespace SFGF {
 		/// Class for a switch buttons that have icon/image on it
 		/// </summary>
 		
-		static class imageSwitchButton : public baseSwitchButton, public ImageButton {
+		class imageSwitchButton : public baseSwitchButton, public ImageButton {
 		public:
 			imageSwitchButton() = default;
+
 			~imageSwitchButton() = default;
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale);
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale);
+
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, mode buttonMode);
+
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, mode buttonMode);
+
 			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::SoundBuffer& mouseEnteredSound,
-				sf::SoundBuffer& clickSound);
+				sf::SoundBuffer& clickSound, mode buttonMode);
+
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 		};
 

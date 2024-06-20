@@ -68,7 +68,7 @@ namespace SFGF {
 			this->activeScene->SetActive(owner);
 		}
 
-		[[nodiscard]]
+		
 		Scene* getActiveScene() { return this->activeScene; }
 	};
 
