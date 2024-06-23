@@ -5,7 +5,9 @@
 #include <SFML/Audio.hpp>
 #include "Components.hpp"
 #include "Math.hpp"
-
+#ifdef _DEBUG
+#include<iostream>
+#endif
 namespace SFGF {
 
 
@@ -219,6 +221,42 @@ namespace SFGF {
 	/// Button switch
 	//////////////////////////////////////////////////
 
+
+	template <typename T>
+	class TrackedVector : public std::vector<T> {
+	public:
+		using std::vector<T>::vector; // Inherit constructors
+
+		void push_back(const T& value) {
+			std::vector<T>::push_back(value);
+			std::cout << "Element added, new size: " << this->size() << "\n";
+		}
+
+		void push_back(T&& value) {
+			std::vector<T>::push_back(std::move(value));
+			std::cout << "Element added (move), new size: " << this->size() << "\n";
+		}
+
+		void pop_back() {
+			std::vector<T>::pop_back();
+			std::cout << "Element removed, new size: " << this->size() << "\n";
+		}
+
+		void clear() {
+			std::vector<T>::clear();
+			std::cout << "All elements removed, new size: " << this->size() << "\n";
+		}
+
+		bool empty() {
+			std::cout << "vector size: " << this->size() << "\n";
+			bool result = std::vector<T>::empty();
+			std::cout << "checked is vector empty, result: " << result << "\n";
+			return result;
+		}
+
+		// Implement other modifying methods similarly if needed
+	};
+
 	////////////////////////////////////
 	//SwitchOption
 
@@ -232,7 +270,11 @@ namespace SFGF {
 		SwitchOption() = default;
 		~SwitchOption() = default;
 
-		SwitchOption(std::wstring name) : name(name) {}
+		SwitchOption(std::wstring name) : name(name) {
+#ifdef _DEBUG
+			std::wcout << "switchOption constructed: " << name << "\n";
+#endif
+		}
 
 		[[nodiscard]]
 		std::wstring getName() const { return name; }
@@ -247,29 +289,55 @@ namespace SFGF {
 	/// Class for a special enums for switch
 	/// </summary>
 
-	class SwitchEnum {
+	class SwitchStates {
 	private:
 		std::vector<SwitchOption> options;
 		uint8_t actualElement;
 
 	public:
-		SwitchEnum() { actualElement = 0; }
-		~SwitchEnum() = default;
+		SwitchStates() = default;
+		~SwitchStates() = default;
 
-		SwitchEnum(const SwitchEnum& original) : options(original.options), actualElement(original.actualElement) {}
+		SwitchStates(const SwitchStates& original) : options(original.options) { this->actualElement = original.actualElement; }
 
-		void AddOption(const SwitchOption& option) { this->options.push_back(option); }
+		void AddOption(const SwitchOption option) {
+			this->options.push_back(option);
+			if (this->options.size() == 1) {
+				this->actualElement = 0;
+			}
+		}
 
-		void Next() { if (actualElement + 1 < options.size()) actualElement++; else actualElement = 0; }
-		void Last() { if (actualElement > 0) actualElement--; else actualElement = options.size() - 1;}
+		void Next() {
+			if (this->options.empty()) return;
+			if (this->actualElement + 1 < this->options.size())
+				this->actualElement++;
+			else
+				this->actualElement = 0;
+		}
+		void Last() { 
+			if (this->options.empty()) return;
+			if (this->actualElement > 0)
+				this->actualElement--;
+			else
+				this->actualElement = this->options.size() - 1; 
+		}
 
 		[[nodiscard]]
-		SwitchOption getActualOption() const { return this->options[actualElement]; }
+		SwitchOption getActualOption() const {
+			if (this->options.empty()) throw new std::runtime_error("No options aviable");
+			return this->options[actualElement];
+		}
 
 		[[nodiscard]]
-		uint8_t getActualOptionIndex() const  { return this->actualElement; }
+		uint8_t getActualOptionIndex() const  { 
+			if (this->options.empty()) throw new std::runtime_error("No options aviable");
+			return this->actualElement;
+		}
 
-		void setActualOption(uint8_t index) { if(index < options.size()) actualElement = index; }
+		void setActualOption(uint8_t index) {
+			if (this->options.empty()) throw new std::out_of_range("Index out of range");
+			if(index < options.size()) actualElement = index; 
+		}
 	};
 
 	///////////////////////////////////////////
@@ -293,6 +361,7 @@ namespace SFGF {
 		public:
 			enum mode { last, next };
 			void setMode(mode newMode) { this->buttonMode = newMode; }
+			virtual sf::FloatRect getGlobalBounds()const = 0;
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override = 0;
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override  {}
@@ -317,12 +386,14 @@ namespace SFGF {
 			~textSwitchButton() = default;
 
 			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-				std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, mode buttonMode);
+				std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner);
 
-			textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, std::wstring string, sf::Color color, mode buttonMode);
+			textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, std::wstring string, sf::Color color, mode buttonMode, Switch* owner);
 
 			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-				std::wstring string, mode buttonMode);
+				std::wstring string, mode buttonMode, Switch* owner);
+
+			virtual sf::FloatRect getGlobalBounds() const override;
 
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 
@@ -341,12 +412,14 @@ namespace SFGF {
 
 			~imageSwitchButton() = default;
 
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, mode buttonMode);
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, mode buttonMode, Switch* owner);
 
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, mode buttonMode);
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, mode buttonMode, Switch* owner);
 
 			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::SoundBuffer& mouseEnteredSound,
-				sf::SoundBuffer& clickSound, mode buttonMode);
+				sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner);
+
+			virtual sf::FloatRect getGlobalBounds() const override;
 
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 		};
@@ -354,8 +427,21 @@ namespace SFGF {
 		Switch() = default;
 		~Switch() = default;
 
-		Switch(sf::RectangleShape background, baseSwitchButton* leftButton, baseSwitchButton* rightButton, SwitchEnum states);
-		Switch(sf::RectangleShape background, baseSwitchButton* leftButton, baseSwitchButton* rightButton);
+		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
+			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Font& buttonFont, int buttonFontSize, sf::Color buttonMouseOutColor, sf::Color buttonMouseOnColor,
+			sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText, std::wstring rightButtonText, SwitchStates states);
+
+		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
+			sf::Font& buttonFont, int buttonFontSize, sf::Color buttonColor, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText,
+			std::wstring rightButtonText, SwitchStates states);
+
+		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
+			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, int buttonImageScale, sf::SoundBuffer& buttonSpottedSound,
+			sf::SoundBuffer& buttonClickSound, SwitchStates states);
+
+		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
+			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage , int buttonImageScale, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states);
+
 
 		[[nodiscard]]
 		SwitchOption getActualOption() { return this->states.getActualOption(); }
@@ -364,12 +450,12 @@ namespace SFGF {
 		uint8_t getActualOptionIndex() { return this->states.getActualOptionIndex(); }
 
 		[[nodiscard]]
-		SwitchEnum getOptions() { return this->states; }
+		SwitchStates getOptions() { return this->states; }
 
 		[[nodiscard]]
 		std::wstring getActualText() { return this->states.getActualOption().getName(); }
 
-		void setOptions(SwitchEnum newOptions) { this->states = newOptions; }
+		void setOptions(SwitchStates newOptions) { this->states = newOptions; }
 
 		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 
@@ -379,7 +465,7 @@ namespace SFGF {
 		std::shared_ptr<baseSwitchButton> leftButton;
 		std::shared_ptr<baseSwitchButton> rightButton;
 		sf::Text text;
-		SwitchEnum states;
+		SwitchStates states;
 
 		void UpdateText();
 
