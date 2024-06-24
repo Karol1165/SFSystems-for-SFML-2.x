@@ -193,7 +193,7 @@ namespace SFGF {
 	/// </summary>
 
 	class ImageButton : public BaseButton {
-	private:
+	protected:
 		sf::Sprite buttonImage;
 
 		/// <summary>
@@ -222,41 +222,6 @@ namespace SFGF {
 	//////////////////////////////////////////////////
 
 
-	template <typename T>
-	class TrackedVector : public std::vector<T> {
-	public:
-		using std::vector<T>::vector; // Inherit constructors
-
-		void push_back(const T& value) {
-			std::vector<T>::push_back(value);
-			std::cout << "Element added, new size: " << this->size() << "\n";
-		}
-
-		void push_back(T&& value) {
-			std::vector<T>::push_back(std::move(value));
-			std::cout << "Element added (move), new size: " << this->size() << "\n";
-		}
-
-		void pop_back() {
-			std::vector<T>::pop_back();
-			std::cout << "Element removed, new size: " << this->size() << "\n";
-		}
-
-		void clear() {
-			std::vector<T>::clear();
-			std::cout << "All elements removed, new size: " << this->size() << "\n";
-		}
-
-		bool empty() {
-			std::cout << "vector size: " << this->size() << "\n";
-			bool result = std::vector<T>::empty();
-			std::cout << "checked is vector empty, result: " << result << "\n";
-			return result;
-		}
-
-		// Implement other modifying methods similarly if needed
-	};
-
 	////////////////////////////////////
 	//SwitchOption
 
@@ -271,9 +236,6 @@ namespace SFGF {
 		~SwitchOption() = default;
 
 		SwitchOption(std::wstring name) : name(name) {
-#ifdef _DEBUG
-			std::wcout << "switchOption constructed: " << name << "\n";
-#endif
 		}
 
 		[[nodiscard]]
@@ -393,6 +355,8 @@ namespace SFGF {
 			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
 				std::wstring string, mode buttonMode, Switch* owner);
 
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 			virtual sf::FloatRect getGlobalBounds() const override;
 
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
@@ -421,6 +385,8 @@ namespace SFGF {
 
 			virtual sf::FloatRect getGlobalBounds() const override;
 
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 		};
 
@@ -436,11 +402,11 @@ namespace SFGF {
 			std::wstring rightButtonText, SwitchStates states);
 
 		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
-			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, int buttonImageScale, sf::SoundBuffer& buttonSpottedSound,
+			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, sf::SoundBuffer& buttonSpottedSound,
 			sf::SoundBuffer& buttonClickSound, SwitchStates states);
 
 		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
-			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage , int buttonImageScale, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states);
+			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage , sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states);
 
 
 		[[nodiscard]]
@@ -486,6 +452,38 @@ namespace SFGF {
 	/////////////////////////////////////////////
 	///Views
 	////////////////////////////////////////////
+
+	////////////////////////////////////////////
+	//Clipped View
+
+	template <typename T>
+	concept DrawableType = std::is_base_of_v<sf::Drawable, T>;
+
+	template <DrawableType T>
+	
+	class ClippedView : public sf::Drawable {
+	private:
+		mutable sf::RenderTexture renderTexture;
+		sf::FloatRect bounds;
+		T* object;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	public:
+		ClippedView() = default;
+		~ClippedView() = default;
+
+		ClippedView(sf::FloatRect bounds) {
+			this->bounds = bounds;
+			renderTexture.create(static_cast<unsigned int>(bounds.width), static_cast<unsigned int>(bounds.height));
+		}
+		
+
+		void setObject(const T& newObject) {
+			this->object = const_cast<T*>( & newObject);
+		}
+		void setBounds(sf::FloatRect newBounds) { this->bounds = newBounds; }
+
+
+	};
 
 	////////////////////////////////////////////
 	//ScroolView
