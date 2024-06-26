@@ -3,7 +3,7 @@
 #define UI_HPP_
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "Components.hpp"
+#include "Base.hpp"
 #include "Math.hpp"
 #ifdef _DEBUG
 #include<iostream>
@@ -24,7 +24,7 @@ namespace SFGF {
 	/// Base class for all buttons
 	/// </summary>
 
-	class BaseButton : public UI, public Clickable {
+	class BaseButton : public UI {
 	protected:
 		typedef void(*buttonFunc) ();
 
@@ -106,18 +106,31 @@ namespace SFGF {
 
 	class TextButton : public BaseButton {
 	protected:
-		struct ButtonTxtStatesData {
-			sf::Color mouseOn;
-			sf::Color mouseOut;
-		};
 
 
 		sf::Text buttonText;
-		ButtonTxtStatesData buttonTxtData;
+		textData mouseOutTxtData;
+		textData mouseOnTxtData;
 
 
 
 		void TextPosUpdate() { buttonText.setPosition(centerText(buttonText, buttonBackground)); }
+
+		void TextDataUpdate(bool isSpotted = false) {
+			if (isSpotted) {
+				this->buttonText.setCharacterSize(this->mouseOnTxtData.characterSize);
+				this->buttonText.setFillColor(this->mouseOnTxtData.fillColor);
+				this->buttonText.setOutlineColor(this->mouseOnTxtData.outlineColor);
+				this->buttonText.setOutlineThickness(this->mouseOnTxtData.outlineThickness);
+			}
+			else {
+				this->buttonText.setCharacterSize(this->mouseOutTxtData.characterSize);
+				this->buttonText.setFillColor(this->mouseOutTxtData.fillColor);
+				this->buttonText.setOutlineColor(this->mouseOutTxtData.outlineColor);
+				this->buttonText.setOutlineThickness(this->mouseOutTxtData.outlineThickness);
+			}
+			TextPosUpdate();
+		}
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -127,17 +140,17 @@ namespace SFGF {
 		TextButton() = default;
 		~TextButton() = default;
 
-		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 			std::wstring string, buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+		TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 			buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color, std::wstring string, buttonFunc func = nullptr);
+		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, textData textData, std::wstring string, buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, int fontSize, sf::Color color, buttonFunc func = nullptr);
+		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, textData textData, buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,int scale, sf::Font& font,int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 			std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
 		//Get
 
@@ -170,18 +183,16 @@ namespace SFGF {
 			TextPosUpdate();
 		}
 		void setMouseOutButtonColor(sf::Color newColor) {
-			buttonTxtData.mouseOut = newColor;
-			buttonText.setFillColor(buttonTxtData.mouseOut);
+			mouseOutTxtData.fillColor = newColor;
 		}
 		void setMouseOnButtonColor(sf::Color newColor) {
-			buttonTxtData.mouseOn = newColor;
+			mouseOnTxtData.fillColor = newColor;
 		}
 		void setString(std::wstring newString) {
 			buttonText.setString(newString);
 			TextPosUpdate();
 		}
 
-		//Check Status
 
 	};
 
@@ -326,7 +337,7 @@ namespace SFGF {
 			virtual sf::FloatRect getGlobalBounds()const = 0;
 			virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override = 0;
 		private:
-			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override  {}
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 		protected:
 			Switch* owner;
 
@@ -347,12 +358,12 @@ namespace SFGF {
 
 			~textSwitchButton() = default;
 
-			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 				std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner);
 
-			textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, std::wstring string, sf::Color color, mode buttonMode, Switch* owner);
+			textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, textData textData, std::wstring string, mode buttonMode, Switch* owner);
 
-			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 				std::wstring string, mode buttonMode, Switch* owner);
 
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -438,16 +449,7 @@ namespace SFGF {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	};
 
-	///////////////////////////////////////////
-	///Text box
 
-	/// <summary>
-	/// Class of text box.
-	/// </summary>
-
-	class TextBox : public UI {
-
-	};
 
 	/////////////////////////////////////////////
 	///Views
@@ -495,7 +497,7 @@ namespace SFGF {
 	class ScroolView : public UI {
 	private:
 		std::vector<UI> elements;
-		sf::View view;
+
 		sf::RectangleShape scroolBackground;
 		sf::CircleShape scroolCircle;
 	public:
@@ -508,6 +510,28 @@ namespace SFGF {
 
 	class GameDialog : public UI {
 
+	};
+
+
+	///////////////////////////////////////////
+	///Text box
+
+	/// <summary>
+	/// Class of text box.
+	/// </summary>
+
+	class TextBox : public UI {
+	private:
+		sf::Text text;
+		sf::RectangleShape background;
+		bool isActive;
+	public:
+		TextBox() = default;
+		~TextBox() = default;
+
+		TextBox(sf::Vector2f pos, sf::Vector2f size);
+
+		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};
 
 }

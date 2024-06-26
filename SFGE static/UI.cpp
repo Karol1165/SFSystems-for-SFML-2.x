@@ -119,15 +119,16 @@ namespace SFGF {
 	
 	void TextButton::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		target.draw(buttonBackground);
-		target.draw(buttonText);
+		ClippedView<sf::Text> textView = ClippedView<sf::Text>(buttonBackground.getGlobalBounds());
+		textView.setObject(buttonText);
+		target.draw(textView);
 	}
 	
 
 	bool TextButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
 		bool isButtonClicked = false;
 		if (buttonBackground.getGlobalBounds().contains(mousePos)) {
-			buttonBackground.setTexture(buttonBgrData.mouseOn);
-			buttonText.setFillColor(buttonTxtData.mouseOn);
+			TextDataUpdate(true);
 			if (isClicked) {
 				clickSound.play();
 				isButtonClicked = true;
@@ -139,67 +140,58 @@ namespace SFGF {
 		}
 		else {
 			isMouseOn = false;
-			buttonBackground.setTexture(buttonBgrData.mouseOut);
-			buttonText.setFillColor(buttonTxtData.mouseOut);
+			TextDataUpdate(false);
 		}
 		return isButtonClicked;
 	}
 
 
-	TextButton::TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+	TextButton::TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 		std::wstring string, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
-		this->buttonTxtData.mouseOut = mouseOutColor;
-		this->buttonTxtData.mouseOn = mouseOnColor;
+		this->mouseOutTxtData = mouseOutText;
+		this->mouseOnTxtData = mouseOnText;
 		this->buttonText.setFont(font);
-		this->buttonText.setCharacterSize(fontSize);
-		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 		this->buttonText.setString(string);
-		TextPosUpdate();
+		TextDataUpdate();
 	}
 
 
 
-	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 		 buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
-		this->buttonTxtData.mouseOut = mouseOutColor;
-		this->buttonTxtData.mouseOn = mouseOnColor;
+		this->mouseOutTxtData = mouseOutText;
+		this->mouseOnTxtData = mouseOnText;
 		this->buttonText.setFont(font);
-		this->buttonText.setCharacterSize(fontSize);
-		this->buttonText.setFillColor(buttonTxtData.mouseOut);
+		TextDataUpdate();
 	}
 
 
-	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color,std::wstring string, buttonFunc func)
+	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, textData textData,std::wstring string, buttonFunc func)
 		: BaseButton(pos, texture, texture, scale, func) {
-		this->buttonTxtData.mouseOut = color;
-		this->buttonTxtData.mouseOn = color;
+		this->mouseOutTxtData = textData;
+		this->mouseOnTxtData = textData;
 		this->buttonText.setFont(font);
-		this->buttonText.setCharacterSize(fontSize);
-		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 		this->buttonText.setString(string);
-		TextPosUpdate();
+		TextDataUpdate();
 	}
 
 
-	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, sf::Color color, buttonFunc func) : BaseButton(pos, texture, texture, scale, func) {
-		this->buttonTxtData.mouseOut = color;
-		this->buttonTxtData.mouseOn = color;
+	TextButton::TextButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, textData textData, buttonFunc func) : BaseButton(pos, texture, texture, scale, func) {
+		this->mouseOutTxtData = textData;
+		this->mouseOnTxtData = textData;
 		this->buttonText.setFont(font);
-		this->buttonText.setCharacterSize(fontSize);
-		this->buttonText.setFillColor(buttonTxtData.mouseOut);
+		TextDataUpdate();
 	}
 
 
-	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
+	TextButton::TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 		std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func,
 			mouseEnteredSound, clickSound) {
-		this->buttonTxtData.mouseOut = mouseOutColor;
-		this->buttonTxtData.mouseOn = mouseOnColor;
+		this->mouseOutTxtData = mouseOutText;
+		this->mouseOutTxtData = mouseOnText;
 		this->buttonText.setFont(font);
-		this->buttonText.setCharacterSize(fontSize);
-		this->buttonText.setFillColor(buttonTxtData.mouseOut);
 		this->buttonText.setString(string);
-		TextPosUpdate();
+		TextDataUpdate();
 	}
 
 
@@ -262,22 +254,21 @@ namespace SFGF {
 		TextButton::draw(target, states);
 	}
 
-	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-		std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner) : TextButton(pos, mouseOut, mouseOn, scale, font, fontSize, mouseOutColor,
-		mouseOnColor, string, mouseEnteredSound, clickSound) {
+	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
+		std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner) : TextButton(pos, mouseOut, mouseOn, scale, font, mouseOutText, mouseOnText,
+		string, mouseEnteredSound, clickSound) {
 		this->buttonMode = buttonMode;
 		this->owner = owner;
 	}
 
-	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, int fontSize, std::wstring string, sf::Color color, mode buttonMode, Switch* owner) :
-		TextButton(pos, texture, scale, font, fontSize, color, string) {
+	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, textData textData, std::wstring string, mode buttonMode, Switch* owner) :
+		TextButton(pos, texture, scale, font, textData, string) {
 		this->buttonMode = buttonMode;
 		this->owner = owner;
 	}
 
-	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, int fontSize, sf::Color mouseOutColor, sf::Color mouseOnColor,
-		std::wstring string, mode buttonMode, Switch* owner) : TextButton(pos, mouseOut, mouseOn, scale, font, fontSize, mouseOutColor,
-			mouseOnColor, string) {
+	Switch::textSwitchButton::textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
+		std::wstring string, mode buttonMode, Switch* owner) : TextButton(pos, mouseOut, mouseOn, scale, font, mouseOutText, mouseOnText, string) {
 		this->buttonMode = buttonMode;
 		this->owner = owner;
 	}
@@ -479,6 +470,41 @@ namespace SFGF {
 		target.draw(sprite, states);
 	}
 
+
+
+	///////////////////////////////////////////////////////////////////////////
+	//Other
+	//////////////////////////////////////////////////////////////////////////
+
+
+	////////////////////////////////////////////
+	//TextBox
+
+	void TextBox::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		if (e.type == sf::Event::MouseButtonPressed) {
+			if (e.mouseButton.button == sf::Mouse::Left) {
+				if (background.getGlobalBounds().contains(mousePos)) {
+					isActive = true;
+				}
+				else {
+					isActive = false;
+				}
+			}
+		}
+		if (isActive && e.type == sf::Event::TextEntered) {
+			if (e.text.unicode == 8) { // Handle backspace
+				std::wstring str = text.getString();
+				if (!str.empty()) {
+					str.pop_back();
+					text.setString(str);
+				}
+			}
+
+			text.setString(text.getString() + static_cast<wchar_t>(e.text.unicode));
+			
+			
+		}
+	}
 
 }
 

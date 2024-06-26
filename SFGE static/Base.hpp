@@ -1,9 +1,30 @@
 #pragma once
-#ifndef COMPONENTS_HPP_
-#define COMPONENTS_HPP_
+#ifndef BASE_HPP_
+#define BASE_HPP_
 #include <SFML/Graphics.hpp>
 
 namespace SFGF {
+
+	struct textData {
+		int characterSize;
+		sf::Color fillColor;
+		sf::Color outlineColor;
+		int outlineThickness;
+	};
+	struct rectangleShapeData {
+		sf::Color fillColor;
+		sf::Color outlineColor;
+		sf::Vector2f size;
+		int outlineThickness;
+		sf::Texture texture;
+	};
+	struct circleShapeData {
+		sf::Color fillColor;
+		sf::Color outlineColor;
+		int radius;
+		int outlineThickness;
+		sf::Texture texture;
+	};
 
 	/// <summary>
 	/// Base class for all UI elements
@@ -29,32 +50,7 @@ namespace SFGF {
 	};
 
 
-	//add if object is doing something when it is clicked
-	class Clickable {
-	protected:
-		//Checking click and doing something
-		virtual bool CheckClick(sf::Vector2f mousePos, bool isClicked) = 0;
-	};
 
-	//add if object can collision with other objects
-	class Collisionable {
-	protected:
-		//Checking collision and doing something
-		virtual void CheckCollision(Collisionable object) = 0;
-	};
-
-	//add if object has HP and can be destroyed
-	class Destroyable {
-	protected:
-		//Health Points
-		int HP;
-		virtual void Destroy() { delete this; }
-	public:
-		Destroyable(int hp) : HP(hp) {}
-
-		virtual void AddDamage(int value) { HP -= value; if (HP < 0) Destroy(); }
-		virtual void AddHP(int value) { HP += value; }
-	};
 
 }
 #endif

@@ -27,7 +27,7 @@
     <ClInclude Include="Math.hpp">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Components.hpp">
+    <ClInclude Include="Base.hpp">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Scene.hpp">
