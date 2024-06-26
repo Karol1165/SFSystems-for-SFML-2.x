@@ -525,6 +525,9 @@ namespace SFGF {
 		sf::Text text;
 		sf::RectangleShape background;
 		bool isActive;
+
+
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	public:
 		TextBox() = default;
 		~TextBox() = default;
