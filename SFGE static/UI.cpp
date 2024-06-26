@@ -336,11 +336,11 @@ namespace SFGF {
 	}
 
 	Switch::Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
-		sf::Texture& buttonMouseOnTex, int buttonScale, sf::Font& buttonFont, int buttonFontSize, sf::Color buttonMouseOutColor, sf::Color buttonMouseOnColor, sf::SoundBuffer& buttonSpottedSound,
+		sf::Texture& buttonMouseOnTex, int buttonScale, sf::Font& buttonFont, textData buttonMouseOutText, textData buttonMouseOnText, sf::SoundBuffer& buttonSpottedSound,
 		sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText, std::wstring rightButtonText, SwitchStates states) {
 
-		this->leftButton = std::shared_ptr<baseSwitchButton>( new textSwitchButton(pos, buttonMouseOutTex, buttonMouseOnTex, buttonScale, buttonFont, buttonFontSize, buttonMouseOutColor,
-			buttonMouseOnColor, leftButtonText, buttonSpottedSound, buttonClickSound, baseSwitchButton::mode::last, this) );
+		this->leftButton = std::shared_ptr<baseSwitchButton>( new textSwitchButton(pos, buttonMouseOutTex, buttonMouseOnTex, buttonScale, buttonFont, buttonMouseOutText, buttonMouseOnText, leftButtonText, buttonSpottedSound,
+			buttonClickSound, baseSwitchButton::mode::last, this) );
 
 		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width, pos.y));
 		this->background.setFillColor(backgroundColor);
@@ -348,7 +348,7 @@ namespace SFGF {
 		this->background.setOutlineThickness(0);
 		
 		this->rightButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(sf::Vector2f(this->background.getPosition().x + backgroundRectLength, pos.y), buttonMouseOutTex,
-			buttonMouseOnTex, buttonScale, buttonFont, buttonFontSize, buttonMouseOutColor, buttonMouseOnColor, rightButtonText, buttonSpottedSound, buttonClickSound,
+			buttonMouseOnTex, buttonScale, buttonFont, buttonMouseOutText, buttonMouseOnText, rightButtonText, buttonSpottedSound, buttonClickSound,
 			baseSwitchButton::mode::next, this));
 
 		this->text.setFont(textFont);
@@ -362,10 +362,9 @@ namespace SFGF {
 	}
 
 	Switch::Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
-		sf::Font& buttonFont, int buttonFontSize, sf::Color buttonColor, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText,
+		sf::Font& buttonFont,textData buttonTextData, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText,
 		std::wstring rightButtonText, SwitchStates states) {
-		this->leftButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(pos, buttonTex, buttonTex, buttonScale, buttonFont, buttonFontSize, buttonColor,
-			buttonColor, leftButtonText, buttonSpottedSound, buttonClickSound, baseSwitchButton::mode::last, this));
+		this->leftButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(pos, buttonTex,buttonTex , buttonScale, buttonFont, buttonTextData, buttonTextData , leftButtonText, buttonSpottedSound, buttonClickSound, baseSwitchButton::mode::last, this));
 
 		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width, pos.y));
 		this->background.setFillColor(backgroundColor);
@@ -373,7 +372,7 @@ namespace SFGF {
 		this->background.setOutlineThickness(0);
 
 		this->rightButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(sf::Vector2f(this->background.getPosition().x + backgroundRectLength, pos.y), buttonTex,
-			buttonTex, buttonScale, buttonFont, buttonFontSize, buttonColor, buttonColor, rightButtonText, buttonSpottedSound, buttonClickSound,
+			buttonTex, buttonScale, buttonFont, buttonTextData, buttonTextData, rightButtonText, buttonSpottedSound, buttonClickSound,
 			baseSwitchButton::mode::next, this));
 
 		this->text.setFont(textFont);

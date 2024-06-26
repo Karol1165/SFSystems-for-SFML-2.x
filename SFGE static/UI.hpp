@@ -405,11 +405,11 @@ namespace SFGF {
 		~Switch() = default;
 
 		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
-			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Font& buttonFont, int buttonFontSize, sf::Color buttonMouseOutColor, sf::Color buttonMouseOnColor,
+			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Font& buttonFont, textData buttonMouseOutText, textData buttonMouseOnText,
 			sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText, std::wstring rightButtonText, SwitchStates states);
 
 		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
-			sf::Font& buttonFont, int buttonFontSize, sf::Color buttonColor, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText,
+			sf::Font& buttonFont,textData buttonTextData, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText,
 			std::wstring rightButtonText, SwitchStates states);
 
 		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
@@ -529,7 +529,7 @@ namespace SFGF {
 		TextBox() = default;
 		~TextBox() = default;
 
-		TextBox(sf::Vector2f pos, sf::Vector2f size);
+		TextBox(sf::Vector2f pos, rectangleShapeData boxData, textData textData, sf::Font& font);
 
 		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};

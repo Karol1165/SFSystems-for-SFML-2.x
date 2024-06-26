@@ -2,7 +2,7 @@
 #ifndef SCENE_HPP_
 #define SCENE_HPP_
 #include "UI.hpp"
-#include "Components.hpp"
+#include "Base.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace SFGF {
