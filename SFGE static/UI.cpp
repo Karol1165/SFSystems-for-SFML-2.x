@@ -128,6 +128,7 @@ namespace SFGF {
 	bool TextButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
 		bool isButtonClicked = false;
 		if (buttonBackground.getGlobalBounds().contains(mousePos)) {
+			this->buttonBackground.setTexture(this->buttonBgrData.mouseOn);
 			TextDataUpdate(true);
 			if (isClicked) {
 				clickSound.play();
@@ -141,6 +142,7 @@ namespace SFGF {
 		else {
 			isMouseOn = false;
 			TextDataUpdate(false);
+			this->buttonBackground.setTexture(this->buttonBgrData.mouseOut);
 		}
 		return isButtonClicked;
 	}
@@ -188,7 +190,7 @@ namespace SFGF {
 		std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func,
 			mouseEnteredSound, clickSound) {
 		this->mouseOutTxtData = mouseOutText;
-		this->mouseOutTxtData = mouseOnText;
+		this->mouseOnTxtData = mouseOnText;
 		this->buttonText.setFont(font);
 		this->buttonText.setString(string);
 		TextDataUpdate();
@@ -479,6 +481,21 @@ namespace SFGF {
 	////////////////////////////////////////////
 	//TextBox
 
+
+	TextBox::TextBox(sf::Vector2f pos, rectangleShapeData boxData, textData textData, sf::Font& font) : isActive(false) {
+		this->background.setPosition(pos);
+		this->background.setSize(boxData.size);
+		this->background.setFillColor(boxData.fillColor);
+		this->background.setOutlineColor(boxData.outlineColor);
+		this->background.setOutlineThickness(boxData.outlineThickness);
+
+		this->text.setFont(font);
+		this->text.setCharacterSize(textData.characterSize);
+		this->text.setFillColor(textData.fillColor);
+		this->text.setOutlineColor(textData.outlineColor);
+		this->text.setOutlineThickness(textData.outlineThickness);
+	}
+
 	void TextBox::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (e.type == sf::Event::MouseButtonPressed) {
 			if (e.mouseButton.button == sf::Mouse::Left) {
@@ -500,6 +517,7 @@ namespace SFGF {
 			}
 
 			text.setString(text.getString() + static_cast<wchar_t>(e.text.unicode));
+			this->text.setPosition(centerText(this->text, this->background));
 			
 			
 		}
