@@ -220,12 +220,43 @@ namespace SFGF {
 
 		~ImageButton() = default;
 
-		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale, buttonFunc func = nullptr);
+		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, buttonFunc func = nullptr);
 
-		ImageButton(sf::Vector2f pos, sf::Texture& texture,sf::Texture& image, int scale, buttonFunc func = nullptr);
+		ImageButton(sf::Vector2f pos, sf::Texture& texture, int buttonScale, sf::Texture& image, int iconScale, buttonFunc func = nullptr);
 
-		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,sf::Texture& image, int scale,sf::SoundBuffer& mouseEnteredSound,
+		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale,sf::Texture& image, int iconScale,sf::SoundBuffer& mouseEnteredSound,
 			sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
+	};
+
+
+	//////////////////////////////////////////////////////
+	//CheckBox
+
+	class CheckBox : ImageButton {
+	protected:
+		enum States {checked, unchecked};
+		States state;
+	private:
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	public:
+		CheckBox() = default;
+		~CheckBox() = default;
+
+		CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, int butttonScale, sf::Texture& checkIcon, int iconScale, buttonFunc whenStateChanges = nullptr);
+
+		CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, int butttonScale, sf::Texture& checkIcon, int iconScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound,
+			buttonFunc whenStateChanges = nullptr);
+
+		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
+
+		[[nodiscard]]
+		bool isChecked() {
+			if (state == checked)
+				return true;
+			else
+				return false;
+		}
+
 	};
 
 	///////////////////////////////////////////////////
@@ -387,11 +418,11 @@ namespace SFGF {
 
 			~imageSwitchButton() = default;
 
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, mode buttonMode, Switch* owner);
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, mode buttonMode, Switch* owner);
 
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, mode buttonMode, Switch* owner);
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture,int buttonScale, sf::Texture& image, int iconScale, mode buttonMode, Switch* owner);
 
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::SoundBuffer& mouseEnteredSound,
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, sf::SoundBuffer& mouseEnteredSound,
 				sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner);
 
 			virtual sf::FloatRect getGlobalBounds() const override;
@@ -404,20 +435,20 @@ namespace SFGF {
 		Switch() = default;
 		~Switch() = default;
 
-		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
+		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonMouseOutTex,
 			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Font& buttonFont, textData buttonMouseOutText, textData buttonMouseOnText,
 			sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText, std::wstring rightButtonText, SwitchStates states);
 
-		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
+		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonTex, int buttonScale,
 			sf::Font& buttonFont,textData buttonTextData, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText,
 			std::wstring rightButtonText, SwitchStates states);
 
-		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
-			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, sf::SoundBuffer& buttonSpottedSound,
+		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonMouseOutTex,
+			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage,int buttonIconScale, sf::SoundBuffer& buttonSpottedSound,
 			sf::SoundBuffer& buttonClickSound, SwitchStates states);
 
-		Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
-			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage , sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states);
+		Switch(sf::Vector2f pos,rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonTex, int buttonScale,
+			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, int buttonIconScale, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states);
 
 
 		[[nodiscard]]

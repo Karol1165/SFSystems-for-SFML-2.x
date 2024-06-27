@@ -213,26 +213,58 @@ namespace SFGF {
 
 
 
-	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, buttonFunc func) : BaseButton(pos, mouseOut,
-		mouseOn, scale, func) {
+	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, buttonFunc func) : BaseButton(pos, mouseOut,
+		mouseOn, buttonScale, func) {
 		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(scale, scale);
+		this->buttonImage.setScale(iconScale, iconScale);
 		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
 	}
 
-	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, buttonFunc func) : BaseButton(pos, texture,
-		texture, scale, func) {
+	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& texture, int buttonScale, sf::Texture& image, int iconScale, buttonFunc func) : BaseButton(pos, texture,
+		texture, buttonScale, func) {
 		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(scale, scale);
+		this->buttonImage.setScale(iconScale, iconScale);
 		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
 	}
 
-	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::SoundBuffer& mouseEnteredSound,
-		sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func, mouseEnteredSound, clickSound) {
+	ImageButton::ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, sf::SoundBuffer& mouseEnteredSound,
+		sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, buttonScale, func, mouseEnteredSound, clickSound) {
 		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(scale, scale);
+		this->buttonImage.setScale(iconScale, iconScale);
 		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
 	}
+
+	///////////////////////////////////////////////////////
+	//CheckBox
+
+	void CheckBox::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+			this->state = checked;
+			if (func != nullptr)
+				func();
+		}
+	}
+
+	void CheckBox::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+
+		target.draw(this->buttonBackground, states);
+
+		if(state == checked)
+			target.draw(this->buttonImage, states);
+	}
+
+	CheckBox::CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, int buttonScale, sf::Texture& checkIcon, int iconScale, buttonFunc whenStateChanges) : ImageButton(pos, mouseOutTex, mouseOnTex,
+		buttonScale, checkIcon, iconScale, whenStateChanges), state(unchecked) {
+
+	}
+
+
+	CheckBox::CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, int buttonScale, sf::Texture& checkIcon, int iconScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound,
+		buttonFunc whenStateChanges) : ImageButton(pos, mouseOutTex, mouseOnTex,
+			buttonScale, checkIcon, iconScale, mouseEnteredSound, clickSound, whenStateChanges), state(unchecked) {
+
+	}
+
 
 	//////////////////////////////////////////////////////////
 	///Switch
@@ -296,20 +328,21 @@ namespace SFGF {
 		ImageButton::draw(target, states);
 	}
 
-	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, mode buttonMode, Switch* owner) : ImageButton (pos, mouseOut,
-		mouseOn, image, scale) {
+	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, mode buttonMode, Switch* owner)
+		: ImageButton (pos, mouseOut, mouseOn, buttonScale, image, iconScale) {
 		this->buttonMode = buttonMode;
 		this->owner = owner;
 	}
 
-	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, sf::Texture& image, int scale, mode buttonMode, Switch* owner) : ImageButton(pos, texture, image, scale) {
+	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& texture,int buttonScale, sf::Texture& image, int iconScale, mode buttonMode, Switch* owner)
+		: ImageButton(pos, texture,buttonScale, image, iconScale) {
 		this->buttonMode = buttonMode;
 		this->owner = owner;
 	}
 
-	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, sf::Texture& image, int scale, sf::SoundBuffer& mouseEnteredSound,
+	Switch::imageSwitchButton::imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale,sf::Texture& image, int iconScale, sf::SoundBuffer& mouseEnteredSound,
 		sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner) : ImageButton(pos, mouseOut,
-			mouseOn, image, scale, mouseEnteredSound, clickSound) {
+			mouseOn, buttonScale, image, iconScale, mouseEnteredSound, clickSound) {
 		this->buttonMode = buttonMode;
 		this->owner = owner;
 	}
@@ -337,25 +370,32 @@ namespace SFGF {
 
 	}
 
-	Switch::Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
+	Switch::Switch(sf::Vector2f pos,rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonMouseOutTex,
 		sf::Texture& buttonMouseOnTex, int buttonScale, sf::Font& buttonFont, textData buttonMouseOutText, textData buttonMouseOnText, sf::SoundBuffer& buttonSpottedSound,
 		sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText, std::wstring rightButtonText, SwitchStates states) {
 
 		this->leftButton = std::shared_ptr<baseSwitchButton>( new textSwitchButton(pos, buttonMouseOutTex, buttonMouseOnTex, buttonScale, buttonFont, buttonMouseOutText, buttonMouseOnText, leftButtonText, buttonSpottedSound,
 			buttonClickSound, baseSwitchButton::mode::last, this) );
 
-		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width, pos.y));
-		this->background.setFillColor(backgroundColor);
-		this->background.setSize(sf::Vector2f(backgroundRectLength, this->leftButton->getGlobalBounds().height));
-		this->background.setOutlineThickness(0);
+		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width + backgroundData.outlineThickness * 2, pos.y + leftButton->getGlobalBounds().height / 2 - backgroundData.size.y / 2));
+		this->background.setFillColor(backgroundData.fillColor);
+		this->background.setSize(backgroundData.size);
+		this->background.setOutlineColor(backgroundData.outlineColor);
+		this->background.setOutlineThickness(backgroundData.outlineThickness);
 		
-		this->rightButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(sf::Vector2f(this->background.getPosition().x + backgroundRectLength, pos.y), buttonMouseOutTex,
+
+
+		this->rightButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(sf::Vector2f(this->background.getPosition().x + this->background.getGlobalBounds().width, pos.y), buttonMouseOutTex,
 			buttonMouseOnTex, buttonScale, buttonFont, buttonMouseOutText, buttonMouseOnText, rightButtonText, buttonSpottedSound, buttonClickSound,
 			baseSwitchButton::mode::next, this));
 
+
+
 		this->text.setFont(textFont);
-		this->text.setFillColor(textColor);
-		this->text.setCharacterSize(textFontSize);
+		this->text.setFillColor(optionTextData.fillColor);
+		this->text.setCharacterSize(optionTextData.characterSize);
+		this->text.setOutlineColor(optionTextData.outlineColor);
+		this->text.setOutlineThickness(optionTextData.outlineThickness);
 
 		this->states = states;
 
@@ -363,23 +403,26 @@ namespace SFGF {
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 
-	Switch::Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
+	Switch::Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonTex, int buttonScale,
 		sf::Font& buttonFont,textData buttonTextData, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText,
 		std::wstring rightButtonText, SwitchStates states) {
 		this->leftButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(pos, buttonTex,buttonTex , buttonScale, buttonFont, buttonTextData, buttonTextData , leftButtonText, buttonSpottedSound, buttonClickSound, baseSwitchButton::mode::last, this));
 
-		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width, pos.y));
-		this->background.setFillColor(backgroundColor);
-		this->background.setSize(sf::Vector2f(backgroundRectLength, this->leftButton->getGlobalBounds().height));
-		this->background.setOutlineThickness(0);
+		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width + backgroundData.outlineThickness * 2, pos.y + leftButton->getGlobalBounds().height / 2 - backgroundData.size.y / 2));
+		this->background.setFillColor(backgroundData.fillColor);
+		this->background.setSize(backgroundData.size);
+		this->background.setOutlineColor(backgroundData.outlineColor);
+		this->background.setOutlineThickness(backgroundData.outlineThickness);
 
-		this->rightButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(sf::Vector2f(this->background.getPosition().x + backgroundRectLength, pos.y), buttonTex,
+		this->rightButton = std::shared_ptr<baseSwitchButton>(new textSwitchButton(sf::Vector2f(this->background.getPosition().x + this->background.getGlobalBounds().width, pos.y), buttonTex,
 			buttonTex, buttonScale, buttonFont, buttonTextData, buttonTextData, rightButtonText, buttonSpottedSound, buttonClickSound,
 			baseSwitchButton::mode::next, this));
 
 		this->text.setFont(textFont);
-		this->text.setFillColor(textColor);
-		this->text.setCharacterSize(textFontSize);
+		this->text.setFillColor(optionTextData.fillColor);
+		this->text.setCharacterSize(optionTextData.characterSize);
+		this->text.setOutlineColor(optionTextData.outlineColor);
+		this->text.setOutlineThickness(optionTextData.outlineThickness);
 
 		this->states = states;
 
@@ -387,24 +430,27 @@ namespace SFGF {
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 
-	Switch::Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonMouseOutTex,
-		sf::Texture& buttonMouseOnTex, int buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, sf::SoundBuffer& buttonSpottedSound,
+	Switch::Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonMouseOutTex,
+		sf::Texture& buttonMouseOnTex, int buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, int buttonIconScale, sf::SoundBuffer& buttonSpottedSound,
 		sf::SoundBuffer& buttonClickSound, SwitchStates states){
 
-		this->leftButton = std::shared_ptr<baseSwitchButton>( new imageSwitchButton(pos, buttonMouseOutTex, buttonMouseOnTex, leftButtonImage, buttonScale, buttonSpottedSound, buttonClickSound,
+		this->leftButton = std::shared_ptr<baseSwitchButton>( new imageSwitchButton(pos, buttonMouseOutTex, buttonMouseOnTex,buttonScale, leftButtonImage, buttonIconScale, buttonSpottedSound, buttonClickSound,
 			baseSwitchButton::mode::last, this));
 
-		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width, pos.y));
-		this->background.setFillColor(backgroundColor);
-		this->background.setSize(sf::Vector2f(backgroundRectLength, this->leftButton->getGlobalBounds().height));
-		this->background.setOutlineThickness(0);
+		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width + backgroundData.outlineThickness * 2, pos.y + leftButton->getGlobalBounds().height / 2 - backgroundData.size.y / 2));
+		this->background.setFillColor(backgroundData.fillColor);
+		this->background.setSize(backgroundData.size);
+		this->background.setOutlineColor(backgroundData.outlineColor);
+		this->background.setOutlineThickness(backgroundData.outlineThickness);
 
-		this->leftButton = std::shared_ptr<baseSwitchButton>(new imageSwitchButton(sf::Vector2f(this->background.getPosition().x + backgroundRectLength, pos.y), buttonMouseOutTex, buttonMouseOnTex, rightButtonImage,
-			buttonScale, buttonSpottedSound, buttonClickSound, baseSwitchButton::mode::next, this));
+		this->rightButton = std::shared_ptr<baseSwitchButton>(new imageSwitchButton(sf::Vector2f(this->background.getPosition().x + this->background.getGlobalBounds().width, pos.y), buttonMouseOutTex, buttonMouseOnTex,
+			buttonScale, rightButtonImage, buttonIconScale, buttonSpottedSound, buttonClickSound, baseSwitchButton::mode::next, this));
 
 		this->text.setFont(textFont);
-		this->text.setFillColor(textColor);
-		this->text.setCharacterSize(textFontSize);
+		this->text.setFillColor(optionTextData.fillColor);
+		this->text.setOutlineColor(optionTextData.outlineColor);
+		this->text.setOutlineThickness(optionTextData.outlineThickness);
+		this->text.setCharacterSize(optionTextData.characterSize);
 
 		this->states = states;
 
@@ -412,23 +458,26 @@ namespace SFGF {
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 
-	Switch::Switch(sf::Vector2f pos, sf::Color backgroundColor, int backgroundRectLength, sf::Color textColor, sf::Font& textFont, int textFontSize, sf::Texture& buttonTex, int buttonScale,
-		sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states) {
+	Switch::Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonTex, int buttonScale,
+		sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, int buttonIconScale, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states) {
 
-		this->leftButton = std::shared_ptr<baseSwitchButton>(new imageSwitchButton(pos, buttonTex, buttonTex, leftButtonImage, buttonScale, buttonSpottedSound, buttonClickSound,
+		this->leftButton = std::shared_ptr<baseSwitchButton>(new imageSwitchButton(pos, buttonTex, buttonTex,buttonScale, leftButtonImage, buttonIconScale, buttonSpottedSound, buttonClickSound,
 			baseSwitchButton::mode::last, this));
 
-		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width, pos.y));
-		this->background.setFillColor(backgroundColor);
-		this->background.setSize(sf::Vector2f(backgroundRectLength, this->leftButton->getGlobalBounds().height));
-		this->background.setOutlineThickness(0);
+		this->background.setPosition(sf::Vector2f(pos.x + leftButton->getGlobalBounds().width + backgroundData.outlineThickness * 2, pos.y + leftButton->getGlobalBounds().height / 2 - backgroundData.size.y / 2));
+		this->background.setFillColor(backgroundData.fillColor);
+		this->background.setSize(backgroundData.size);
+		this->background.setOutlineColor(backgroundData.outlineColor);
+		this->background.setOutlineThickness(backgroundData.outlineThickness);
 
-		this->leftButton = std::shared_ptr<baseSwitchButton>(new imageSwitchButton(sf::Vector2f(this->background.getPosition().x + backgroundRectLength, pos.y), buttonTex, buttonTex, rightButtonImage,
-			buttonScale, buttonSpottedSound, buttonClickSound, baseSwitchButton::mode::next, this));
+		this->rightButton = std::shared_ptr<baseSwitchButton>(new imageSwitchButton(sf::Vector2f(this->background.getPosition().x + this->background.getGlobalBounds().width, pos.y), buttonTex, buttonTex, buttonScale,
+			rightButtonImage, buttonIconScale, buttonSpottedSound, buttonClickSound, baseSwitchButton::mode::next, this));
 
 		this->text.setFont(textFont);
-		this->text.setFillColor(textColor);
-		this->text.setCharacterSize(textFontSize);
+		this->text.setFillColor(optionTextData.fillColor);
+		this->text.setOutlineColor(optionTextData.outlineColor);
+		this->text.setOutlineThickness(optionTextData.outlineThickness);
+		this->text.setCharacterSize(optionTextData.characterSize);
 
 		this->states = states;
 
@@ -498,7 +547,9 @@ namespace SFGF {
 
 	void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(background, states);
-		target.draw(text, states);
+		ClippedView<sf::Text> textView = ClippedView<sf::Text>(background.getGlobalBounds());
+		textView.setObject(this->text);
+		target.draw(textView, states);
 	}
 
 	void TextBox::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
