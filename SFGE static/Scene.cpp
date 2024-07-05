@@ -57,12 +57,13 @@ namespace SFGF {
 	/// <param name="target"></param>
 	/// <param name="states"></param>
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-		for (auto& i : ui) {
-			target.draw(*i);
-		}
 		for (auto& i : staticUI) {
 			target.draw(*i);
 		}
+		for (auto& i : ui) {
+			target.draw(*i);
+		}
+
 	}
 
 

@@ -232,11 +232,11 @@ namespace SFGF {
 	//////////////////////////////////////////////////////
 	//CheckBox
 
-	class CheckBox : ImageButton {
+	class CheckBox : public ImageButton {
 	protected:
-		enum States {checked, unchecked};
-		States state;
-	private:
+	
+		bool isChecked;
+
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	public:
 		CheckBox() = default;
@@ -250,14 +250,48 @@ namespace SFGF {
 		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 
 		[[nodiscard]]
-		bool isChecked() {
-			if (state == checked)
-				return true;
-			else
-				return false;
+		bool getState() {
+			return this->isChecked;
+		}
+
+		void setCheck(bool isChecked) {
+			this->isChecked = isChecked;
 		}
 
 	};
+
+	///////////////////////////////////////////////////
+	//RadioButton
+
+	class RadioButton : public BaseButton {
+	protected:
+		std::vector<RadioButton*>& group;
+		bool isChecked;
+
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+		void disableActive();
+
+		virtual bool CheckClick(sf::Vector2f mousePos, bool isClicked);
+	public:
+
+		RadioButton() = default;
+		~RadioButton() = default;
+
+		RadioButton(const RadioButton& orginal) = default;
+
+		RadioButton& operator=(const RadioButton&) = default;
+
+		RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, std::vector<RadioButton*>& buttonGroup, buttonFunc whenStateChanges = nullptr);
+		RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, std::vector<RadioButton*>& buttonGroup,
+			buttonFunc whenStateChanges = nullptr);
+
+		void setActive();
+
+		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
+	};
+
+
 
 	///////////////////////////////////////////////////
 	/// Button switch
@@ -463,6 +497,10 @@ namespace SFGF {
 		[[nodiscard]]
 		std::wstring getActualText() { return this->states.getActualOption().getName(); }
 
+		void setActualOption(uint8_t index) {
+			this->states.setActualOption(index);
+		}
+
 		void setOptions(SwitchStates newOptions) { this->states = newOptions; }
 
 		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
@@ -527,7 +565,7 @@ namespace SFGF {
 
 	class ScroolView : public UI {
 	private:
-		std::vector<UI> elements;
+		std::vector<std::shared_ptr<UI>> elements;
 
 		sf::RectangleShape scroolBackground;
 		sf::CircleShape scroolCircle;
@@ -535,6 +573,9 @@ namespace SFGF {
 		ScroolView() = default;
 		~ScroolView() = default;
 
+		void AddElement(std::shared_ptr<UI> newElement);
+
+		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};
 
 	///Other
@@ -555,15 +596,17 @@ namespace SFGF {
 	private:
 		sf::Text text;
 		sf::RectangleShape background;
-		bool isActive;
+		bool isChecked;
 
+		rectangleShapeData notActiveTextBoxData;
+		rectangleShapeData activeTextBoxData;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	public:
 		TextBox() = default;
 		~TextBox() = default;
 
-		TextBox(sf::Vector2f pos, rectangleShapeData boxData, textData textData, sf::Font& font);
+		TextBox(sf::Vector2f pos, rectangleShapeData boxData, rectangleShapeData activeBoxData, textData textData, sf::Font& font);
 
 		virtual void CheckStatus(const sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};

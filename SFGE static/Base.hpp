@@ -11,6 +11,12 @@ namespace SFGF {
 		sf::Color outlineColor;
 		int outlineThickness;
 	};
+	inline void setTextData(const textData& data, sf::Text& object) {
+		object.setCharacterSize(data.characterSize);
+		object.setFillColor(data.fillColor);
+		object.setOutlineColor(data.outlineColor);
+		object.setOutlineThickness(data.outlineThickness);
+	}
 	struct rectangleShapeData {
 		sf::Color fillColor;
 		sf::Color outlineColor;
@@ -18,6 +24,13 @@ namespace SFGF {
 		int outlineThickness;
 		sf::Texture texture;
 	};
+	inline void setRectangleData(const rectangleShapeData& data, sf::RectangleShape& object) {
+		object.setSize(data.size);
+		object.setFillColor(data.fillColor);
+		object.setOutlineColor(data.outlineColor);
+		object.setOutlineThickness(data.outlineThickness);
+		object.setTexture(&data.texture);
+	}
 	struct circleShapeData {
 		sf::Color fillColor;
 		sf::Color outlineColor;
@@ -25,6 +38,13 @@ namespace SFGF {
 		int outlineThickness;
 		sf::Texture texture;
 	};
+	inline void setCircleData(const circleShapeData& data, sf::CircleShape& object) {
+		object.setRadius(data.radius);
+		object.setFillColor(data.fillColor);
+		object.setOutlineColor(data.outlineColor);
+		object.setOutlineThickness(data.outlineThickness);
+		object.setTexture(&data.texture);
+	}
 
 	/// <summary>
 	/// Base class for all UI elements

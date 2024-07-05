@@ -237,9 +237,14 @@ namespace SFGF {
 	///////////////////////////////////////////////////////
 	//CheckBox
 
+
+
 	void CheckBox::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
-			this->state = checked;
+			if (this->isChecked)
+				this->isChecked = false;
+			else
+				this->isChecked = true;
 			if (func != nullptr)
 				func();
 		}
@@ -249,20 +254,89 @@ namespace SFGF {
 
 		target.draw(this->buttonBackground, states);
 
-		if(state == checked)
+		if(isChecked)
 			target.draw(this->buttonImage, states);
 	}
 
 	CheckBox::CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, int buttonScale, sf::Texture& checkIcon, int iconScale, buttonFunc whenStateChanges) : ImageButton(pos, mouseOutTex, mouseOnTex,
-		buttonScale, checkIcon, iconScale, whenStateChanges), state(unchecked) {
+		buttonScale, checkIcon, iconScale, whenStateChanges), isChecked(false) {
 
 	}
 
 
 	CheckBox::CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, int buttonScale, sf::Texture& checkIcon, int iconScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound,
 		buttonFunc whenStateChanges) : ImageButton(pos, mouseOutTex, mouseOnTex,
-			buttonScale, checkIcon, iconScale, mouseEnteredSound, clickSound, whenStateChanges), state(unchecked) {
+			buttonScale, checkIcon, iconScale, mouseEnteredSound, clickSound, whenStateChanges), isChecked(false) {
 
+	}
+
+	//////////////////////////////////////////////////////////
+	//RadioButton
+
+	RadioButton::RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, std::vector<RadioButton*>& buttonGroup, buttonFunc whenStateChanges) : BaseButton(pos, Tex, activeTex,
+		butttonScale, whenStateChanges), group(buttonGroup) {
+		isChecked = false;
+	}
+
+	RadioButton::RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, std::vector<RadioButton*>& buttonGroup,
+		buttonFunc whenStateChanges) : BaseButton(pos, Tex, activeTex, butttonScale, whenStateChanges, mouseEnteredSound, clickSound), group(buttonGroup) {
+		isChecked = false;
+	}
+
+	void RadioButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+		BaseButton::draw(target, states);
+	}
+
+	bool RadioButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
+		bool isButtonClicked = false;
+		if (buttonBackground.getGlobalBounds().contains(mousePos)) {
+			buttonBackground.setTexture(buttonBgrData.mouseOn);
+
+			if (isClicked) {
+				clickSound.play();
+				isButtonClicked = true;
+			}
+			if (!isMouseOn) {
+				mouseEnteredSound.play();
+			}
+			isMouseOn = true;
+		}
+		else {
+			isMouseOn = false;
+			if (isChecked)
+				buttonBackground.setTexture(buttonBgrData.mouseOn);
+			else
+				buttonBackground.setTexture(buttonBgrData.mouseOut);
+
+		}
+		return isButtonClicked;
+	}
+
+	void RadioButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+			if (!this->isChecked)
+				this->setActive();
+
+			if (func != nullptr)
+				func();
+		}
+	}
+
+	void RadioButton::disableActive() {
+		this->isChecked = false;
+		this->buttonBackground.setTexture(this->buttonBgrData.mouseOut);
+	}
+
+	void RadioButton::setActive() {
+		this->isChecked = true;
+		this->buttonBackground.setTexture(this->buttonBgrData.mouseOn);
+		for (auto& i : this->group) {
+			if (i != this && i != nullptr) {
+				i->disableActive();
+
+			}
+		}
+		
 	}
 
 
@@ -531,18 +605,15 @@ namespace SFGF {
 	//TextBox
 
 
-	TextBox::TextBox(sf::Vector2f pos, rectangleShapeData boxData, textData textData, sf::Font& font) : isActive(false) {
+	TextBox::TextBox(sf::Vector2f pos, rectangleShapeData boxData, rectangleShapeData activeBoxData, textData textData, sf::Font& font) : isChecked(false) {
+		this->notActiveTextBoxData = boxData;
+		this->activeTextBoxData = activeBoxData;
+
 		this->background.setPosition(pos);
-		this->background.setSize(boxData.size);
-		this->background.setFillColor(boxData.fillColor);
-		this->background.setOutlineColor(boxData.outlineColor);
-		this->background.setOutlineThickness(boxData.outlineThickness);
+		setRectangleData(notActiveTextBoxData, this->background);
 
 		this->text.setFont(font);
-		this->text.setCharacterSize(textData.characterSize);
-		this->text.setFillColor(textData.fillColor);
-		this->text.setOutlineColor(textData.outlineColor);
-		this->text.setOutlineThickness(textData.outlineThickness);
+		setTextData(textData, this->text);
 	}
 
 	void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -556,14 +627,18 @@ namespace SFGF {
 		if (e.type == sf::Event::MouseButtonPressed) {
 			if (e.mouseButton.button == sf::Mouse::Left) {
 				if (background.getGlobalBounds().contains(mousePos)) {
-					isActive = true;
+					setRectangleData(activeTextBoxData, this->background);
+					this->text.setPosition(centerText(this->text, this->background));
+					isChecked = true;
 				}
 				else {
-					isActive = false;
+					isChecked = false;
+					setRectangleData(notActiveTextBoxData, this->background);
+					this->text.setPosition(centerText(this->text, this->background));
 				}
 			}
 		}
-		if (isActive && e.type == sf::Event::TextEntered) {
+		if (isChecked && e.type == sf::Event::TextEntered) {
 			if (e.text.unicode == 8) { // Handle backspace
 				std::wstring str = static_cast<std::wstring>( text.getString() );
 				if (!str.empty()) {
