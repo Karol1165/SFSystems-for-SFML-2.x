@@ -3,46 +3,60 @@
 #define TEXTURE_HPP_
 #include<SFML/Graphics.hpp>
 
-class Animation {
-private:
-	std::vector<sf::Texture> frames;
-	sf::Time frequency;
-	sf::Time actualTime;
-	uint16_t index;
+namespace SFGF {
 
-public:
-	Animation() = default;
-	~Animation() = default;
+	typedef std::vector<sf::Texture> TextureGroup;
 
-	Animation(sf::Time frequency) { this->frequency = frequency; }
+	class Animation {
+	private:
+		TextureGroup frames;
+		sf::Time frequency;
+		sf::Time actualTime;
+		uint16_t index;
 
-	void addFrame(sf::Texture& newFrame) {
-		this->frames.push_back(newFrame);
-		if (this->frames.size() == 1)
-			index = 0;
-	}
+	public:
+		Animation() = default;
+		~Animation() = default;
 
-	void setFrequency(sf::Time newFrequency) { this->frequency = newFrequency; }
+		Animation(sf::Time frequency) { this->frequency = frequency; }
 
-	void setActualFrame(uint16_t newIndex) {
-		if (newIndex < frames.size())
-			this->index = newIndex;
-	}
+		void addFrame(sf::Texture& newFrame) {
+			this->frames.push_back(newFrame);
+			if (this->frames.size() == 1)
+				index = 0;
+		}
 
-	[[nodiscard]]
-	uint16_t getActualFrameIndex() { return this->index; }
+		void setFrequency(sf::Time newFrequency) { this->frequency = newFrequency; }
 
-	[[nodiscard]]
-	sf::Texture getActualFrame() {
-		if (index < frames.size())
-			return frames[index];
-		else
-			return sf::Texture();
-	}
+		void setActualFrame(uint16_t newIndex) {
+			if (newIndex < frames.size())
+				this->index = newIndex;
+		}
 
-	void Update(sf::Time deltaTime);
+		void setFrames(TextureGroup newFrames) {
+			frames = newFrames;
+		}
 
 
-};
+		[[nodiscard]]
+		uint16_t getActualFrameIndex() { return this->index; }
+
+		[[nodiscard]]
+		sf::Texture getActualFrame() {
+			if (index < frames.size())
+				return frames[index];
+			else
+				return sf::Texture();
+		}
+
+		[[nodiscard]]
+		TextureGroup getFrames() { return this->frames; }
+
+		void Update(sf::Time deltaTime);
+
+
+	};
+
+}
 
 #endif
