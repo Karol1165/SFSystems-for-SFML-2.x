@@ -22,7 +22,7 @@ namespace SFGF {
 		std::vector<std::shared_ptr<sf::Drawable>> staticUI;
 		std::vector<std::shared_ptr<UI>> ui;
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
-		std::vector<std::shared_ptr<ControlableObject>> controlableObjects;
+
 
 		sf::Clock clock;
 

@@ -12,29 +12,11 @@ namespace SFGF {
 		
 		mousePos = owner->mapPixelToCoords(sf::Mouse::getPosition(*owner));
 		
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				isLeftMousePressed = true;
-		}
-		else
-		{
-			isLeftMousePressed = false;
-		}
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-			isRightMousePressed = true;
-		}
-		else {
-			isRightMousePressed = false;
-		}
-		
+
 		
 		for (auto& i : ui) {
 			i->CheckStatus(e, clock.getElapsedTime(), mousePos);
 		}
-
-		for (auto& i : gameObjects) {
-			i->Update();
-		}
-
 
 	}
 
@@ -44,7 +26,7 @@ namespace SFGF {
 	/// <param name="event"></param>
 
 	void Scene::Update(sf::Event& event) {
-		for (auto& i : controlableObjects) {
+		for (auto& i : gameObjects) {
 			i->Update(event, clock.getElapsedTime(), mousePos);
 		}
 		clock.restart();
@@ -98,7 +80,7 @@ namespace SFGF {
 		ui.clear();
 		staticUI.clear();
 		gameObjects.clear();
-		controlableObjects.clear();
+
 		if (initFunc != nullptr)
 			initFunc();
 			this->owner = &owner;
