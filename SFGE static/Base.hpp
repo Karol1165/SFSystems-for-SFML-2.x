@@ -5,6 +5,10 @@
 
 namespace SFGF {
 
+	enum Direction {
+		Up, Down, Left, Right, UpLeft, UpRight, DownLeft, DownRight
+	};
+
 	struct textData {
 		int characterSize;
 		sf::Color fillColor;

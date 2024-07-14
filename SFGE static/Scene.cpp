@@ -40,10 +40,13 @@ namespace SFGF {
 	/// <param name="states"></param>
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		for (auto& i : staticUI) {
-			target.draw(*i);
+			target.draw(*i, states);
 		}
 		for (auto& i : ui) {
-			target.draw(*i);
+			target.draw(*i, states);
+		}
+		for (auto& i : gameObjects) {
+			target.draw(*i, states);
 		}
 
 	}
