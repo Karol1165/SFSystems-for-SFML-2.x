@@ -42,7 +42,7 @@ namespace SFGF {
 	/// <param name="e"></param>
 	/// <param name="deltaTime"></param>
 	/// <param name="mousePos"></param>
-	void BaseButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+	void BaseButton::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			//Do button function
 			if(this->func != nullptr)
@@ -81,7 +81,7 @@ namespace SFGF {
 
 
 	/// <summary>
-	/// Fully constructor
+	/// Full constructor
 	/// </summary>
 	/// <param name="pos"></param>
 	/// <param name="mouseOut"></param>
@@ -239,7 +239,7 @@ namespace SFGF {
 
 
 
-	void CheckBox::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+	void CheckBox::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->isChecked)
 				this->isChecked = false;
@@ -312,7 +312,7 @@ namespace SFGF {
 		return isButtonClicked;
 	}
 
-	void RadioButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+	void RadioButton::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (!this->isChecked)
 				this->setActive();
@@ -345,7 +345,7 @@ namespace SFGF {
 
 	//Switch button
 	
-	void Switch::textSwitchButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+	void Switch::textSwitchButton::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->TextButton::CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->buttonMode == mode::last) {
 				this->owner->states.Last();
@@ -385,7 +385,7 @@ namespace SFGF {
 		return this->buttonBackground.getGlobalBounds();
 	}
 
-	void Switch::imageSwitchButton::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+	void Switch::imageSwitchButton::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->ImageButton::CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->buttonMode == mode::last) {
 				this->owner->states.Last();
@@ -559,7 +559,7 @@ namespace SFGF {
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 	
-	void Switch::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+	void Switch::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		this->leftButton->CheckStatus(e, deltaTime, mousePos);
 		this->rightButton->CheckStatus(e, deltaTime, mousePos);
 	}
@@ -623,7 +623,7 @@ namespace SFGF {
 		target.draw(textView, states);
 	}
 
-	void TextBox::CheckStatus(const sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+	void TextBox::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (e.type == sf::Event::MouseButtonPressed) {
 			if (e.mouseButton.button == sf::Mouse::Left) {
 				if (background.getGlobalBounds().contains(mousePos)) {
