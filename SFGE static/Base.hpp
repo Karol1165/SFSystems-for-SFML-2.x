@@ -69,7 +69,7 @@ namespace SFGF {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 	};
 
-	claas Controller {
+	class Controller {
     public:
 	    virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) = 0;
 	};

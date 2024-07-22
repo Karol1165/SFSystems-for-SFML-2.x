@@ -114,58 +114,5 @@ namespace SFGF {
 		target.draw(*activeScene, states);
 	}
 
-	///Window
 
-
-	/*
-	sf::Vector2f Window::mapPixelToCoords(sf::Vector2i pixels) {
-		return window.mapPixelToCoords(pixels);
-	}
-
-	void Window::UpdateUI() {
-		this->window.pollEvent(this->event);
-		this->activeScene->UpdateUI(this->event);
-		window.clear();
-		window.draw(*activeScene);
-		window.display();
-	}
-
-	Window::Window() {
-		this->settings = sf::ContextSettings();
-		this->window.create(sf::VideoMode(100, 100) , "" , 7U , settings );
-	}
-	Window::~Window() {
-		this->window.close();
-	}
-	Window::Window(uint16_t width, uint16_t height) {
-		this->settings = sf::ContextSettings();
-		this->window.create(sf::VideoMode(width, height), "", 7U, settings);
-	}
-	Window::Window(uint16_t width, uint16_t height, Scene* scene) {
-		this->settings = sf::ContextSettings();
-		this->window.create(sf::VideoMode(width, height), "", 7U, settings);
-		this->activeScene->DisableActive();
-		this->activeScene = scene;
-		this->activeScene->SetActive(this);
-	}
-	Window::Window(uint16_t width, uint16_t height, Scene* scene, sf::ContextSettings settings) {
-		this->settings = settings;
-		this->window.create(sf::VideoMode(width, height), "", 7U, settings);
-		this->activeScene->DisableActive();
-		this->activeScene = scene;
-		this->activeScene->SetActive(this);
-	}
-	Window::Window(uint16_t width, uint16_t height, Scene* scene, sf::ContextSettings settings, std::wstring title) {
-		this->settings = settings;
-		this->window.create(sf::VideoMode(width, height), title, 7U, settings);
-		this->activeScene->DisableActive();
-		this->activeScene = scene;
-		this->activeScene->SetActive(this);
-	}
-	Window::Window(const Window& window) {
-		this->settings = window.settings;
-		this->create(window.getSystemHandle(), window.getSettings());
-		this->activeScene = window.activeScene;
-	}
-	*/
 }
