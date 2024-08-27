@@ -16,6 +16,7 @@ namespace SFGF {
 	[[nodiscard]]
 	sf::Vector2f centerText(const sf::Text& text, const sf::RectangleShape& shape);
 
+
 	/// <summary>
 	/// Returns position of sprite, where this sprite is on center of other sprite
 	/// </summary>

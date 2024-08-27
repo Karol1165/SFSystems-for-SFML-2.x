@@ -31,6 +31,8 @@ namespace SFGF {
 		void setActualFrame(uint16_t newIndex) {
 			if (newIndex < frames.size())
 				this->index = newIndex;
+			else
+				throw new std::out_of_range("index does not exist");
 		}
 
 		void setFrames(TextureGroup newFrames) {
@@ -42,11 +44,8 @@ namespace SFGF {
 		uint16_t getActualFrameIndex() { return this->index; }
 
 		[[nodiscard]]
-		sf::Texture getActualFrame() {
-			if (index < frames.size())
-				return frames[index];
-			else
-				return sf::Texture();
+		sf::Texture getActualFrame() const {
+			return frames[index];
 		}
 
 		[[nodiscard]]

@@ -5,7 +5,7 @@
 namespace SFGF {
 
 	void Animation::Update(sf::Time deltaTime) {
-		actualTime += deltaTime;
+		this->actualTime = this->actualTime + deltaTime;
 		if (actualTime > frequency) {
 			if (index + 1 < frames.size()) {
 				index++;
