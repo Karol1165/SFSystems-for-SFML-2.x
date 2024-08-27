@@ -56,12 +56,12 @@ namespace SFGF {
 		
 
 		[[nodiscard]]
-		sf::Vector2f getPos()  {
+		sf::Vector2f getPos() const  {
 			return buttonBackground.getPosition();
 		}
 
 		[[nodiscard]]
-		int getScale() {
+		int getScale() const {
 			return buttonBackground.getScale().x;
 		}
 
@@ -155,12 +155,12 @@ namespace SFGF {
 		//Get
 
 		[[nodiscard]]
-		int getFontSize() {
+		int getFontSize() const {
 			return buttonText.getCharacterSize();
 		}
 
 		[[nodiscard]]
-		std::wstring getString() {
+		std::wstring getString() const {
 			return buttonText.getString();
 		}
 
@@ -250,7 +250,7 @@ namespace SFGF {
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 
 		[[nodiscard]]
-		bool getState() {
+		bool getState() const {
 			return this->isChecked;
 		}
 
@@ -399,7 +399,10 @@ namespace SFGF {
 		public:
 			enum mode { last, next };
 			void setMode(mode newMode) { this->buttonMode = newMode; }
+
+			[[nodiscard]]
 			virtual sf::FloatRect getGlobalBounds()const = 0;
+
 			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override = 0;
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
@@ -433,6 +436,7 @@ namespace SFGF {
 
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+			[[nodiscard]]
 			virtual sf::FloatRect getGlobalBounds() const override;
 
 			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
@@ -458,7 +462,8 @@ namespace SFGF {
 
 			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, sf::SoundBuffer& mouseEnteredSound,
 				sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner);
-
+			
+			[[nodiscard]]
 			virtual sf::FloatRect getGlobalBounds() const override;
 
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -486,16 +491,16 @@ namespace SFGF {
 
 
 		[[nodiscard]]
-		SwitchOption getActualOption() { return this->states.getActualOption(); }
+		SwitchOption getActualOption() const { return this->states.getActualOption(); }
 
 		[[nodiscard]]
-		uint8_t getActualOptionIndex() { return this->states.getActualOptionIndex(); }
+		uint8_t getActualOptionIndex() const { return this->states.getActualOptionIndex(); }
 
 		[[nodiscard]]
-		SwitchStates getOptions() { return this->states; }
+		SwitchStates getOptions() const { return this->states; }
 
 		[[nodiscard]]
-		std::wstring getActualText() { return this->states.getActualOption().getName(); }
+		std::wstring getActualText() const { return this->states.getActualOption().getName(); }
 
 		void setActualOption(uint8_t index) {
 			this->states.setActualOption(index);
@@ -609,6 +614,24 @@ namespace SFGF {
 		TextBox(sf::Vector2f pos, rectangleShapeData boxData, rectangleShapeData activeBoxData, textData textData, sf::Font& font);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
+
+		[[nodiscard]]
+		sf::String getText() const {
+			return this->text.getString();
+		}
+
+		[[nodiscard]]
+		bool getChecked() const {
+			return this->isChecked;
+		}
+
+		void setText(sf::String newText) {
+			this->text.setString(newText);
+		}
+
+		void setChecked(bool newState) {
+			this->isChecked = newState;
+		}
 	};
 
 }
