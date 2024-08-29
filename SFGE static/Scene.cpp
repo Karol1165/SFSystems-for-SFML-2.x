@@ -29,6 +29,7 @@ namespace SFGF {
 		for (auto& i : gameObjects) {
 			i->Update(event, clock.getElapsedTime(), mousePos);
 		}
+		
 		clock.restart();
 	}
 

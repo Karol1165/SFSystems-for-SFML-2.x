@@ -23,9 +23,22 @@ namespace SFGF {
 			shape.getPosition().y + (shape.getGlobalBounds().height - textRect.height) / 2.0f - textRect.top);
 	}
 
-	sf::Vector2f centerSprite(sf::Sprite& spriteToCenter, sf::Sprite& referenceSprite) {
+	sf::Vector2f centerText(const sf::Text& text, const sf::FloatRect& bounds) {
+		sf::FloatRect textRect = text.getLocalBounds();
+		return sf::Vector2f(bounds.getPosition().x + (bounds.width - textRect.width) / 2.0f - textRect.left,
+			bounds.getPosition().y + (bounds.height - textRect.height) / 2.0f - textRect.top);
+	}
+
+	sf::Vector2f centerSprite(const sf::Sprite& spriteToCenter, const sf::Sprite& referenceSprite) {
 		float xPos = referenceSprite.getPosition().x + (referenceSprite.getLocalBounds().width - spriteToCenter.getLocalBounds().width) / 2;
 		float yPos = referenceSprite.getPosition().y + (referenceSprite.getLocalBounds().height - spriteToCenter.getLocalBounds().height) / 2;
+
+		return sf::Vector2f(xPos, yPos);
+	}
+
+	sf::Vector2f centerSprite(const sf::Sprite& spriteToCenter, const sf::FloatRect& bounds) {
+		float xPos = bounds.getPosition().x + (bounds.width - spriteToCenter.getLocalBounds().width) / 2;
+		float yPos = bounds.getPosition().y + (bounds.height - spriteToCenter.getLocalBounds().height) / 2;
 
 		return sf::Vector2f(xPos, yPos);
 	}

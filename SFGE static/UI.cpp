@@ -120,7 +120,7 @@ namespace SFGF {
 	void TextButton::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		target.draw(buttonBackground);
 		ClippedView<sf::Text> textView = ClippedView<sf::Text>(buttonBackground.getGlobalBounds());
-		textView.setObject(buttonText);
+		textView.setObject(&buttonText);
 		target.draw(textView);
 	}
 	
@@ -435,7 +435,7 @@ namespace SFGF {
 		target.draw(this->background, states);
 
 		ClippedView<sf::Text> textView = ClippedView<sf::Text>(this->background.getGlobalBounds());
-		textView.setObject(text);
+		textView.setObject(&text);
 		target.draw(textView, states);
 
 		target.draw(*this->leftButton, states);
@@ -619,7 +619,7 @@ namespace SFGF {
 	void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(background, states);
 		ClippedView<sf::Text> textView = ClippedView<sf::Text>(background.getGlobalBounds());
-		textView.setObject(this->text);
+		textView.setObject(&text);
 		target.draw(textView, states);
 	}
 
@@ -653,6 +653,36 @@ namespace SFGF {
 			this->text.setPosition(centerText(this->text, this->background));
 			
 			
+		}
+	}
+
+	////////////////////////////////////////
+	//toolTip
+
+	toolTip::toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible) {
+		sf::Text tipText;
+		setRectangleData(backgroundData, this->background);
+		setTextData(tipTextData, tipText);
+		this->background.setPosition(pos);
+		this->fieldWhenActive = fieldWhenVisible;
+		tipText.setFont(textFont);
+		tipText.setString(text);
+		tipText.setPosition(centerText(tipText, background));
+
+		this->Text.setObject(new sf::Text(tipText));
+		this->Text.setBounds(background.getGlobalBounds());
+
+		this->isVisible = false;
+	}
+
+	void toolTip::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
+		this->isVisible = this->fieldWhenActive.contains(mousePos);
+	}
+
+	void toolTip::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+		if (isVisible) {
+			target.draw(this->background, states);
+			target.draw(this->Text, states);
 		}
 	}
 

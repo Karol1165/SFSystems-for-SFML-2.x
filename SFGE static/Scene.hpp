@@ -22,6 +22,7 @@ namespace SFGF {
 		std::vector<std::shared_ptr<sf::Drawable>> staticUI;
 		std::vector<std::shared_ptr<UI>> ui;
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
+		std::vector<std::shared_ptr<BaseController>> controllers;
 
 
 		sf::Clock clock;
@@ -53,6 +54,15 @@ namespace SFGF {
 
 		Scene& operator=(const Scene& scene);
 
+		[[nodiscard]]
+		sf::Vector2f getMousePos() const {
+			return this->mousePos;
+		}
+
+		[[nodiscard]]
+		sf::Time getDeltaTime() const {
+			return this->clock.getElapsedTime();
+		}
 		
 	};
 

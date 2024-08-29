@@ -553,10 +553,13 @@ namespace SFGF {
 		}
 		
 
-		void setObject(const T& newObject) {
-			this->object = const_cast<T*>( & newObject);
+		void setObject(const T* newObject) {
+			this->object = const_cast<T*>( newObject);
 		}
-		void setBounds(sf::FloatRect newBounds) { this->bounds = newBounds; }
+		void setBounds(sf::FloatRect newBounds) {
+			this->bounds = newBounds;
+			renderTexture.create(static_cast<unsigned int>(bounds.width), static_cast<unsigned int>(bounds.height));
+		}
 
 
 	};
@@ -632,6 +635,27 @@ namespace SFGF {
 		void setChecked(bool newState) {
 			this->isChecked = newState;
 		}
+	};
+
+	////////////////////////////////////////
+	//toolTip
+
+	class toolTip : public UI {
+	private:
+		sf::RectangleShape background;
+		ClippedView<sf::Text> Text;
+		sf::FloatRect fieldWhenActive;
+		bool isVisible;
+
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	public:
+
+		toolTip() = default;
+		~toolTip() = default;
+		toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible);
+
+		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};
 
 }

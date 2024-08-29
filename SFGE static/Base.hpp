@@ -3,6 +3,7 @@
 #define BASE_HPP_
 #include <SFML/Graphics.hpp>
 
+
 namespace SFGF {
 
 	enum Direction {
@@ -69,8 +70,11 @@ namespace SFGF {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 	};
 
-	class Controller {
+	class BaseController {
     public:
+		BaseController() = default;
+		~BaseController() = default;
+
 	    virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) = 0;
 	};
 

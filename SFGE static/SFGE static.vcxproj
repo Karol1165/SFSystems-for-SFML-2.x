@@ -153,6 +153,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Base.hpp" />
+    <ClInclude Include="Controller.hpp" />
     <ClInclude Include="definitions.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Math.hpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Scene.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
