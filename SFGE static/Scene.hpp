@@ -82,49 +82,6 @@ namespace SFGF {
 		Scene* getActiveScene() { return this->activeScene; }
 	};
 
-	/*
-	class Window : public sf::RenderWindow {
-	private:
-		sf::ContextSettings settings;
 
-		sf::RenderWindow window;
-
-		sf::Event event;
-
-		Scene* activeScene;
-	public:
-
-		[[nodiscard]]
-		bool isOpen() { return window.isOpen(); }
-
-		void Show() { this->window.setActive(); }
-
-		void Close() { this->window.close(); }
-
-		[[likely]]
-		void UpdateUI();
-
-		[[nodiscard]]
-		sf::Vector2f mapPixelToCoords(sf::Vector2i pixels);
-
-		Window();
-		~Window();
-		Window(uint16_t width, uint16_t height);
-		Window(uint16_t width, uint16_t height, Scene* scene);
-		Window(uint16_t width, uint16_t height, Scene* scene, sf::ContextSettings settings);
-		Window(uint16_t width, uint16_t height, Scene* scene, sf::ContextSettings settings, std::wstring title);
-
-		Window(const Window& window);
-
-		//[[nodiscard]]
-		//sf::ContextSettings getSettings() { return this->settings; }
-
-		[[nodiscard]]
-		Scene* getActiveScene() { return this->activeScene; }
-
-		[[nodiscard]]
-		sf::RenderWindow& getRender() { return this->window; }
-	};
-	*/
 }
 #endif
