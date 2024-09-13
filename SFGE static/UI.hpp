@@ -263,9 +263,11 @@ namespace SFGF {
 	///////////////////////////////////////////////////
 	//RadioButton
 
+	class RadioButtonGroup;
+
 	class RadioButton : public BaseButton {
 	protected:
-		std::vector<RadioButton*>& group;
+		RadioButtonGroup* group;
 		bool isChecked;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -289,6 +291,10 @@ namespace SFGF {
 		void setActive();
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
+	};
+
+	class RadioButtonGroup : public UI {
+
 	};
 
 
