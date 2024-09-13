@@ -273,13 +273,12 @@ namespace SFGF {
 	//////////////////////////////////////////////////////////
 	//RadioButton
 
-	RadioButton::RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, std::vector<RadioButton*>& buttonGroup, buttonFunc whenStateChanges) : BaseButton(pos, Tex, activeTex,
-		butttonScale, whenStateChanges), group(buttonGroup) {
+	RadioButton::RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, buttonFunc whenStateChanges) : BaseButton(pos, Tex, activeTex,
+		butttonScale, whenStateChanges) {
 		isChecked = false;
 	}
 
-	RadioButton::RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, std::vector<RadioButton*>& buttonGroup,
-		buttonFunc whenStateChanges) : BaseButton(pos, Tex, activeTex, butttonScale, whenStateChanges, mouseEnteredSound, clickSound), group(buttonGroup) {
+	RadioButton::RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, 
 		isChecked = false;
 	}
 
@@ -330,12 +329,7 @@ namespace SFGF {
 	void RadioButton::setActive() {
 		this->isChecked = true;
 		this->buttonBackground.setTexture(this->buttonBgrData.mouseOn);
-		for (auto& i : this->group) {
-			if (i != this && i != nullptr) {
-				i->disableActive();
 
-			}
-		}
 		
 	}
 
