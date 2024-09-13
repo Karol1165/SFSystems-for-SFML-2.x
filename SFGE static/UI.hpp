@@ -284,7 +284,7 @@ namespace SFGF {
 
 		RadioButton& operator=(const RadioButton&) = default;
 
-		RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, std::vector<RadioButton*>& buttonGroup, buttonFunc whenStateChanges = nullptr);
+		RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, buttonFunc whenStateChanges = nullptr);
 		RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, std::vector<RadioButton*>& buttonGroup,
 			buttonFunc whenStateChanges = nullptr);
 
