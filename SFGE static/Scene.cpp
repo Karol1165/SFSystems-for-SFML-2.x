@@ -86,7 +86,7 @@ namespace SFGF {
 		gameObjects.clear();
 
 		if (initFunc != nullptr)
-			initFunc();
+			initFunc(*this);
 			this->owner = &owner;
 		sceneTheme.play();
 	}

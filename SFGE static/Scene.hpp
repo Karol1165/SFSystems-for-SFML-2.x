@@ -15,7 +15,9 @@ namespace SFGF {
 		bool isRightMousePressed = false;
 		sf::Vector2f mousePos;
 
-		typedef void(*sceneInit) ();
+
+
+		typedef void(*sceneInit) (Scene&);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	public:
@@ -32,7 +34,10 @@ namespace SFGF {
 
 		sf::RenderWindow* owner;
 
+
+
 		sceneInit initFunc;
+
 
 		virtual void UpdateUI(sf::Event& event);
 		virtual void Update(sf::Event& event);
@@ -74,6 +79,7 @@ namespace SFGF {
 		void setActiveScene(Scene& scene, sf::RenderWindow& owner) {
 			if (this->activeScene != nullptr)
 				this->activeScene->DisableActive();
+
 			this->activeScene = &scene;
 			this->activeScene->SetActive(owner);
 		}
