@@ -14,7 +14,7 @@ namespace SFGF {
 		
 
 		
-		for (auto& i : ui) {
+		for (auto& i : std::ranges::reverse_view(ui)) {
 			i->CheckStatus(e, clock.getElapsedTime(), mousePos);
 		}
 
@@ -26,7 +26,10 @@ namespace SFGF {
 	/// <param name="event"></param>
 
 	void Scene::Update(sf::Event& event) {
-		for (auto& i : gameObjects) {
+		for (auto& i : std::ranges::reverse_view(gameObjects)) {
+			i->Update(event, clock.getElapsedTime(), mousePos);
+		}
+		for (auto& i : std::ranges::reverse_view(controllers)) {
 			i->Update(event, clock.getElapsedTime(), mousePos);
 		}
 		
