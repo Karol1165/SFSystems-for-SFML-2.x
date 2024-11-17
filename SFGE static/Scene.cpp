@@ -40,16 +40,15 @@ namespace SFGF {
 	/// <param name="target"></param>
 	/// <param name="states"></param>
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-		for (auto& i : staticUI) {
+		for (auto& i : std::ranges::reverse_view(staticUI)) {
 			target.draw(*i, states);
 		}
-		for (auto& i : ui) {
+		for (auto& i : std::ranges::reverse_view(ui)) {
 			target.draw(*i, states);
 		}
-		for (auto& i : gameObjects) {
+		for (auto& i : std::ranges::reverse_view(gameObjects)) {
 			target.draw(*i, states);
 		}
-
 	}
 
 
@@ -87,7 +86,8 @@ namespace SFGF {
 
 		if (initFunc != nullptr)
 			initFunc(*this);
-			this->owner = &owner;
+
+		this->owner = &owner;
 		sceneTheme.play();
 	}
 

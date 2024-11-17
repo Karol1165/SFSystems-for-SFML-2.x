@@ -4,6 +4,7 @@
 #include "UI.hpp"
 #include "Base.hpp"
 #include <SFML/Graphics.hpp>
+#include<ranges>
 
 namespace SFGF {
 
