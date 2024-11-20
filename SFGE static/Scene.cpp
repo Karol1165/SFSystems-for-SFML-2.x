@@ -12,8 +12,6 @@ namespace SFGF {
 		
 		mousePos = owner->mapPixelToCoords(sf::Mouse::getPosition(*owner));
 		
-
-		
 		for (auto& i : std::ranges::reverse_view(ui)) {
 			i->CheckStatus(e, clock.getElapsedTime(), mousePos);
 		}
@@ -43,13 +41,13 @@ namespace SFGF {
 	/// <param name="target"></param>
 	/// <param name="states"></param>
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-		for (auto& i : std::ranges::reverse_view(staticUI)) {
+		for (auto& i : staticUI) {
 			target.draw(*i, states);
 		}
-		for (auto& i : std::ranges::reverse_view(ui)) {
+		for (auto& i : ui) {
 			target.draw(*i, states);
 		}
-		for (auto& i : std::ranges::reverse_view(gameObjects)) {
+		for (auto& i : gameObjects) {
 			target.draw(*i, states);
 		}
 	}
