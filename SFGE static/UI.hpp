@@ -578,7 +578,7 @@ namespace SFGF {
 
 	class ScroolView : public UI {
 	private:
-		std::vector<std::shared_ptr<UI>> elements;
+		std::vector<ptr<UI>> elements;
 
 		sf::RectangleShape scroolBackground;
 		sf::CircleShape scroolCircle;
@@ -586,16 +586,12 @@ namespace SFGF {
 		ScroolView() = default;
 		~ScroolView() = default;
 
-		void AddElement(std::shared_ptr<UI> newElement);
+		void AddElement(ptr<UI> newElement);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};
 
-	///Other
 
-	class GameDialog : public UI {
-
-	};
 
 
 	///////////////////////////////////////////

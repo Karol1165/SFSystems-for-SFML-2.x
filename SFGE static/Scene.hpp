@@ -22,10 +22,10 @@ namespace SFGF {
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	public:
-		std::vector<std::shared_ptr<sf::Drawable>> staticUI;
-		std::vector<std::shared_ptr<UI>> ui;
-		std::vector<std::shared_ptr<GameObject>> gameObjects;
-		std::vector<std::shared_ptr<BaseController>> controllers;
+		std::vector<ptr<sf::Drawable>> staticUI;
+		std::vector<ptr<UI>> ui;
+		std::vector<ptr<GameObject>> gameObjects;
+		std::vector<ptr<BaseController>> controllers;
 
 
 		sf::Clock clock;

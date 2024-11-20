@@ -6,7 +6,10 @@
 
 namespace SFGF {
 
-	enum Direction {
+	template <typename T>
+	using ptr = std::unique_ptr<T>;
+
+	enum class Direction {
 		Up, Down, Left, Right, UpLeft, UpRight, DownLeft, DownRight
 	};
 

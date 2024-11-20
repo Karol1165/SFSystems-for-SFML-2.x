@@ -30,7 +30,6 @@ namespace SFGF {
 		for (auto& i : std::ranges::reverse_view(controllers)) {
 			i->Update(event, clock.getElapsedTime(), mousePos);
 		}
-		
 		clock.restart();
 	}
 
