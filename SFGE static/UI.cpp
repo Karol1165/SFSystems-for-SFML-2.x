@@ -7,12 +7,6 @@ namespace SFGF {
 	//BaseButton
 	
 
-	/// <summary>
-	/// Checking click, setting background and playing sounds of click
-	/// </summary>
-	/// <param name="mousePos"></param>
-	/// <param name="isClicked"></param>
-	/// <returns>if button is clicked: true, if not: false</returns>
 
 	bool BaseButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
 		bool isButtonClicked = false;
@@ -36,12 +30,6 @@ namespace SFGF {
 	}
 	
 
-	/// <summary>
-	/// An update func of button, checks click of button and doing actions
-	/// </summary>
-	/// <param name="e"></param>
-	/// <param name="deltaTime"></param>
-	/// <param name="mousePos"></param>
 	void BaseButton::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
 		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			//Do button function
@@ -51,24 +39,12 @@ namespace SFGF {
 	}
 
 
-	/// <summary>
-	/// Draws button
-	/// </summary>
-	/// <param name="target"></param>
-	/// <param name="states"></param>
+
 	void BaseButton::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		target.draw(buttonBackground);
 	}
 
 
-	/// <summary>
-	/// Simple constructor
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="mouseOut"></param>
-	/// <param name="mouseOn"></param>
-	/// <param name="scale"></param>
-	/// <param name="func"></param>
 	BaseButton::BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func) {
 		this->buttonBgrData.mouseOut = mouseOut;
 		this->buttonBgrData.mouseOn = mouseOn;
@@ -80,16 +56,6 @@ namespace SFGF {
 	}
 
 
-	/// <summary>
-	/// Full constructor
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="mouseOut"></param>
-	/// <param name="mouseOn"></param>
-	/// <param name="scale"></param>
-	/// <param name="func"></param>
-	/// <param name="mouseEnteredSound"></param>
-	/// <param name="clickSound"></param>
 	BaseButton::BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func, sf::SoundBuffer& mouseEnteredSound,
 		sf::SoundBuffer& clickSound) {
 		this->buttonBgrData.mouseOut = mouseOut;
@@ -110,12 +76,6 @@ namespace SFGF {
 
 
 
-
-	/// <summary>
-	/// Draws button
-	/// </summary>
-	/// <param name="target"></param>
-	/// 
 	
 	void TextButton::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		target.draw(buttonBackground);
@@ -558,41 +518,7 @@ namespace SFGF {
 		this->rightButton->CheckStatus(e, deltaTime, mousePos);
 	}
 
-	///////////////////////////////////////////////////////////////////
-	//Views
-	///////////////////////////////////////////////////////////////////
 
-
-	////////////////////////////////////////////////////////////////////
-	//ClippedView
-
-	template<DrawableType T>
-	void ClippedView<T>::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-		sf::View view(bounds);
-		renderTexture.setView(view);
-
-		// Clear the render texture with transparency
-		renderTexture.clear(sf::Color::Transparent);
-
-		// Draw the stored drawable onto the render texture
-		renderTexture.draw(*object, states);
-
-		// Display the render texture to update its contents
-		renderTexture.display();
-
-		// Create a sprite with the texture of the render texture
-		sf::Sprite sprite(renderTexture.getTexture());
-		sprite.setPosition(bounds.left, bounds.top);
-
-		// Draw the sprite on the target render
-		target.draw(sprite, states);
-	}
-
-
-
-	///////////////////////////////////////////////////////////////////////////
-	//Other
-	//////////////////////////////////////////////////////////////////////////
 
 
 	////////////////////////////////////////////

@@ -2,7 +2,6 @@
 #ifndef RESOURCES_HPP_
 #define RESOURCES_HPP_
 
-
 #include<string>
 #include<fstream>
 #include<unordered_map>
