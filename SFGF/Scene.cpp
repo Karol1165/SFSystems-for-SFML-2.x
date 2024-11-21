@@ -4,10 +4,7 @@
 namespace SFGF {
 	///Scene
 
-	/// <summary>
-	/// Shloud be put in while(Window.pollEvent(event)) loop
-	/// </summary>
-	/// <param name="e"></param>
+
 	void Scene::UpdateUI(sf::Event& e) {
 		
 		mousePos = owner->mapPixelToCoords(sf::Mouse::getPosition(*owner));
@@ -18,10 +15,7 @@ namespace SFGF {
 
 	}
 
-	/// <summary>
-	/// Shloud be put in main loop
-	/// </summary>
-	/// <param name="event"></param>
+
 
 	void Scene::Update(sf::Event& event) {
 		for (auto& i : std::ranges::reverse_view(gameObjects)) {
@@ -34,11 +28,7 @@ namespace SFGF {
 	}
 
 
-	/// <summary>
-	/// Draw scene
-	/// </summary>
-	/// <param name="target"></param>
-	/// <param name="states"></param>
+
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		for (auto& i : staticUI) {
 			target.draw(*i, states);
@@ -52,21 +42,14 @@ namespace SFGF {
 	}
 
 
-	/// <summary>
-	/// Constructor that set scene initializing function
-	/// </summary>
-	/// <typeparam name="F"></typeparam>
-	/// <param name="func"></param>
+
 	template<typename F>
 	Scene::Scene(F func) {
 		initFunc = func;
 	}
 
 
-	/// <summary>
-	/// Copy constructor
-	/// </summary>
-	/// <param name="scene"></param>
+
 	Scene::Scene(Scene& scene) {
 		if(scene.initFunc != nullptr)
 			this->initFunc = scene.initFunc;
@@ -74,11 +57,7 @@ namespace SFGF {
 			this->owner = scene.owner;
 	}
 
-	/// <summary>
-	/// Starts playing scene music, and initialize scene.
-	/// If scene is not actually used, do not call this method
-	/// </summary>
-	/// <param name="owner"></param>
+
 	void Scene::SetActive(sf::RenderWindow& owner) {
 		ui.clear();
 		staticUI.clear();
@@ -105,11 +84,6 @@ namespace SFGF {
 	//////////////////////////////////////////////
 	/// SceneManager
 
-	/// <summary>
-	/// Draws actually active scene
-	/// </summary>
-	/// <param name="target"></param>
-	/// <param name="states"></param>
 
 	void SceneManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(*activeScene, states);
