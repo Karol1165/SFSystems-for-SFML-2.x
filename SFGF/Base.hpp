@@ -9,9 +9,15 @@ namespace SFGF {
 	template <typename T>
 	using ptr = std::unique_ptr<T>;
 
-	enum class Direction {
-		Up, Down, Left, Right, UpLeft, UpRight, DownLeft, DownRight
-	};
+	
+	template <typename V, typename T>
+	concept isVariantOf = std::is_base_of_v<T, V>;
+
+	template <typename T, isVariantOf<T> O>
+	inline O* GetFromPtr(ptr<T>& pointer) {
+		return dynamic_cast<O*> (pointer.get());
+	}
+
 
 	struct textData {
 		int characterSize;

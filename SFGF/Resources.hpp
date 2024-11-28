@@ -39,6 +39,7 @@ namespace SFGF {
 	protected:
 		FileConfig config;
 	public:
+		baseResourcesManager() = default;
 		baseResourcesManager(const std::string& directory, const std::string& extension);
 	};
 
@@ -56,6 +57,10 @@ namespace SFGF {
 	class LanguageResourcesManager : public baseResourcesManager {
 	public:
 
+		LanguageResourcesManager() = default;
+		LanguageResourcesManager(const std::string& directory, const std::string& extension) : baseResourcesManager(directory, extension) {}
+		~LanguageResourcesManager() = default;
+
 		LanguageResource getResource(const std::string& resourceName) const;
 
 		std::wstring getTranslation(const std::string& resourceName, const std::string& languageID) const;
@@ -64,6 +69,10 @@ namespace SFGF {
 
 	class TextureManager : public baseResourcesManager {
 	public:
+		TextureManager() = default;
+		TextureManager(const std::string& directory, const std::string& extension) : baseResourcesManager(directory, extension) {}
+		~TextureManager() = default;
+
 		void loadTexture(const std::string& fileName, sf::Texture& texture) const;
 	};
 

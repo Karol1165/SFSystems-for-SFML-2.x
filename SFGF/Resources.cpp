@@ -5,7 +5,6 @@
 namespace SFGF {
 
 
-
 	void FileConfig::setDirectory(const std::string& newDirectory) {
 		this->fileDirectory = std::filesystem::current_path();
 		this->fileDirectory /= newDirectory;
