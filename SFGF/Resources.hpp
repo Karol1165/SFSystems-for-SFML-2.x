@@ -40,6 +40,7 @@ namespace SFGF {
 		FileConfig config;
 	public:
 		baseResourcesManager() = default;
+		~baseResourcesManager() = default;
 		baseResourcesManager(const std::string& directory, const std::string& extension);
 	};
 
@@ -61,8 +62,10 @@ namespace SFGF {
 		LanguageResourcesManager(const std::string& directory, const std::string& extension) : baseResourcesManager(directory, extension) {}
 		~LanguageResourcesManager() = default;
 
+		[[nodiscard]]
 		LanguageResource getResource(const std::string& resourceName) const;
 
+		[[nodiscard]]
 		std::wstring getTranslation(const std::string& resourceName, const std::string& languageID) const;
 
 	};
