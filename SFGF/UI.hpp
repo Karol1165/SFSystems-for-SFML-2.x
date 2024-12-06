@@ -264,7 +264,12 @@ namespace SFGF {
 	///////////////////////////////////////////////////
 	//RadioButton
 
-	class RadioButtonGroup;
+	class RadioButton;
+
+	class RadioButtonGroup : public UI {
+	public:
+		std::vector<ptr<RadioButton>> buttons;
+	};
 
 	class RadioButton : public BaseButton {
 	protected:
@@ -293,9 +298,7 @@ namespace SFGF {
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 	};
 
-	class RadioButtonGroup : public UI {
 
-	};
 
 
 
