@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Scene.hpp"
 
-namespace SFGF {
+namespace SFS {
 	///Scene
 
 

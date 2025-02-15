@@ -2,7 +2,7 @@
 #include "Resources.hpp"
 
 
-namespace SFGF {
+namespace SFS {
 
 
 	void FileConfig::setDirectory(const std::string& newDirectory) {

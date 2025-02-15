@@ -8,12 +8,13 @@
 #include<filesystem>
 #include<locale>
 #include<SFML/Graphics.hpp>
+#include "framework.h"
 
 
 
-namespace SFGF {
-
-	class FileConfig {
+namespace SFS {
+	
+	class SFS_U_API FileConfig {
 	protected:
 		std::filesystem::path fileDirectory;
 		std::string fileExtension;
@@ -35,7 +36,7 @@ namespace SFGF {
 		void setDirectory(const std::string& newDirectory);
 	};
 
-	class baseResourcesManager {
+	class SFS_U_API baseResourcesManager {
 	protected:
 		FileConfig config;
 	public:
@@ -55,7 +56,7 @@ namespace SFGF {
 	};
 
 
-	class LanguageResourcesManager : public baseResourcesManager {
+	class SFS_U_API LanguageResourcesManager : public baseResourcesManager {
 	public:
 
 		LanguageResourcesManager() = default;
@@ -70,7 +71,7 @@ namespace SFGF {
 
 	};
 
-	class TextureManager : public baseResourcesManager {
+	class SFS_U_API TextureManager : public baseResourcesManager {
 	public:
 		TextureManager() = default;
 		TextureManager(const std::string& directory, const std::string& extension) : baseResourcesManager(directory, extension) {}

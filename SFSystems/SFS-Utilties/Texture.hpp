@@ -2,12 +2,14 @@
 #ifndef TEXTURE_HPP_
 #define TEXTURE_HPP_
 #include<SFML/Graphics.hpp>
+#include "framework.h"
 
-namespace SFGF {
 
+namespace SFS {
+	
 	typedef std::vector<sf::Texture> TextureGroup;
-
-	class Animation {
+	
+	class SFS_U_API Animation {
 	private:
 		TextureGroup frames;
 		sf::Time frequency;

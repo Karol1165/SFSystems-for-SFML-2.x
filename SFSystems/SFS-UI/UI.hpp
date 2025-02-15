@@ -3,15 +3,17 @@
 #define UI_HPP_
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <optional>
 #include "Base.hpp"
+#include "Data.hpp"
 #include "Math.hpp"
 #include "UIViews.hpp"
+#include "framework.h"
 
-#ifdef _DEBUG
-#include<iostream>
-#endif
 
-namespace SFGF {
+
+
+namespace SFS {
 
 
 	//////////////////////////////////////////////////////////////////
@@ -25,7 +27,7 @@ namespace SFGF {
 	/// Base class for all buttons
 	/// </summary>
 
-	class BaseButton : public UI {
+	class SFS_UI_API BaseButton : public UI {
 	protected:
 		typedef void(*buttonFunc) ();
 
@@ -41,7 +43,7 @@ namespace SFGF {
 		sf::Sound clickSound;
 
 		bool isMouseOn;
-
+		
 		buttonFunc func;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -105,7 +107,7 @@ namespace SFGF {
 	/// Class for a buttons that have text on it
 	/// </summary>
 
-	class TextButton : public BaseButton {
+	class SFS_UI_API TextButton : public BaseButton {
 	protected:
 
 
@@ -204,7 +206,7 @@ namespace SFGF {
 	/// Class for buttons that have icon/image on it
 	/// </summary>
 
-	class ImageButton : public BaseButton {
+	class SFS_UI_API ImageButton : public BaseButton {
 	protected:
 		sf::Sprite buttonImage;
 
@@ -233,7 +235,7 @@ namespace SFGF {
 	//////////////////////////////////////////////////////
 	//CheckBox
 
-	class CheckBox : public ImageButton {
+	class SFS_UI_API CheckBox : public ImageButton {
 	protected:
 	
 		bool isChecked;
@@ -264,14 +266,18 @@ namespace SFGF {
 	///////////////////////////////////////////////////
 	//RadioButton
 
+<<<<<<< HEAD:SFSystems/SFS-UI/UI.hpp
+	class SFS_UI_API RadioButtonGroup;
+=======
 	class RadioButton;
 
 	class RadioButtonGroup : public UI {
 	public:
 		std::vector<ptr<RadioButton>> buttons;
 	};
+>>>>>>> 3cffe8c693ee86fe9b1e633b2cded8f96eecc7de:SFGF/UI.hpp
 
-	class RadioButton : public BaseButton {
+	class SFS_UI_API RadioButton : public BaseButton {
 	protected:
 		RadioButtonGroup* group;
 		bool isChecked;
@@ -313,7 +319,7 @@ namespace SFGF {
 	/// <summary>
 	/// Single option for a switch
 	/// </summary>
-	class SwitchOption {
+	class SFS_UI_API SwitchOption {
 	private:
 		std::wstring name;
 	public:
@@ -336,7 +342,7 @@ namespace SFGF {
 	/// Class for a special enums for switch
 	/// </summary>
 
-	class SwitchStates {
+	class SFS_UI_API SwitchStates {
 	private:
 		std::vector<SwitchOption> options;
 		uint8_t actualElement;
@@ -394,7 +400,7 @@ namespace SFGF {
 	/// Class for a horizontal switch with buttons on left and right
 	/// </summary>
 
-	class Switch  : public UI{
+	class SFS_UI_API Switch  : public UI{
 	public:
 
 		///////////////////////////////////////
@@ -404,7 +410,7 @@ namespace SFGF {
 		/// base class for buttons on switch
 		/// </summary>
 
-		class baseSwitchButton : public UI {
+		class SFS_UI_API baseSwitchButton : public UI {
 		public:
 			enum mode { last, next };
 			void setMode(mode newMode) { this->buttonMode = newMode; }
@@ -429,7 +435,7 @@ namespace SFGF {
 		/// class for a switch buttons that have text on it
 		/// </summary>
 		
-		class textSwitchButton : public baseSwitchButton, public TextButton  {
+		class SFS_UI_API textSwitchButton : public baseSwitchButton, public TextButton  {
 		public:
 			textSwitchButton() = default;
 
@@ -459,7 +465,7 @@ namespace SFGF {
 		/// Class for a switch buttons that have icon/image on it
 		/// </summary>
 		
-		class imageSwitchButton : public baseSwitchButton, public ImageButton {
+		class SFS_UI_API imageSwitchButton : public baseSwitchButton, public ImageButton {
 		public:
 			imageSwitchButton() = default;
 
@@ -547,7 +553,7 @@ namespace SFGF {
 	/// Class of text box.
 	/// </summary>
 
-	class TextBox : public UI {
+	class SFS_UI_API TextBox : public UI {
 	private:
 		sf::Text text;
 		sf::RectangleShape background;
@@ -587,12 +593,15 @@ namespace SFGF {
 	////////////////////////////////////////
 	//toolTip
 
-	class toolTip : public UI {
+	class SFS_UI_API toolTip : public UI {
 	private:
 		sf::RectangleShape background;
 		ClippedView<sf::Text> Text;
 		sf::FloatRect fieldWhenActive;
 		bool isVisible;
+
+		std::optional<sf::Time> mouseOverTime;
+		std::optional<sf::Time> requiredMouseOverTime;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -600,7 +609,8 @@ namespace SFGF {
 
 		toolTip() = default;
 		~toolTip() = default;
-		toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible);
+		toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible,
+			sf::Time timeToActivate = sf::Time::Zero);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};

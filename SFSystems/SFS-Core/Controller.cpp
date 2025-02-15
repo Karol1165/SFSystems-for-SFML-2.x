@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Controller.hpp"
 
-namespace SFGF {
+namespace SFS {
 
 	FunctionController::FunctionController(Scene& scene, ControllerFunc func) : Controller(scene) {
 		this->func = func;

@@ -1,15 +1,19 @@
 #pragma once
 #ifndef SCENE_HPP_
 #define SCENE_HPP_
-#include "UI.hpp"
+#include "Data.hpp"
 #include "Base.hpp"
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include<ranges>
+#include "framework.h"
 
-namespace SFGF {
+namespace SFS {
 
+	//template <typename T>
+	//using ptr = std::unique_ptr<T>;
 
-	class Scene : public sf::Drawable {
+	class SFS_C_API Scene : public sf::Drawable {
 	protected:
 
 		bool isLeftMousePressed = false;
@@ -20,7 +24,7 @@ namespace SFGF {
 
 		typedef void(*sceneInit) (Scene&);
 
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	public:
 		std::vector<ptr<sf::Drawable>> staticUI;
 		std::vector<ptr<UI>> ui;
@@ -72,7 +76,7 @@ namespace SFGF {
 		
 	};
 
-	class SceneManager : public sf::Drawable {
+	class SFS_C_API SceneManager : public sf::Drawable {
 	private:
 		Scene* activeScene;
 	public:

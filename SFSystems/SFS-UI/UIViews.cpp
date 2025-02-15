@@ -1,0 +1,13 @@
+#include "pch.h"
+#include "UIViews.hpp"
+
+namespace SFS {
+
+	////////////////////////////////////////////////////////////////////
+	//ClippedView
+
+
+
+
+
+}

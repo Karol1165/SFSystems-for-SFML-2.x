@@ -2,8 +2,10 @@
 #ifndef UIVIEWS_HPP_
 #define UIVIEWS_HPP_
 #include "Base.hpp"
+#include "Data.hpp"
+#include "framework.h"
 
-namespace SFGF {
+namespace SFS {
 
 	////////////////////////////////////////////
 	//Clipped View
@@ -18,7 +20,26 @@ namespace SFGF {
 		mutable sf::RenderTexture renderTexture;
 		sf::FloatRect bounds;
 		T* object;
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+			sf::View view(bounds);
+			renderTexture.setView(view);
+
+
+			renderTexture.clear(sf::Color::Transparent);
+
+
+			renderTexture.draw(*object, states);
+
+
+			renderTexture.display();
+
+
+			sf::Sprite sprite(renderTexture.getTexture());
+			sprite.setPosition(bounds.left, bounds.top);
+
+
+			target.draw(sprite, states);
+		}
 	public:
 		ClippedView() = default;
 		~ClippedView() = default;
@@ -47,7 +68,9 @@ namespace SFGF {
 	/// Class of ScroolView
 	/// </summary>
 
-	class ScroolView : public UI {
+	/*
+	* TODO:
+	class SFS_UI_API ScroolView : public UI {
 	private:
 		std::vector<ptr<UI>> elements;
 
@@ -61,7 +84,7 @@ namespace SFGF {
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};
-
+	*/
 }
 
 #endif

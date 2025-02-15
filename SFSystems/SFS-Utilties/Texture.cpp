@@ -2,7 +2,7 @@
 #include"Texture.hpp"
 
 
-namespace SFGF {
+namespace SFS {
 
 	void Animation::Update(sf::Time deltaTime) {
 		this->actualTime = this->actualTime + deltaTime;

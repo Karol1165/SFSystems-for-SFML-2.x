@@ -2,10 +2,11 @@
 #ifndef CONTROLLER_HPP_
 #define CONTROLLER_HPP_
 #include "Scene.hpp"
+#include "framework.h"
 
-namespace SFGF {
+namespace SFS {
 
-	class Controller : public BaseController {
+	class SFS_C_API Controller : public BaseController {
 	protected:
 
 		Scene& referenceScene;
@@ -18,7 +19,7 @@ namespace SFGF {
 		virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) = 0;
 	};
 
-	class FunctionController : public Controller {
+	class SFS_C_API FunctionController : public Controller {
 	private:
 		typedef void (*ControllerFunc) (Scene&);
 		ControllerFunc func;

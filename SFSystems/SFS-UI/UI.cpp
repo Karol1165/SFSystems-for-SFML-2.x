@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UI.hpp"
 
-namespace SFGF {
+namespace SFS {
 
 	/////////////////////////////////////////////////////////
 	//BaseButton
@@ -579,7 +579,8 @@ namespace SFGF {
 	////////////////////////////////////////
 	//toolTip
 
-	toolTip::toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible) {
+	toolTip::toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible,
+		sf::Time timeToActivate) {
 		sf::Text tipText;
 		setRectangleData(backgroundData, this->background);
 		setTextData(tipTextData, tipText);
@@ -592,11 +593,27 @@ namespace SFGF {
 		this->Text.setObject(new sf::Text(tipText));
 		this->Text.setBounds(background.getGlobalBounds());
 
+		if (timeToActivate != sf::Time::Zero) {
+			this->requiredMouseOverTime = sf::Time::Zero;
+			this->mouseOverTime = sf::Time::Zero;
+		}
+
 		this->isVisible = false;
 	}
 
 	void toolTip::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
-		this->isVisible = this->fieldWhenActive.contains(mousePos);
+		if(!this->requiredMouseOverTime.has_value())
+			this->isVisible = this->fieldWhenActive.contains(mousePos);
+		else {
+			if (this->fieldWhenActive.contains(mousePos))
+				*this->mouseOverTime += deltaTime;
+			else
+				this->mouseOverTime = sf::Time::Zero;
+			if (this->mouseOverTime >= this->requiredMouseOverTime)
+				this->isVisible = true;
+			else
+				this->isVisible = false;
+		}
 	}
 
 	void toolTip::draw(sf::RenderTarget& target, sf::RenderStates states) const {
