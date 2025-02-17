@@ -26,10 +26,10 @@ namespace SFS {
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	public:
-		std::vector<ptr<sf::Drawable>> staticUI;
-		std::vector<ptr<UI>> ui;
-		std::vector<ptr<GameObject>> gameObjects;
-		std::vector<ptr<BaseController>> controllers;
+		idVector<ptr<sf::Drawable>> staticUI;
+		idVector<ptr<UI>> ui;
+		idVector<ptr<GameObject>> gameObjects;
+		idVector<ptr<BaseController>> controllers;
 
 
 		sf::Clock clock;

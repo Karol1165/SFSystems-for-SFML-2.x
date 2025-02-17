@@ -265,17 +265,18 @@ namespace SFS {
 
 	///////////////////////////////////////////////////
 	//RadioButton
+	//TODO:
 
-<<<<<<< HEAD:SFSystems/SFS-UI/UI.hpp
+	/*
+	
 	class SFS_UI_API RadioButtonGroup;
-=======
+
 	class RadioButton;
 
 	class RadioButtonGroup : public UI {
 	public:
 		std::vector<ptr<RadioButton>> buttons;
 	};
->>>>>>> 3cffe8c693ee86fe9b1e633b2cded8f96eecc7de:SFGF/UI.hpp
 
 	class SFS_UI_API RadioButton : public BaseButton {
 	protected:
@@ -303,7 +304,7 @@ namespace SFS {
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 	};
-
+	*/
 
 
 

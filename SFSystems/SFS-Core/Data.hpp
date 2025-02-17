@@ -28,10 +28,10 @@ namespace SFS {
 
 
 	struct SFS_C_API textData {
-		int characterSize;
+		int characterSize = 14;
 		sf::Color fillColor;
 		sf::Color outlineColor;
-		int outlineThickness;
+		int outlineThickness = 0;
 	};
 	SFS_C_API inline void setTextData(const textData& data, sf::Text& object) {
 		object.setCharacterSize(data.characterSize);
@@ -43,7 +43,7 @@ namespace SFS {
 		sf::Color fillColor;
 		sf::Color outlineColor;
 		sf::Vector2f size;
-		int outlineThickness;
+		int outlineThickness = 0;
 		sf::Texture texture;
 	};
 	SFS_C_API inline void setRectangleData(const rectangleShapeData& data, sf::RectangleShape& object) {
@@ -56,8 +56,8 @@ namespace SFS {
 	struct SFS_C_API circleShapeData {
 		sf::Color fillColor;
 		sf::Color outlineColor;
-		int radius;
-		int outlineThickness;
+		int radius = 10;
+		int outlineThickness = 0;
 		sf::Texture texture;
 	};
 	SFS_C_API inline void setCircleData(const circleShapeData& data, sf::CircleShape& object) {
@@ -69,29 +69,47 @@ namespace SFS {
 	}
 
 	template <typename T>
-	class idContainer {
+	class idVector {
 	private:
 		std::vector<T> objects;
-		std::unordered_map<std::string, size_t> ids;
+		std::unordered_map<std::string, T*> ids;
 	public:
 
-		void push_back(T object);
-		void push_back(std::string id, T object);
-		void erase(std::string id);
-		void erase(size_t index);
+		inline void push_back(const T& object);
+		inline void push_back(const std::string& id, const T& object);
+		inline void push_back(T&& object);
+		inline void push_back(const std::string& id, T&& object);
+		inline void erase(std::string id);
+		inline void erase(size_t index);
 
 		[[nodiscard]]
-		T get(std::string id) const;
+		T& get(const size_t& index) const;
 
 		[[nodiscard]]
-		T get(size_t index) const;
+		T& get(const std::string& id) const;
 
 		[[nodiscard]]
-		T operator[] (std::string id) const;
+		T& operator[] (const size_t& index) const;
 
 		[[nodiscard]]
-		T operator[] (size_t index) const;
+		T& operator[] (const std::string& id) const;
+
+		void clear() noexcept { this->objects.clear(); this->ids.clear(); }
+
+		[[nodiscard]] auto begin() noexcept { return this->objects.begin(); }
+		[[nodiscard]] auto end() noexcept { return this->objects.end(); }
+		[[nodiscard]] auto begin() const noexcept { return this->objects.begin(); }
+		[[nodiscard]] auto end() const noexcept { return this->objects.end(); }
+
+		[[nodiscard]] auto rbegin() noexcept { return this->objects.rbegin(); }
+		[[nodiscard]] auto rend() noexcept { return this->objects.rend(); }
+		[[nodiscard]] auto rbegin() const noexcept { return this->objects.rbegin(); }
+		[[nodiscard]] auto rend() const noexcept { return this->objects.rend(); }
+
 	};
 }
+
+
+#include "Data.inl"
 
 #endif 

@@ -18,5 +18,4 @@ void mainSceneInitialization(SFS::Scene& scene) {
 
 
 	scene.staticUI.push_back(SFS::ptr<sf::Drawable>(new sf::Text(text)));
-
 }

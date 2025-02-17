@@ -106,13 +106,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\biblioteki\sfml VS\SFML-2.6.1\include;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-Utilties;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-UI;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-Core</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\biblioteki\sfml VS\SFML-2.6.2\include;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-Utilties;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-UI;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-Core</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\biblioteki\sfml VS\SFML-2.6.1\lib;C:\Users\karol\Desktop\gra\SFGE\SFGE static\x64\Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\biblioteki\sfml VS\SFML-2.6.2\lib;C:\Users\karol\Desktop\gra\SFGE\SFGE static\x64\Debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-network-d.lib;SFS-Core-d.lib;SFS-UI-d.lib;SFS-Utilties-d.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -125,14 +125,14 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\biblioteki\sfml VS\SFML-2.6.1\include;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-Utilties;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-UI;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-Core</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\biblioteki\sfml VS\SFML-2.6.2\include;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-Utilties;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-UI;C:\Users\karol\Desktop\gra\SFGE\SFGE static\SFSystems\SFS-Core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\biblioteki\sfml VS\SFML-2.6.1\lib;C:\Users\karol\Desktop\gra\SFGE\SFGE static\x64\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\biblioteki\sfml VS\SFML-2.6.2\lib;C:\Users\karol\Desktop\gra\SFGE\SFGE static\x64\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics.lib;sfml-system.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;SFS-Core.lib;SFS-UI.lib; SFS-Utilties.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -233,6 +233,8 @@ namespace SFS {
 	//////////////////////////////////////////////////////////
 	//RadioButton
 
+	/*
+
 	RadioButton::RadioButton(sf::Vector2f pos, sf::Texture& Tex, sf::Texture& activeTex, int butttonScale, buttonFunc whenStateChanges) : BaseButton(pos, Tex, activeTex,
 		butttonScale, whenStateChanges) {
 		isChecked = false;
@@ -292,6 +294,8 @@ namespace SFS {
 
 		
 	}
+
+	*/
 
 
 	//////////////////////////////////////////////////////////
