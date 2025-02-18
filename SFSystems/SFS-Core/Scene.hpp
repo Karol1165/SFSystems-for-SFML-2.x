@@ -33,13 +33,12 @@ namespace SFS {
 
 
 		sf::Clock clock;
+		sf::Clock uiClock;
 
 		[[maybe_unused]]
 		sf::Music sceneTheme;
 
 		sf::RenderWindow* owner;
-
-
 
 		sceneInit initFunc;
 
@@ -48,7 +47,8 @@ namespace SFS {
 		virtual void Update(sf::Event& event);
 		template<typename F>
 		void SetInitFunc(F func) { this->initFunc = func; }
-		virtual void SetActive(sf::RenderWindow& owner);
+		virtual void SetActive(sf::RenderWindow* owner);
+		virtual void SetActive();
 		virtual void DisableActive();
 
 		
@@ -60,7 +60,10 @@ namespace SFS {
 		template<typename F>
 		Scene(F func);
 
-		Scene(Scene& scene);
+		template <typename F>
+		Scene(F initFunc, sf::RenderWindow* owner);
+
+		Scene(const Scene& scene);
 
 		Scene& operator=(const Scene& scene);
 
@@ -78,21 +81,25 @@ namespace SFS {
 
 	class SFS_C_API SceneManager : public sf::Drawable {
 	private:
+		sf::RenderWindow* owner;
 		Scene* activeScene;
 	public:
+		SceneManager() = default;
+		SceneManager(sf::RenderWindow* owner);
+		
+
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-		void setActiveScene(Scene& scene, sf::RenderWindow& owner) {
+		void setActiveScene(Scene& scene) {
 			if (this->activeScene != nullptr)
 				this->activeScene->DisableActive();
 
 			this->activeScene = &scene;
-			this->activeScene->SetActive(owner);
+			this->activeScene->SetActive(this->owner);
 		}
 
-		
+		void setOwner(sf::RenderWindow* owner) { if (owner != nullptr) this->owner = owner; }
+
 		Scene* getActiveScene() { return this->activeScene; }
 	};
-
-
 }
 #endif

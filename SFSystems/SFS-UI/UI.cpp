@@ -598,26 +598,31 @@ namespace SFS {
 		this->Text.setBounds(background.getGlobalBounds());
 
 		if (timeToActivate != sf::Time::Zero) {
-			this->requiredMouseOverTime = sf::Time::Zero;
-			this->mouseOverTime = sf::Time::Zero;
+			this->requiredCursorOverTime = timeToActivate;
+			this->cursorOverTime = sf::Time::Zero;
 		}
 
 		this->isVisible = false;
 	}
 
 	void toolTip::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
-		if(!this->requiredMouseOverTime.has_value())
+		if(!this->requiredCursorOverTime.has_value())
 			this->isVisible = this->fieldWhenActive.contains(mousePos);
 		else {
-			if (this->fieldWhenActive.contains(mousePos))
-				*this->mouseOverTime += deltaTime;
-			else
-				this->mouseOverTime = sf::Time::Zero;
-			if (this->mouseOverTime >= this->requiredMouseOverTime)
-				this->isVisible = true;
-			else
+			if (this->fieldWhenActive.contains(mousePos)) {
+				*this->cursorOverTime += deltaTime;
+				if (*this->cursorOverTime > *this->requiredCursorOverTime)
+					this->isVisible = true;
+				else
+					this->isVisible = false;
+			}
+			else {
+				*this->cursorOverTime = sf::Time::Zero;
 				this->isVisible = false;
+			}
 		}
+		std::cout << "Current time: " << this->cursorOverTime.value().asMilliseconds() << "\n";
+		std::cout << "Required time: " << this->requiredCursorOverTime.value().asMilliseconds() << "\n";
 	}
 
 	void toolTip::draw(sf::RenderTarget& target, sf::RenderStates states) const {

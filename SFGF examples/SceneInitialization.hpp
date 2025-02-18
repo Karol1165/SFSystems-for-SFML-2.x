@@ -6,6 +6,7 @@
 #include <UI.hpp>
 #include <Scene.hpp>
 #include "Res.hpp"
+#include <SFML/System.hpp>
 
 void mainSceneInitialization(SFS::Scene& scene);
 

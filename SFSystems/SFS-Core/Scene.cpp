@@ -5,14 +5,14 @@ namespace SFS {
 	///Scene
 
 
-	void Scene::UpdateUI(sf::Event& e) {
+	void Scene::UpdateUI(sf::Event& event) {
 		
 		mousePos = owner->mapPixelToCoords(sf::Mouse::getPosition(*owner));
 		
 		for (auto& i : std::ranges::reverse_view(ui)) {
-			i->CheckStatus(e, clock.getElapsedTime(), mousePos);
+			i->CheckStatus(event, this->uiClock.getElapsedTime(), mousePos);
 		}
-
+		this->uiClock.restart();
 	}
 
 
@@ -45,29 +45,44 @@ namespace SFS {
 
 	template<typename F>
 	Scene::Scene(F func) {
-		initFunc = func;
+		if(func != nullptr)
+			initFunc = func;
 	}
 
+	template <typename F>
+	Scene::Scene(F initFunc, sf::RenderWindow* owner) : Scene(initFunc) {
+		if (owner != nullptr)
+			this->owner = owner;
+	}
 
-
-	Scene::Scene(Scene& scene) {
+	Scene::Scene(const Scene& scene) {
 		if(scene.initFunc != nullptr)
 			this->initFunc = scene.initFunc;
 		if(scene.owner != nullptr)
 			this->owner = scene.owner;
 	}
 
+	void Scene::SetActive() {
+		if (this->owner != nullptr) {
+			this->ui.clear();
+			this->staticUI.clear();
+			this->gameObjects.clear();
+			this->controllers.clear();
 
-	void Scene::SetActive(sf::RenderWindow& owner) {
-		ui.clear();
-		staticUI.clear();
-		gameObjects.clear();
+			if (this->initFunc != nullptr)
+				this->initFunc(*this);
+			else
+				throw std::runtime_error("Trying to activate scene without initialization");
 
-		if (initFunc != nullptr)
-			initFunc(*this);
+			this->sceneTheme.play();
+		}
+		else
+			throw std::runtime_error("Trying to activate scene without owner window");
+	}
 
-		this->owner = &owner;
-		sceneTheme.play();
+	void Scene::SetActive(sf::RenderWindow* owner) {
+		this->owner = owner;
+		this->SetActive();
 	}
 
 	void Scene::DisableActive() {
@@ -75,8 +90,10 @@ namespace SFS {
 	}
 
 	Scene& Scene::operator=(const Scene& scene) {
-		if(scene.initFunc != nullptr)
+		if (scene.initFunc != nullptr)
 			this->initFunc = scene.initFunc;
+		if (scene.owner != nullptr)
+			this->owner = scene.owner;
 		return *this;
 	}
 
@@ -84,6 +101,10 @@ namespace SFS {
 	//////////////////////////////////////////////
 	/// SceneManager
 
+	SceneManager::SceneManager(sf::RenderWindow* owner) {
+		if (owner != nullptr)
+			this->owner = owner;
+	}
 
 	void SceneManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(*activeScene, states);

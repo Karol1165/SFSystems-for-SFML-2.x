@@ -1,0 +1,2 @@
+EN:This is tool tip
+PL:To jest tool tip

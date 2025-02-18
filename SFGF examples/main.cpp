@@ -5,6 +5,7 @@
 #include"SceneInitialization.hpp"
 
 int main() {
+	initializeManagers();
 	loadStaticResources();
 	mainScene.SetInitFunc(mainSceneInitialization);
 

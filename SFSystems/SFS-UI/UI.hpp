@@ -10,7 +10,9 @@
 #include "UIViews.hpp"
 #include "framework.h"
 
-
+#ifdef _DEBUG
+#include<iostream>
+#endif
 
 
 namespace SFS {
@@ -601,8 +603,8 @@ namespace SFS {
 		sf::FloatRect fieldWhenActive;
 		bool isVisible;
 
-		std::optional<sf::Time> mouseOverTime;
-		std::optional<sf::Time> requiredMouseOverTime;
+		std::optional<sf::Time> cursorOverTime;
+		std::optional<sf::Time> requiredCursorOverTime;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
