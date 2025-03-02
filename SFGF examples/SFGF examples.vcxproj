@@ -141,11 +141,13 @@
     <ClCompile Include="Func.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SceneInitalization.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Res.hpp" />
     <ClInclude Include="Func.hpp" />
     <ClInclude Include="SceneInitialization.hpp" />
+    <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

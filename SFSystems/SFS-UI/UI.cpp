@@ -621,8 +621,6 @@ namespace SFS {
 				this->isVisible = false;
 			}
 		}
-		std::cout << "Current time: " << this->cursorOverTime.value().asMilliseconds() << "\n";
-		std::cout << "Required time: " << this->requiredCursorOverTime.value().asMilliseconds() << "\n";
 	}
 
 	void toolTip::draw(sf::RenderTarget& target, sf::RenderStates states) const {

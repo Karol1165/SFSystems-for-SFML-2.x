@@ -3,38 +3,11 @@
 #include <Data.hpp>
 #include "Res.hpp"
 #include"SceneInitialization.hpp"
+#include"Window.hpp"
 
 int main() {
-	initializeManagers();
-	loadStaticResources();
-	mainScene.SetInitFunc(mainSceneInitialization);
-
-
-	sf::RenderWindow w;
-	w.create(sf::VideoMode(1080, 720), "testWindow");
-
-	w.setView(sf::View(sf::Vector2f(0, 0), sf::Vector2f(1080, 720)));
-
-	activeScene.setActiveScene(mainScene, w);
-
-	sf::Event e;
-
-	while (w.isOpen())
-	{
-		while (w.pollEvent(e))
-		{
-			if (e.type == sf::Event::Closed) {
-				w.close();
-			}
-			activeScene.getActiveScene()->UpdateUI(e);
-		}
-		activeScene.getActiveScene()->Update(e);
-
-		w.clear();
-
-		w.draw(activeScene);
-
-		w.display();
-	}
+	SFS::Window window;
+	window.setInitFunc(MainWindowInitFunc);
+	window.run();
 	return 0;
 }

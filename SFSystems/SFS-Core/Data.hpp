@@ -17,7 +17,7 @@ namespace SFS {
 	concept isVariantOf = std::is_base_of_v<T, V>;
 
 	template <typename T>
-	inline ptr<T> make_ptr(T object) {
+	inline ptr<T>&& make_ptr(T object) {
 		return std::make_unique(object);
 	}
 
