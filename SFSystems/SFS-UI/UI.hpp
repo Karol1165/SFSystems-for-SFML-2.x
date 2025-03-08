@@ -54,8 +54,8 @@ namespace SFS {
 		BaseButton() = default;
 		~BaseButton() = default;
 
-		BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func);
-		BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, buttonFunc func, sf::SoundBuffer& mouseEnteredSound,
+		BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float scale, buttonFunc func);
+		BaseButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float scale, buttonFunc func, sf::SoundBuffer& mouseEnteredSound,
 			sf::SoundBuffer& clickSound);
 
 		
@@ -113,12 +113,9 @@ namespace SFS {
 	class SFS_UI_API TextButton : public BaseButton {
 	protected:
 
-
 		sf::Text buttonText;
 		textData mouseOutTxtData;
 		textData mouseOnTxtData;
-
-
 
 		void TextPosUpdate() { buttonText.setPosition(centerText(buttonText, buttonBackground)); }
 
@@ -140,17 +137,17 @@ namespace SFS {
 		TextButton() = default;
 		~TextButton() = default;
 
-		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
+		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 			std::wstring string, buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
+		TextButton(sf::Vector2f pos,sf::Texture& mouseOut, sf::Texture& mouseOn, float scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 			buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, textData textData, std::wstring string, buttonFunc func = nullptr);
+		TextButton(sf::Vector2f pos, sf::Texture& sprite, float scale, sf::Font& font, textData textData, std::wstring string, buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos, sf::Texture& sprite, int scale, sf::Font& font, textData textData, buttonFunc func = nullptr);
+		TextButton(sf::Vector2f pos, sf::Texture& sprite, float scale, sf::Font& font, textData textData, buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn,int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
+		TextButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 			std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
 		//Get
 
@@ -220,12 +217,12 @@ namespace SFS {
 
 		~ImageButton() = default;
 
-		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, buttonFunc func = nullptr);
+		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float buttonScale, sf::Texture& image, float iconScale, buttonFunc func = nullptr);
 
-		ImageButton(sf::Vector2f pos, sf::Texture& texture, int buttonScale, sf::Texture& image, int iconScale, buttonFunc func = nullptr);
+		ImageButton(sf::Vector2f pos, sf::Texture& texture, float buttonScale, sf::Texture& image, float iconScale, buttonFunc func = nullptr);
 
-		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale,sf::Texture& image, int iconScale,sf::SoundBuffer& mouseEnteredSound,
-			sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
+		ImageButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float buttonScale, sf::Texture& image, float iconScale,
+			sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
 	};
 
 
@@ -242,9 +239,9 @@ namespace SFS {
 		CheckBox() = default;
 		~CheckBox() = default;
 
-		CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, int butttonScale, sf::Texture& checkIcon, int iconScale, buttonFunc whenStateChanges = nullptr);
+		CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, float butttonScale, sf::Texture& checkIcon, float iconScale, buttonFunc whenStateChanges = nullptr);
 
-		CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, int butttonScale, sf::Texture& checkIcon, int iconScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound,
+		CheckBox(sf::Vector2f pos, sf::Texture& mouseOutTex, sf::Texture& mouseOnTex, float butttonScale, sf::Texture& checkIcon, float iconScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound,
 			buttonFunc whenStateChanges = nullptr);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
@@ -439,12 +436,12 @@ namespace SFS {
 
 			~textSwitchButton() = default;
 
-			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
+			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 				std::wstring string, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner);
 
-			textSwitchButton(sf::Vector2f pos, sf::Texture& texture, int scale, sf::Font& font, textData textData, std::wstring string, mode buttonMode, Switch* owner);
+			textSwitchButton(sf::Vector2f pos, sf::Texture& texture, float scale, sf::Font& font, textData textData, std::wstring string, mode buttonMode, Switch* owner);
 
-			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
+			textSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float scale, sf::Font& font, textData mouseOutText, textData mouseOnText,
 				std::wstring string, mode buttonMode, Switch* owner);
 
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -469,11 +466,11 @@ namespace SFS {
 
 			~imageSwitchButton() = default;
 
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, mode buttonMode, Switch* owner);
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float buttonScale, sf::Texture& image, float iconScale, mode buttonMode, Switch* owner);
 
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture,int buttonScale, sf::Texture& image, int iconScale, mode buttonMode, Switch* owner);
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& texture, float buttonScale, sf::Texture& image, float iconScale, mode buttonMode, Switch* owner);
 
-			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, int buttonScale, sf::Texture& image, int iconScale, sf::SoundBuffer& mouseEnteredSound,
+			imageSwitchButton(sf::Vector2f pos, sf::Texture& mouseOut, sf::Texture& mouseOn, float buttonScale, sf::Texture& image, float iconScale, sf::SoundBuffer& mouseEnteredSound,
 				sf::SoundBuffer& clickSound, mode buttonMode, Switch* owner);
 			
 			[[nodiscard]]
@@ -488,19 +485,19 @@ namespace SFS {
 		~Switch() = default;
 
 		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonMouseOutTex,
-			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Font& buttonFont, textData buttonMouseOutText, textData buttonMouseOnText,
+			sf::Texture& buttonMouseOnTex, float buttonScale, sf::Font& buttonFont, textData buttonMouseOutText, textData buttonMouseOnText,
 			sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText, std::wstring rightButtonText, SwitchStates states);
 
-		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonTex, int buttonScale,
+		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonTex, float buttonScale,
 			sf::Font& buttonFont,textData buttonTextData, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, std::wstring leftButtonText,
 			std::wstring rightButtonText, SwitchStates states);
 
 		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonMouseOutTex,
-			sf::Texture& buttonMouseOnTex, int buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage,int buttonIconScale, sf::SoundBuffer& buttonSpottedSound,
+			sf::Texture& buttonMouseOnTex, float buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, float buttonIconScale, sf::SoundBuffer& buttonSpottedSound,
 			sf::SoundBuffer& buttonClickSound, SwitchStates states);
 
-		Switch(sf::Vector2f pos,rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonTex, int buttonScale,
-			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, int buttonIconScale, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states);
+		Switch(sf::Vector2f pos,rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, sf::Texture& buttonTex, float buttonScale,
+			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, float buttonIconScale, sf::SoundBuffer& buttonSpottedSound, sf::SoundBuffer& buttonClickSound, SwitchStates states);
 
 
 		[[nodiscard]]
@@ -526,11 +523,10 @@ namespace SFS {
 	private:
 
 		sf::RectangleShape background;
-		std::shared_ptr<baseSwitchButton> leftButton;
-		std::shared_ptr<baseSwitchButton> rightButton;
+		ptr<baseSwitchButton> leftButton;
+		ptr<baseSwitchButton> rightButton;
 		sf::Text text;
 		SwitchStates states;
-
 		void UpdateText();
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;

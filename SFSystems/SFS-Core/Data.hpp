@@ -44,28 +44,28 @@ namespace SFS {
 		sf::Color outlineColor;
 		sf::Vector2f size;
 		float outlineThickness = 0.0f;
-		sf::Texture texture;
+		sf::Texture* texture;
 	};
 	SFS_C_API inline void setRectangleData(const rectangleShapeData& data, sf::RectangleShape& object) {
 		object.setSize(data.size);
 		object.setFillColor(data.fillColor);
 		object.setOutlineColor(data.outlineColor);
 		object.setOutlineThickness(data.outlineThickness);
-		object.setTexture(&data.texture);
+		object.setTexture(data.texture);
 	}
 	struct SFS_C_API circleShapeData {
 		sf::Color fillColor;
 		sf::Color outlineColor;
 		float radius = 10.0f;
 		float outlineThickness = 0.0f;
-		sf::Texture texture;
+		sf::Texture* texture;
 	};
 	SFS_C_API inline void setCircleData(const circleShapeData& data, sf::CircleShape& object) {
 		object.setRadius(data.radius);
 		object.setFillColor(data.fillColor);
 		object.setOutlineColor(data.outlineColor);
 		object.setOutlineThickness(data.outlineThickness);
-		object.setTexture(&data.texture);
+		object.setTexture(data.texture);
 	}
 
 	template <typename T>
@@ -107,6 +107,8 @@ namespace SFS {
 		[[nodiscard]] auto rend() const noexcept { return this->objects.rend(); }
 
 	};
+
+
 }
 
 
