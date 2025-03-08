@@ -66,7 +66,7 @@ namespace SFS {
 		}
 
 		[[nodiscard]]
-		int getScale() const {
+		float getScale() const {
 			return buttonBackground.getScale().x;
 		}
 
@@ -84,7 +84,7 @@ namespace SFS {
 			buttonBgrData.mouseOn = newTexture;
 			buttonBgrData.mouseOut = newTexture;
 		}
-		virtual void setScale(int newScale) {
+		virtual void setScale(float newScale) {
 			this->buttonBackground.setScale(newScale, newScale);
 		}
 		virtual void setMouseEnteredSound(sf::SoundBuffer& newSound) {
@@ -95,7 +95,8 @@ namespace SFS {
 		}
 
 		virtual void setFunction(buttonFunc newFunc) {
-			this->func = newFunc;
+			if(newFunc != nullptr)
+				this->func = newFunc;
 		}
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f & mousePos = sf::Vector2f(0, 0));
@@ -123,16 +124,10 @@ namespace SFS {
 
 		void TextDataUpdate(bool isSpotted = false) {
 			if (isSpotted) {
-				this->buttonText.setCharacterSize(this->mouseOnTxtData.characterSize);
-				this->buttonText.setFillColor(this->mouseOnTxtData.fillColor);
-				this->buttonText.setOutlineColor(this->mouseOnTxtData.outlineColor);
-				this->buttonText.setOutlineThickness(this->mouseOnTxtData.outlineThickness);
+				setTextData(this->mouseOnTxtData, this->buttonText);
 			}
 			else {
-				this->buttonText.setCharacterSize(this->mouseOutTxtData.characterSize);
-				this->buttonText.setFillColor(this->mouseOutTxtData.fillColor);
-				this->buttonText.setOutlineColor(this->mouseOutTxtData.outlineColor);
-				this->buttonText.setOutlineThickness(this->mouseOutTxtData.outlineThickness);
+				setTextData(this->mouseOutTxtData, this->buttonText);
 			}
 			TextPosUpdate();
 		}
@@ -171,11 +166,11 @@ namespace SFS {
 
 		//Set
 
-		void setPos(sf::Vector2f newPos)  override{
+		void setPos(sf::Vector2f newPos)  override {
 			buttonBackground.setPosition(newPos);
 			TextPosUpdate();
 		}
-		void setScale(int newScale) override{
+		void setScale(float newScale) override {
 			this->buttonBackground.setScale(newScale, newScale);
 			TextPosUpdate();
 		}
@@ -339,7 +334,7 @@ namespace SFS {
 	};
 
 	//////////////////////////////////
-	//SwitchEnum
+	//SwitchStates
 
 	/// <summary>
 	/// Class for a special enums for switch
@@ -348,51 +343,51 @@ namespace SFS {
 	class SFS_UI_API SwitchStates {
 	private:
 		std::vector<SwitchOption> options;
-		uint8_t actualElement;
+		uint8_t currentElement;
 
 	public:
 		SwitchStates() = default;
 		~SwitchStates() = default;
 
-		SwitchStates(const SwitchStates& original) : options(original.options) { this->actualElement = original.actualElement; }
+		SwitchStates(const SwitchStates& original) : options(original.options) { this->currentElement = original.currentElement; }
 
 		void AddOption(const SwitchOption option) {
 			this->options.push_back(option);
 			if (this->options.size() == 1) {
-				this->actualElement = 0;
+				this->currentElement = 0;
 			}
 		}
 
 		void Next() {
 			if (this->options.empty()) return;
-			if (this->actualElement + 1 < this->options.size())
-				this->actualElement++;
+			if (this->currentElement + 1 < this->options.size())
+				this->currentElement++;
 			else
-				this->actualElement = 0;
+				this->currentElement = 0;
 		}
 		void Last() { 
 			if (this->options.empty()) return;
-			if (this->actualElement > 0)
-				this->actualElement--;
+			if (this->currentElement > 0)
+				this->currentElement--;
 			else
-				this->actualElement = this->options.size() - 1; 
+				this->currentElement = this->options.size() - 1; 
 		}
 
 		[[nodiscard]]
-		SwitchOption getActualOption() const {
+		SwitchOption getCurrentOption() const {
 			if (this->options.empty()) throw new std::runtime_error("No options aviable");
-			return this->options[actualElement];
+			return this->options[currentElement];
 		}
 
 		[[nodiscard]]
-		uint8_t getActualOptionIndex() const  { 
+		uint8_t getCurrentOptionIndex() const  { 
 			if (this->options.empty()) throw new std::runtime_error("No options aviable");
-			return this->actualElement;
+			return this->currentElement;
 		}
 
-		void setActualOption(uint8_t index) {
+		void setCurrentOption(uint8_t index) {
 			if (this->options.empty()) throw new std::out_of_range("Index out of range");
-			if(index < options.size()) actualElement = index; 
+			if(index < options.size()) currentElement = index; 
 		}
 	};
 
@@ -419,7 +414,7 @@ namespace SFS {
 			void setMode(mode newMode) { this->buttonMode = newMode; }
 
 			[[nodiscard]]
-			virtual sf::FloatRect getGlobalBounds()const = 0;
+			virtual sf::FloatRect getGlobalBounds() const = 0;
 
 			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override = 0;
 		private:
@@ -509,19 +504,19 @@ namespace SFS {
 
 
 		[[nodiscard]]
-		SwitchOption getActualOption() const { return this->states.getActualOption(); }
+		SwitchOption getCurrentOption() const { return this->states.getCurrentOption(); }
 
 		[[nodiscard]]
-		uint8_t getActualOptionIndex() const { return this->states.getActualOptionIndex(); }
+		uint8_t getCurrentOptionIndex() const { return this->states.getCurrentOptionIndex(); }
 
 		[[nodiscard]]
 		SwitchStates getOptions() const { return this->states; }
 
 		[[nodiscard]]
-		std::wstring getActualText() const { return this->states.getActualOption().getName(); }
+		std::wstring getCurrentText() const { return this->states.getCurrentOption().getName(); }
 
-		void setActualOption(uint8_t index) {
-			this->states.setActualOption(index);
+		void setCurrentOption(uint8_t index) {
+			this->states.setCurrentOption(index);
 		}
 
 		void setOptions(SwitchStates newOptions) { this->states = newOptions; }

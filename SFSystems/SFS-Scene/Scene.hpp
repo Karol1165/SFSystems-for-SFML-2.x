@@ -14,7 +14,7 @@ namespace SFS {
 	//template <typename T>
 	//using ptr = std::unique_ptr<T>;
 
-	class SFS_C_API Scene : public sf::Drawable {
+	class SFS_S_API Scene : public sf::Drawable {
 	protected:
 
 		bool isLeftMousePressed = false;
@@ -79,7 +79,7 @@ namespace SFS {
 		
 	};
 
-	class SFS_C_API SceneManager {
+	class SFS_S_API SceneManager {
 	private:
 		sf::RenderWindow* owner;
 		Scene* scene;
@@ -118,7 +118,7 @@ namespace SFS {
 	};
 
 
-	struct SFS_C_API WindowSettings {
+	struct SFS_S_API WindowSettings {
 		sf::ContextSettings contextSettings;
 		bool vSyncEnabled;
 		bool keyRepeatEnabled;
@@ -132,7 +132,7 @@ namespace SFS {
 		}
 	};
 
-	class SFS_C_API Window : public sf::RenderWindow {
+	class SFS_S_API Window : public sf::RenderWindow {
 	private:
 		SceneManager manager;
 		void initManager() noexcept;

@@ -1,25 +1,29 @@
 #pragma once
 #ifndef CONTROLLER_HPP_
 #define CONTROLLER_HPP_
+#include "Base.hpp"
 #include "Scene.hpp"
 #include "framework.h"
 
 namespace SFS {
 
-	class SFS_C_API Controller : public BaseController {
+	class SFS_S_API Controller : public BaseController {
 	protected:
 
-		Scene& referenceScene;
+		Scene* referenceScene;
 
 	public:
-		Controller(Scene& scene) : referenceScene(scene) {}
+		Controller(Scene& scene);
 		Controller() = delete;
 		~Controller() = default;
+
+		Controller(const Controller&) = delete;
+		Controller operator=(const Controller&) = delete;
 
 		virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) = 0;
 	};
 
-	class SFS_C_API FunctionController : public Controller {
+	class SFS_S_API FunctionController : public Controller {
 	private:
 		typedef void (*ControllerFunc) (Scene&);
 		ControllerFunc func;

@@ -31,7 +31,7 @@ namespace SFS {
 		int characterSize = 14;
 		sf::Color fillColor;
 		sf::Color outlineColor;
-		int outlineThickness = 0;
+		float outlineThickness = 0.0f;
 	};
 	SFS_C_API inline void setTextData(const textData& data, sf::Text& object) {
 		object.setCharacterSize(data.characterSize);
@@ -43,7 +43,7 @@ namespace SFS {
 		sf::Color fillColor;
 		sf::Color outlineColor;
 		sf::Vector2f size;
-		int outlineThickness = 0;
+		float outlineThickness = 0.0f;
 		sf::Texture texture;
 	};
 	SFS_C_API inline void setRectangleData(const rectangleShapeData& data, sf::RectangleShape& object) {
@@ -56,8 +56,8 @@ namespace SFS {
 	struct SFS_C_API circleShapeData {
 		sf::Color fillColor;
 		sf::Color outlineColor;
-		int radius = 10;
-		int outlineThickness = 0;
+		float radius = 10.0f;
+		float outlineThickness = 0.0f;
 		sf::Texture texture;
 	};
 	SFS_C_API inline void setCircleData(const circleShapeData& data, sf::CircleShape& object) {

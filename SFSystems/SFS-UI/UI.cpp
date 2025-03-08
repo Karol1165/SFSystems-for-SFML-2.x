@@ -77,7 +77,7 @@ namespace SFS {
 
 
 	
-	void TextButton::draw(sf::RenderTarget& target, sf::RenderStates states) const{
+	void TextButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(buttonBackground);
 		ClippedView<sf::Text> textView = ClippedView<sf::Text>(buttonBackground.getGlobalBounds());
 		textView.setObject(&buttonText);
@@ -384,7 +384,7 @@ namespace SFS {
 	}
 
 	void Switch::UpdateText() {
-		this->text.setString(this->states.getActualOption().getName());
+		this->text.setString(this->states.getCurrentOption().getName());
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 
@@ -431,7 +431,7 @@ namespace SFS {
 
 		this->states = states;
 
-		this->text.setString(this->states.getActualOption().getName());
+		this->text.setString(this->states.getCurrentOption().getName());
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 
@@ -458,7 +458,7 @@ namespace SFS {
 
 		this->states = states;
 
-		this->text.setString(this->states.getActualOption().getName());
+		this->text.setString(this->states.getCurrentOption().getName());
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 
@@ -486,7 +486,7 @@ namespace SFS {
 
 		this->states = states;
 
-		this->text.setString(this->states.getActualOption().getName());
+		this->text.setString(this->states.getCurrentOption().getName());
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 
@@ -513,7 +513,7 @@ namespace SFS {
 
 		this->states = states;
 
-		this->text.setString(this->states.getActualOption().getName());
+		this->text.setString(this->states.getCurrentOption().getName());
 		this->text.setPosition(centerText(this->text, this->background));
 	}
 	
