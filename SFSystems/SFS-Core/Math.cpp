@@ -42,6 +42,10 @@ namespace SFS {
 		return sf::Vector2f(centerSprite(spriteToCenter, referenceSprite.getGlobalBounds()));
 	}
 
+	sf::Vector2f centerSprite(const sf::Sprite& spriteToCenter, const sf::RectangleShape& background) {
+		return centerSprite(spriteToCenter, background.getGlobalBounds());
+	}
+
 
 
 }

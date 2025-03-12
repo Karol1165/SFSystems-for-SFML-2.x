@@ -75,6 +75,15 @@ namespace SFS {
 	[[nodiscard]]
 	SFS_C_API sf::Vector2f centerSprite(const sf::Sprite& spriteToCenter, const sf::FloatRect& bounds);
 
+	/// <summary>
+	/// specialized function to center sprite on rectangle
+	/// </summary>
+	/// <param name="spriteToCenter"></param>
+	/// <param name="background"></param>
+	/// <returns>centered position of sprite</returns>
+	[[nodiscard]]
+	SFS_C_API sf::Vector2f centerSprite(const sf::Sprite& spriteToCenter, const sf::RectangleShape& background);
+
 }
 
 #endif
