@@ -10,7 +10,7 @@ namespace SFS {
 	bool BaseButton::CheckClick(sf::Vector2f mousePos, bool isClicked) {
 		bool isButtonClicked = false;
 		if (this->buttonBackground.getGlobalBounds().contains(mousePos)) {
-			this->buttonBackground.setTexture(this->buttonBgrData.mouseOn.texture);
+			BackgroundDataUpdate(true);
 
 			if (isClicked) {
 				this->clickSound.play();
@@ -23,7 +23,7 @@ namespace SFS {
 		}
 		else {
 			this->isMouseOn = false;
-			this->buttonBackground.setTexture(buttonBgrData.mouseOut.texture);
+			BackgroundDataUpdate(false);
 		}
 		return isButtonClicked;
 	}
@@ -43,6 +43,14 @@ namespace SFS {
 		target.draw(buttonBackground);
 	}
 
+	void BaseButton::BackgroundDataUpdate(bool isSpotted) {
+		if (isSpotted) {
+			setRectangleData(this->buttonBgrData.mouseOn, this->buttonBackground);
+		}
+		else {
+			setRectangleData(this->buttonBgrData.mouseOut, this->buttonBackground);
+		}
+	}
 
 	BaseButton::BaseButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, buttonFunc func) {
 		this->buttonBgrData.mouseOut = mouseOut;
@@ -53,16 +61,14 @@ namespace SFS {
 	}
 
 
-	BaseButton::BaseButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, buttonFunc func, sf::SoundBuffer& mouseEnteredSound,
-		sf::SoundBuffer& clickSound) {
+	BaseButton::BaseButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, buttonFunc func, const soundData& mouseEnteredSound,
+		const soundData& clickSound) {
 		this->buttonBgrData.mouseOut = mouseOut;
 		this->buttonBgrData.mouseOn = mouseOn;
 		setRectangleData(this->buttonBgrData.mouseOut, this->buttonBackground);
 		this->func = func;
-		this->mouseEnteredSound.setBuffer(mouseEnteredSound);
-		this->clickSound.setBuffer(clickSound);
-		this->mouseEnteredSound.setVolume(100);
-		this->clickSound.setVolume(100);
+		setSoundData(mouseEnteredSound, this->mouseEnteredSound);
+		setSoundData(clickSound, this->clickSound);
 		this->isMouseOn = false;
 	}
 
@@ -74,8 +80,6 @@ namespace SFS {
 
 	void TextButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(buttonBackground);
-		ClippedView<sf::Text> textView = ClippedView<sf::Text>(buttonBackground.getGlobalBounds());
-		textView.setObject(&buttonText);
 		target.draw(textView);
 	}
 
@@ -102,15 +106,47 @@ namespace SFS {
 		return isButtonClicked;
 	}
 
+	void TextButton::TextDataUpdate(bool isSpotted) {
+		if (isSpotted) {
+			setTextData(this->mouseOnTxtData, this->buttonText);
+		}
+		else {
+			setTextData(this->mouseOutTxtData, this->buttonText);
+		}
+		TextPosUpdate();
+	}
 
-	TextButton::TextButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, sf::Font& font,
-		const textData& mouseOutText, const textData& mouseOnText, std::wstring string,
-		buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
+	void TextButton::BackgroundDataUpdate(bool isSpotted) {
+		BaseButton::BackgroundDataUpdate(isSpotted);
+		TextPosUpdate();
+		this->textView.setBounds(this->buttonBackground.getGlobalBounds());
+	}
+
+
+	void TextButton::TextInit(const textData& mouseOutText, const textData& mouseOnText, sf::Font& font) {
+		this->mouseOutTxtData = mouseOutText;
+		this->mouseOnTxtData = mouseOnText;
+		this->buttonText.setFont(font);
+		TextDataUpdate();
+		this->textView.setBounds(this->buttonBackground.getGlobalBounds());
+		this->textView.setObject(&this->buttonText);
+	}
+
+	void TextButton::TextInit(const textData& mouseOutText, const textData& mouseOnText, sf::Font& font, std::wstring& string) {
 		this->mouseOutTxtData = mouseOutText;
 		this->mouseOnTxtData = mouseOnText;
 		this->buttonText.setFont(font);
 		this->buttonText.setString(string);
 		TextDataUpdate();
+		this->textView.setBounds(this->buttonBackground.getGlobalBounds());
+		this->textView.setObject(&this->buttonText);
+	}
+
+
+	TextButton::TextButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, sf::Font& font,
+		const textData& mouseOutText, const textData& mouseOnText, std::wstring string,
+		buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
+		this->TextInit(mouseOutText, mouseOnText, font, string);
 	}
 
 
@@ -118,42 +154,28 @@ namespace SFS {
 	TextButton::TextButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, sf::Font& font,
 		const textData& mouseOutText, const textData& mouseOnText,
 		buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func) {
-		this->mouseOutTxtData = mouseOutText;
-		this->mouseOnTxtData = mouseOnText;
-		this->buttonText.setFont(font);
-		TextDataUpdate();
+		this->TextInit(mouseOutText, mouseOnText, font);
 	}
 
 
 	TextButton::TextButton(sf::Vector2f pos, const rectangleShapeData& data, float scale, sf::Font& font,
 		const textData& textData, std::wstring string, buttonFunc func)
 		: BaseButton(pos, data, data, scale, func) {
-		this->mouseOutTxtData = textData;
-		this->mouseOnTxtData = textData;
-		this->buttonText.setFont(font);
-		this->buttonText.setString(string);
-		TextDataUpdate();
+		this->TextInit(textData, textData, font, string);
 	}
 
 
 	TextButton::TextButton(sf::Vector2f pos, const rectangleShapeData& data, float scale, sf::Font& font,
 		const textData& textData, buttonFunc func) : BaseButton(pos, data, data, scale, func) {
-		this->mouseOutTxtData = textData;
-		this->mouseOnTxtData = textData;
-		this->buttonText.setFont(font);
-		TextDataUpdate();
+		this->TextInit(textData, textData, font);
 	}
 
 
 	TextButton::TextButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, sf::Font& font,
 		const textData& mouseOutText, const textData& mouseOnText, std::wstring string,
-		sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func,
+		const soundData& mouseEnteredSound, const soundData& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, scale, func,
 			mouseEnteredSound, clickSound) {
-		this->mouseOutTxtData = mouseOutText;
-		this->mouseOnTxtData = mouseOnText;
-		this->buttonText.setFont(font);
-		this->buttonText.setString(string);
-		TextDataUpdate();
+		this->TextInit(mouseOutText, mouseOnText, font, string);
 	}
 
 
@@ -170,28 +192,26 @@ namespace SFS {
 		target.draw(buttonImage);
 	}
 
-
+	void ImageButton::ImageInit(sf::Texture& image, float iconScale) {
+		this->buttonImage.setTexture(image);
+		this->buttonImage.setScale(iconScale, iconScale);
+		this->ImagePosUpdate();
+	}
 
 
 	ImageButton::ImageButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float buttonScale,
 		sf::Texture& image, float iconScale, buttonFunc func) : BaseButton(pos, mouseOut,
 			mouseOn, buttonScale, func) {
-		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(iconScale, iconScale);
-		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
+		this->ImageInit(image, iconScale);
 	}
 
 	ImageButton::ImageButton(sf::Vector2f pos, const rectangleShapeData& data, float buttonScale, sf::Texture& image, float iconScale, buttonFunc func) : BaseButton(pos, data, data, buttonScale, func) {
-		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(iconScale, iconScale);
-		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
+		this->ImageInit(image, iconScale);
 	}
 
-	ImageButton::ImageButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float buttonScale, sf::Texture& image, float iconScale, sf::SoundBuffer& mouseEnteredSound,
-		sf::SoundBuffer& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, buttonScale, func, mouseEnteredSound, clickSound) {
-		this->buttonImage.setTexture(image);
-		this->buttonImage.setScale(iconScale, iconScale);
-		this->buttonImage.setPosition(centerSprite(buttonImage, buttonBackground));
+	ImageButton::ImageButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float buttonScale, sf::Texture& image, float iconScale, const soundData& mouseEnteredSound,
+		const soundData& clickSound, buttonFunc func) : BaseButton(pos, mouseOut, mouseOn, buttonScale, func, mouseEnteredSound, clickSound) {
+		this->ImageInit(image, iconScale);
 	}
 
 	///////////////////////////////////////////////////////
@@ -226,7 +246,7 @@ namespace SFS {
 
 
 	CheckBox::CheckBox(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float buttonScale,
-		sf::Texture& checkIcon, float iconScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound,
+		sf::Texture& checkIcon, float iconScale, const soundData& mouseEnteredSound, const soundData& clickSound,
 		buttonFunc whenStateChanges) : ImageButton(pos, mouseOut, mouseOn,
 			buttonScale, checkIcon, iconScale, mouseEnteredSound, clickSound, whenStateChanges), isChecked(false) {
 

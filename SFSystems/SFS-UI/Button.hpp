@@ -7,6 +7,7 @@
 #include "SFML/Audio.hpp"
 #include "framework.h"
 #include "Math.hpp"
+#include "UIViews.hpp"
 
 namespace SFS {
 	/////////////////////////////////////////////////////////////////
@@ -35,6 +36,8 @@ namespace SFS {
 
 		buttonFunc func;
 
+		virtual void BackgroundDataUpdate(bool isSpotted = false);
+
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		virtual bool CheckClick(sf::Vector2f, bool);
 	public:
@@ -43,8 +46,8 @@ namespace SFS {
 
 		BaseButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, buttonFunc func);
 		BaseButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, buttonFunc func,
-			sf::SoundBuffer& mouseEnteredSound,
-			sf::SoundBuffer& clickSound);
+			const soundData& mouseEnteredSound,
+			const soundData& clickSound);
 
 
 
@@ -102,20 +105,18 @@ namespace SFS {
 	protected:
 
 		sf::Text buttonText;
+		ClippedView textView;
 		textData mouseOutTxtData;
 		textData mouseOnTxtData;
 
 		void TextPosUpdate() { buttonText.setPosition(centerText(buttonText, buttonBackground)); }
 
-		void TextDataUpdate(bool isSpotted = false) {
-			if (isSpotted) {
-				setTextData(this->mouseOnTxtData, this->buttonText);
-			}
-			else {
-				setTextData(this->mouseOutTxtData, this->buttonText);
-			}
-			TextPosUpdate();
-		}
+		void TextDataUpdate(bool isSpotted = false);
+
+		void BackgroundDataUpdate(bool isSpotted = false) override;
+
+		void TextInit(const textData& mouseOutText, const textData& mouseOnText, sf::Font& font);
+		void TextInit(const textData& mouseOutText, const textData& mouseOnText, sf::Font& font, std::wstring& string);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -140,7 +141,7 @@ namespace SFS {
 
 		TextButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, sf::Font& font,
 			const textData& mouseOutText, const textData& mouseOnText, std::wstring string,
-			sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
+			const soundData& mouseEnteredSound, const soundData& clickSound, buttonFunc func = nullptr);
 
 		//Get
 
@@ -197,6 +198,9 @@ namespace SFS {
 	protected:
 		sf::Sprite buttonImage;
 
+		void ImagePosUpdate() { buttonImage.setPosition(centerSprite(buttonImage, buttonBackground)); }
+		void ImageInit(sf::Texture& image, float iconScale);
+
 		/// <summary>
 		/// Draws button
 		/// </summary>
@@ -216,7 +220,7 @@ namespace SFS {
 		ImageButton(sf::Vector2f pos, const rectangleShapeData& backgroundData, float buttonScale, sf::Texture& image, float iconScale, buttonFunc func = nullptr);
 
 		ImageButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float buttonScale,
-			sf::Texture& image, float iconScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound, buttonFunc func = nullptr);
+			sf::Texture& image, float iconScale, const soundData& mouseEnteredSound, const soundData& clickSound, buttonFunc func = nullptr);
 	};
 
 
@@ -237,7 +241,7 @@ namespace SFS {
 			sf::Texture& checkIcon, float iconScale, buttonFunc whenStateChanges = nullptr);
 
 		CheckBox(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float butttonScale,
-			sf::Texture& checkIcon, float iconScale, sf::SoundBuffer& mouseEnteredSound, sf::SoundBuffer& clickSound,
+			sf::Texture& checkIcon, float iconScale, const soundData& mouseEnteredSound, const soundData& clickSound,
 			buttonFunc whenStateChanges = nullptr);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
@@ -247,7 +251,7 @@ namespace SFS {
 			return this->isChecked;
 		}
 
-		void setCheck(bool isChecked) {
+		void setState(bool isChecked) {
 			this->isChecked = isChecked;
 		}
 

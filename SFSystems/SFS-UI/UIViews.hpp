@@ -10,52 +10,46 @@ namespace SFS {
 	////////////////////////////////////////////
 	//Clipped View
 
-	template <typename T>
-	concept DrawableType = std::is_base_of_v<sf::Drawable, T>;
 
-	template <DrawableType T>
 
 	class ClippedView : public sf::Drawable {
 	private:
-		mutable sf::RenderTexture renderTexture;
 		sf::FloatRect bounds;
-		T* object;
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-			sf::View view(bounds);
-			renderTexture.setView(view);
+		sf::Drawable* object;
+		mutable sf::View view;
 
-
-			renderTexture.clear(sf::Color::Transparent);
-
-
-			renderTexture.draw(*object, states);
-
-
-			renderTexture.display();
-
-
-			sf::Sprite sprite(renderTexture.getTexture());
-			sprite.setPosition(bounds.left, bounds.top);
-
-
-			target.draw(sprite, states);
+		void updateView() {
+			this->view.setCenter(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
+			this->view.setSize(bounds.width, bounds.height);
 		}
+
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	public:
-		ClippedView() = default;
+		ClippedView() {
+			this->object = nullptr;
+			this->bounds = sf::FloatRect();
+			this->view = sf::View();
+		}
 		~ClippedView() = default;
 
-		ClippedView(sf::FloatRect bounds) {
+		ClippedView(const sf::FloatRect& bounds) {
 			this->bounds = bounds;
-			renderTexture.create(static_cast<unsigned int>(bounds.width), static_cast<unsigned int>(bounds.height));
+			this->updateView();
+			this->object = nullptr;
+		}
+		ClippedView(const sf::FloatRect& bounds, sf::Drawable* object) {
+			this->bounds = bounds;
+			this->updateView();
+			this->object = object;
 		}
 
 
-		void setObject(const T* newObject) {
-			this->object = const_cast<T*>(newObject);
+		void setObject(sf::Drawable* newObject) {
+			this->object = newObject;
 		}
-		void setBounds(sf::FloatRect newBounds) {
+		void setBounds(const sf::FloatRect& newBounds) {
 			this->bounds = newBounds;
-			renderTexture.create(static_cast<unsigned int>(bounds.width), static_cast<unsigned int>(bounds.height));
+			this->updateView();
 		}
 
 

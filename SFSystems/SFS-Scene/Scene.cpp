@@ -41,23 +41,25 @@ namespace SFS {
 
 	template<typename F>
 	Scene::Scene(F func) {
-		if(func != nullptr)
+		if(func)
 			this->initFunc = func;
+		else 
+			this->initFunc = nullptr;
 	}
 
 	template <typename F>
 	Scene::Scene(F initFunc, sf::RenderWindow* owner) : Scene(initFunc) {
-		if (owner != nullptr)
+		if (owner)
 			this->owner = owner;
 	}
 
 	Scene::Scene(const Scene& scene) : Scene(scene.initFunc) {
-		if(scene.owner != nullptr)
+		if(scene.owner)
 			this->owner = scene.owner;
 	}
 
 	void Scene::SetActive() {
-		if (this->owner != nullptr) {
+		if (this->owner) {
 			this->ui.clear();
 			this->staticUI.clear();
 			this->gameObjects.clear();
@@ -75,7 +77,10 @@ namespace SFS {
 	}
 
 	void Scene::SetActive(sf::RenderWindow* owner) {
-		this->owner = owner;
+		if (owner)
+			this->owner = owner;
+		else
+			this->owner = nullptr;
 		this->SetActive();
 	}
 
@@ -84,9 +89,9 @@ namespace SFS {
 	}
 
 	Scene& Scene::operator=(const Scene& scene) {
-		if (scene.initFunc != nullptr)
+		if (scene.initFunc)
 			this->initFunc = scene.initFunc;
-		if (scene.owner != nullptr)
+		if (scene.owner)
 			this->owner = scene.owner;
 		return *this;
 	}

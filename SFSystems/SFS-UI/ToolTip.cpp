@@ -2,22 +2,21 @@
 #include "ToolTip.hpp"
 
 namespace SFS {
-	////////////////////////////////////////
-	//toolTip
+
 
 	toolTip::toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible,
 		sf::Time timeToActivate) {
-		sf::Text tipText;
 		setRectangleData(backgroundData, this->background);
-		setTextData(tipTextData, tipText);
+
 		this->background.setPosition(pos);
 		this->fieldWhenActive = fieldWhenVisible;
-		tipText.setFont(textFont);
-		tipText.setString(text);
-		tipText.setPosition(centerText(tipText, background));
+		this->text.setFont(textFont);
+		setTextData(tipTextData, this->text);
+		this->text.setString(text);
+		this->text.setPosition(centerText(this->text, background));
 
-		this->Text.setObject(new sf::Text(tipText));
-		this->Text.setBounds(background.getGlobalBounds());
+		this->textView.setObject(&this->text);
+		this->textView.setBounds(background.getGlobalBounds());
 
 		if (timeToActivate != sf::Time::Zero) {
 			this->requiredCursorOverTime = timeToActivate;
@@ -48,7 +47,7 @@ namespace SFS {
 	void toolTip::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		if (isVisible) {
 			target.draw(this->background, states);
-			target.draw(this->Text, states);
+			target.draw(this->textView, states);
 		}
 	}
 }

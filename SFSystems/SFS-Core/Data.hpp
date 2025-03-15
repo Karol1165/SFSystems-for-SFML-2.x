@@ -2,6 +2,7 @@
 #ifndef DATA_HPP_
 #define DATA_HPP_
 #include<SFML/Graphics.hpp>
+#include<SFML/Audio.hpp>
 #include<unordered_map>
 #include "framework.h"
 #include <memory>
@@ -44,7 +45,7 @@ namespace SFS {
 		sf::Color outlineColor;
 		sf::Vector2f size;
 		float outlineThickness = 0.0f;
-		sf::Texture* texture;
+		sf::Texture* texture = nullptr;
 	};
 	SFS_C_API inline void setRectangleData(const rectangleShapeData& data, sf::RectangleShape& object) {
 		object.setSize(data.size);
@@ -58,7 +59,7 @@ namespace SFS {
 		sf::Color outlineColor;
 		float radius = 10.0f;
 		float outlineThickness = 0.0f;
-		sf::Texture* texture;
+		sf::Texture* texture = nullptr;
 	};
 	SFS_C_API inline void setCircleData(const circleShapeData& data, sf::CircleShape& object) {
 		object.setRadius(data.radius);
@@ -66,6 +67,19 @@ namespace SFS {
 		object.setOutlineColor(data.outlineColor);
 		object.setOutlineThickness(data.outlineThickness);
 		object.setTexture(data.texture);
+	}
+	struct SFS_C_API soundData {
+		sf::SoundBuffer* buffer;
+		float volume = 100.0f;
+		float pitch = 1.0f;
+		bool loop = false;
+	};
+	SFS_C_API inline void setSoundData(const soundData& data, sf::Sound& object) {
+		if (data.buffer)
+			object.setBuffer(*data.buffer);
+		object.setVolume(data.volume);
+		object.setPitch(data.pitch);
+		object.setLoop(data.loop);
 	}
 
 	template <typename T>

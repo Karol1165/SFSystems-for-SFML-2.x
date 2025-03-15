@@ -15,12 +15,13 @@ namespace SFS {
 
 		this->text.setFont(font);
 		setTextData(textData, this->text);
+
+		this->textView.setObject(&this->text);
+		this->textView.setBounds(this->background.getGlobalBounds());
 	}
 
 	void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(background, states);
-		ClippedView<sf::Text> textView = ClippedView<sf::Text>(background.getGlobalBounds());
-		textView.setObject(&text);
 		target.draw(textView, states);
 	}
 
@@ -28,14 +29,12 @@ namespace SFS {
 		if (e.type == sf::Event::MouseButtonPressed) {
 			if (e.mouseButton.button == sf::Mouse::Left) {
 				if (background.getGlobalBounds().contains(mousePos)) {
-					setRectangleData(activeTextBoxData, this->background);
-					this->text.setPosition(centerText(this->text, this->background));
+					textBoxUpdate(true);
 					isChecked = true;
 				}
 				else {
 					isChecked = false;
-					setRectangleData(notActiveTextBoxData, this->background);
-					this->text.setPosition(centerText(this->text, this->background));
+					textBoxUpdate(false);
 				}
 			}
 		}

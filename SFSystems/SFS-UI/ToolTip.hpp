@@ -16,9 +16,10 @@ namespace SFS {
 	class SFS_UI_API toolTip : public UI {
 	private:
 		sf::RectangleShape background;
-		ClippedView<sf::Text> Text;
+		sf::Text text;
+		ClippedView textView;
 		sf::FloatRect fieldWhenActive;
-		bool isVisible;
+		bool isVisible = false;
 
 		std::optional<sf::Time> cursorOverTime;
 		std::optional<sf::Time> requiredCursorOverTime;

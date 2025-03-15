@@ -119,17 +119,10 @@ namespace SFS {
 
 
 	struct SFS_S_API WindowSettings {
-		sf::ContextSettings contextSettings;
-		bool vSyncEnabled;
-		bool keyRepeatEnabled;
-		uint16_t framerateLimit;
-		WindowSettings(const sf::ContextSettings& contextSettings = sf::ContextSettings(), bool vSyncEnabled = false, bool keyRepeatEnabled = false,
-			uint16_t framerateLimit = 30) {
-			this->contextSettings = contextSettings;
-			this->vSyncEnabled = vSyncEnabled;
-			this->keyRepeatEnabled = keyRepeatEnabled;
-			this->framerateLimit = framerateLimit;
-		}
+		sf::ContextSettings contextSettings = sf::ContextSettings();
+		bool vSyncEnabled = false;
+		bool keyRepeatEnabled = false;
+		uint16_t framerateLimit = 30;
 	};
 
 	class SFS_S_API Window : public sf::RenderWindow {

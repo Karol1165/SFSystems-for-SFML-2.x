@@ -21,11 +21,23 @@ namespace SFS {
 	class SFS_UI_API TextBox : public UI {
 	private:
 		sf::Text text;
+		ClippedView textView;
 		sf::RectangleShape background;
 		bool isChecked;
 
 		rectangleShapeData notActiveTextBoxData;
 		rectangleShapeData activeTextBoxData;
+
+		void textBoxUpdate(bool isActive = false) {
+			if (isActive) {
+				setRectangleData(activeTextBoxData, this->background);
+			}
+			else {
+				setRectangleData(notActiveTextBoxData, this->background);
+			}
+			this->text.setPosition(centerText(this->text, this->background));
+			this->textView.setBounds(this->background.getGlobalBounds());
+		}
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	public:
