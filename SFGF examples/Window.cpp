@@ -6,9 +6,9 @@ void MainWindowInitFunc(SFS::Window& w) {
 	initializeManagers();
 	loadStaticResources();
 	mainScene.SetInitFunc(mainSceneInitialization);
+	optionsScene.SetInitFunc(optionsSceneInitialization);
 
-	w.create(sf::VideoMode(1200, 800), "Example");
-	mainScene.SetInitFunc(mainSceneInitialization);
+	w.create(sf::VideoMode(1500, 800), "Example");
 	w.setScene(mainScene);
 
 	

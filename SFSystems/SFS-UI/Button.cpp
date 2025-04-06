@@ -55,6 +55,7 @@ namespace SFS {
 	BaseButton::BaseButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale, buttonFunc func) {
 		this->buttonBgrData.mouseOut = mouseOut;
 		this->buttonBgrData.mouseOn = mouseOn;
+		this->buttonBackground.setPosition(pos);
 		setRectangleData(this->buttonBgrData.mouseOut, this->buttonBackground);
 		this->func = func;
 		this->isMouseOn = false;
@@ -65,6 +66,7 @@ namespace SFS {
 		const soundData& clickSound) {
 		this->buttonBgrData.mouseOut = mouseOut;
 		this->buttonBgrData.mouseOn = mouseOn;
+		this->buttonBackground.setPosition(pos);
 		setRectangleData(this->buttonBgrData.mouseOut, this->buttonBackground);
 		this->func = func;
 		setSoundData(mouseEnteredSound, this->mouseEnteredSound);
@@ -89,6 +91,7 @@ namespace SFS {
 		if (this->buttonBackground.getGlobalBounds().contains(mousePos)) {
 			this->buttonBackground.setTexture(this->buttonBgrData.mouseOn.texture);
 			TextDataUpdate(true);
+			BackgroundDataUpdate(true);
 			if (isClicked) {
 				this->clickSound.play();
 				isButtonClicked = true;
@@ -101,6 +104,7 @@ namespace SFS {
 		else {
 			this->isMouseOn = false;
 			TextDataUpdate(false);
+			BackgroundDataUpdate(false);
 			this->buttonBackground.setTexture(this->buttonBgrData.mouseOut.texture);
 		}
 		return isButtonClicked;

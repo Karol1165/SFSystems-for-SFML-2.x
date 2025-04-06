@@ -45,30 +45,23 @@ namespace SFS {
 			this->initFunc = func;
 		else 
 			this->initFunc = nullptr;
+		this->owner = nullptr;
 	}
 
-	template <typename F>
-	Scene::Scene(F initFunc, sf::RenderWindow* owner) : Scene(initFunc) {
-		if (owner)
-			this->owner = owner;
-	}
+
 
 	Scene::Scene(const Scene& scene) : Scene(scene.initFunc) {
-		if(scene.owner)
-			this->owner = scene.owner;
+		this->owner = nullptr;
 	}
 
-	void Scene::SetActive() {
-		if (this->owner) {
-			this->ui.clear();
-			this->staticUI.clear();
-			this->gameObjects.clear();
-			this->controllers.clear();
-
-			if (this->initFunc != nullptr)
-				this->initFunc(*this);
-			else
+	void Scene::SetActive(sf::RenderWindow* owner) {
+		if (owner) {
+			this->owner = owner;
+			if(!this->initFunc)
 				throw std::runtime_error("Trying to activate scene without initialization");
+
+
+			this->initFunc(*this);
 
 			this->sceneTheme.play();
 		}
@@ -76,23 +69,19 @@ namespace SFS {
 			throw std::runtime_error("Trying to activate scene without owner window");
 	}
 
-	void Scene::SetActive(sf::RenderWindow* owner) {
-		if (owner)
-			this->owner = owner;
-		else
-			this->owner = nullptr;
-		this->SetActive();
-	}
-
 	void Scene::DisableActive() {
+		this->owner = nullptr;
 		sceneTheme.pause();
+		this->ui.clear();
+		this->staticUI.clear();
+		this->gameObjects.clear();
+		this->controllers.clear();
 	}
 
 	Scene& Scene::operator=(const Scene& scene) {
 		if (scene.initFunc)
 			this->initFunc = scene.initFunc;
-		if (scene.owner)
-			this->owner = scene.owner;
+		this->owner = nullptr;
 		return *this;
 	}
 
@@ -116,26 +105,26 @@ namespace SFS {
 		this->initManager();
 	}
 
-	Window::Window(sf::VideoMode mode, const sf::String& title, uint32_t style, const sf::ContextSettings& settings) 
-		: sf::RenderWindow(mode, title, style, settings) {
+	Window::Window(sf::VideoMode mode, const sf::String& title, uint32_t style, const WindowSettings& settings) 
+		: sf::RenderWindow(mode, title, style) {
+		this->changeWindowSettings(settings);
 		this->initManager();
 	}
 
-	Window::Window(sf::WindowHandle handle, const sf::ContextSettings& settings)
-		: sf::RenderWindow(handle, settings) {
+	Window::Window(sf::WindowHandle handle, const WindowSettings& settings)
+		: sf::RenderWindow(handle) {
+		this->changeWindowSettings(settings);
 		this->initManager();
 	}
 
-	template <typename F>
-	Window::Window(F initFunc) {
-		this->setInitFunc(initFunc);
-	}
+
 
 	void Window::create(sf::VideoMode mode, const sf::String& title, uint32_t style, const WindowSettings& settings) {
 		sf::RenderWindow::create(mode, title, style, settings.contextSettings);
 		this->setVerticalSyncEnabled(settings.vSyncEnabled);
 		this->setKeyRepeatEnabled(settings.keyRepeatEnabled);
 		this->setFramerateLimit(settings.framerateLimit);
+		this->initManager();
 	}
 
 	void Window::create(sf::WindowHandle handle, const WindowSettings& settings) {
@@ -143,11 +132,13 @@ namespace SFS {
 		this->setVerticalSyncEnabled(settings.vSyncEnabled);
 		this->setKeyRepeatEnabled(settings.keyRepeatEnabled);
 		this->setFramerateLimit(settings.framerateLimit);
+		this->initManager();
 	}
 
 
 
 	void Window::changeWindowSettings(const WindowSettings& settings) {
+		//Checking if settings that need recreation of the window are the same
 		if (this->getSettings().antialiasingLevel == settings.contextSettings.antialiasingLevel &&
 			this->getSettings().attributeFlags == settings.contextSettings.attributeFlags &&
 			this->getSettings().depthBits == settings.contextSettings.depthBits &&
@@ -172,7 +163,9 @@ namespace SFS {
 			if (this->initFunc != nullptr)
 				this->initFunc(*this);
 
-			this->manager.activateScene();
+			this->doTasks();
+
+
 
 
 			sf::Event e;
@@ -183,6 +176,8 @@ namespace SFS {
 			fakeEvent.type = sf::Event::Count;
 
 			while (this->isOpen()) {
+
+				this->doTasks();
 
 				mousePos = this->mapPixelToCoords(sf::Mouse::getPosition(*this), this->getView());
 				hasEvents = false;
@@ -200,14 +195,14 @@ namespace SFS {
 				}
 				manager.getCurrentScene()->Update(e, mousePos);
 
-				this->clear();
+				this->clear(this->clearColor);
 
 				this->draw(*manager.getCurrentScene());
 
 				this->display();
 			}
 		}
-		catch (std::exception exeption) {
+		catch (const std::exception) {
 			this->close();
 		}
 		this->isWindowRunning = false;

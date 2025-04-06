@@ -11,7 +11,7 @@
 namespace SFS {
 
 	template <typename T>
-	using ptr = std::unique_ptr<T>;
+	using ptr = std::shared_ptr<T>;
 
 
 	template <typename V, typename T>
@@ -33,12 +33,15 @@ namespace SFS {
 		sf::Color fillColor;
 		sf::Color outlineColor;
 		float outlineThickness = 0.0f;
+		sf::Font* font = nullptr;
 	};
 	SFS_C_API inline void setTextData(const textData& data, sf::Text& object) {
 		object.setCharacterSize(data.characterSize);
 		object.setFillColor(data.fillColor);
 		object.setOutlineColor(data.outlineColor);
 		object.setOutlineThickness(data.outlineThickness);
+		if (data.font)
+			object.setFont(*data.font);
 	}
 	struct SFS_C_API rectangleShapeData {
 		sf::Color fillColor;
@@ -86,7 +89,7 @@ namespace SFS {
 	class idVector {
 	private:
 		std::vector<T> objects;
-		std::unordered_map<std::string, T*> ids;
+		std::unordered_map<std::string, size_t> ids;
 	public:
 
 		inline void push_back(const T& object);
@@ -97,16 +100,28 @@ namespace SFS {
 		inline void erase(size_t index);
 
 		[[nodiscard]]
-		T& get(const size_t& index) const;
+		const T& get(const size_t& index) const;
 
 		[[nodiscard]]
-		T& get(const std::string& id) const;
+		T& get(const size_t& index);
 
 		[[nodiscard]]
-		T& operator[] (const size_t& index) const;
+		const T& get(const std::string& id) const;
 
 		[[nodiscard]]
-		T& operator[] (const std::string& id) const;
+		T& get(const std::string& id);
+
+		[[nodiscard]]
+		const T& operator[] (const size_t& index) const;
+
+		[[nodiscard]]
+		T& operator[] (const size_t& index);
+
+		[[nodiscard]]
+		const T& operator[] (const std::string& id) const;
+
+		[[nodiscard]]
+		T& operator[] (const std::string& id);
 
 		void clear() noexcept { this->objects.clear(); this->ids.clear(); }
 

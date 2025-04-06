@@ -6,7 +6,6 @@
 #include"Window.hpp"
 
 int main() {
-	SFS::Window window;
 	window.setInitFunc(MainWindowInitFunc);
 	window.run();
 	return 0;
