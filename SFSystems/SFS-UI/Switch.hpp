@@ -45,7 +45,7 @@ namespace SFS {
 	class SFS_UI_API SwitchStates {
 	private:
 		std::vector<SwitchOption> options;
-		uint8_t currentElement;
+		size_t currentElement;
 
 	public:
 		SwitchStates() = default;
@@ -82,12 +82,12 @@ namespace SFS {
 		}
 
 		[[nodiscard]]
-		uint8_t getCurrentOptionIndex() const {
+		size_t getCurrentOptionIndex() const {
 			if (this->options.empty()) throw new std::runtime_error("No options aviable");
 			return this->currentElement;
 		}
 
-		void setCurrentOption(uint8_t index) {
+		void setCurrentOption(size_t index) {
 			if (this->options.empty()) throw new std::out_of_range("Index out of range");
 			if (index < options.size()) currentElement = index;
 		}
@@ -219,7 +219,7 @@ namespace SFS {
 		SwitchOption getCurrentOption() const { return this->states.getCurrentOption(); }
 
 		[[nodiscard]]
-		uint8_t getCurrentOptionIndex() const { return this->states.getCurrentOptionIndex(); }
+		size_t getCurrentOptionIndex() const { return this->states.getCurrentOptionIndex(); }
 
 		[[nodiscard]]
 		SwitchStates getOptions() const { return this->states; }
@@ -227,7 +227,7 @@ namespace SFS {
 		[[nodiscard]]
 		std::wstring getCurrentText() const { return this->states.getCurrentOption().getName(); }
 
-		void setCurrentOption(uint8_t index) {
+		void setCurrentOption(size_t index) {
 			this->states.setCurrentOption(index);
 		}
 
