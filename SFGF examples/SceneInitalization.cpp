@@ -19,7 +19,7 @@ void makeTitle(SFS::Scene& scene) {
 void mainSceneInitialization(SFS::Scene& scene) {
 	makeTitle(scene);
 
-	scene.ui.push_back("OptionsBtn", SFS::ptr<SFS::UI>(new SFS::TextButton(sf::Vector2f(200, 500), buttonBackgroundData, buttonSpottedBackgroundData, 1, globalFont,
+	scene.ui.push_back("OptionsBtn", SFS::ptr<SFS::UI>(new SFS::TextButton(sf::Vector2f(200, 500), buttonBackgroundData, buttonSpottedBackgroundData,
 		buttonTextData, buttonSpottedTextData, L"Options", optionsBtnFunc)));
 
 

@@ -13,20 +13,9 @@ namespace SFS {
 	template <typename T>
 	using ptr = std::shared_ptr<T>;
 
-
-	template <typename V, typename T>
-	concept isVariantOf = std::is_base_of_v<T, V>;
-
-	template <typename T>
-	inline ptr<T>&& make_ptr(T object) {
-		return std::make_unique(object);
+	inline void deactivateEvent(sf::Event& e) {
+		e.type = sf::Event::Count;
 	}
-
-	template <typename T, isVariantOf<T> O>
-	inline O* GetFromPtr(ptr<T>& pointer) {
-		return dynamic_cast<O*> (pointer.get());
-	}
-
 
 	struct SFS_C_API textData {
 		int characterSize = 14;

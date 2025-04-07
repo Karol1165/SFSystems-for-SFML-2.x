@@ -30,7 +30,7 @@ namespace SFS {
 
 		toolTip() = default;
 		~toolTip() = default;
-		toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible,
+		toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::FloatRect fieldWhenVisible,
 			sf::Time timeToActivate = sf::Time::Zero);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;

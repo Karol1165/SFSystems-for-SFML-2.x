@@ -45,7 +45,7 @@ namespace SFS {
 	class SFS_UI_API SwitchStates {
 	private:
 		std::vector<SwitchOption> options;
-		size_t currentElement;
+		size_t currentElement = 0;
 
 	public:
 		SwitchStates() = default;
@@ -53,7 +53,7 @@ namespace SFS {
 
 		SwitchStates(const SwitchStates& original) : options(original.options) { this->currentElement = original.currentElement; }
 
-		void AddOption(const SwitchOption option) {
+		void AddOption(const SwitchOption& option) {
 			this->options.push_back(option);
 			if (this->options.size() == 1) {
 				this->currentElement = 0;
@@ -62,6 +62,7 @@ namespace SFS {
 
 		void Next() {
 			if (this->options.empty()) return;
+
 			if (this->currentElement + 1 < this->options.size())
 				this->currentElement++;
 			else
@@ -69,6 +70,7 @@ namespace SFS {
 		}
 		void Last() {
 			if (this->options.empty()) return;
+
 			if (this->currentElement > 0)
 				this->currentElement--;
 			else
@@ -112,7 +114,7 @@ namespace SFS {
 
 		class SFS_UI_API baseSwitchButton : public UI {
 		public:
-			enum mode { last, next };
+			enum class mode { last, next };
 			void setMode(mode newMode) { this->buttonMode = newMode; }
 
 			[[nodiscard]]
@@ -141,15 +143,15 @@ namespace SFS {
 
 			~textSwitchButton() = default;
 
-			textSwitchButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale,
-				sf::Font& font, textData mouseOutText, textData mouseOnText,
-				std::wstring string, const soundData& mouseEnteredSound, const soundData& clickSound, mode buttonMode, Switch* owner);
+			textSwitchButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
+				textData mouseOutText, textData mouseOnText, std::wstring string,
+				const soundData& mouseEnteredSound, const soundData& clickSound, mode buttonMode, Switch* owner);
 
-			textSwitchButton(sf::Vector2f pos, const rectangleShapeData& data, float scale, sf::Font& font, textData textData,
+			textSwitchButton(sf::Vector2f pos, const rectangleShapeData& data, textData textData,
 				std::wstring string, mode buttonMode, Switch* owner);
 
-			textSwitchButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float scale,
-				sf::Font& font, textData mouseOutText, textData mouseOnText,
+			textSwitchButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
+				textData mouseOutText, textData mouseOnText,
 				std::wstring string, mode buttonMode, Switch* owner);
 
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -174,13 +176,13 @@ namespace SFS {
 
 			~imageSwitchButton() = default;
 
-			imageSwitchButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float buttonScale,
+			imageSwitchButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
 				sf::Texture& image, float iconScale, mode buttonMode, Switch* owner);
 
-			imageSwitchButton(sf::Vector2f pos, const rectangleShapeData& data, float buttonScale,
+			imageSwitchButton(sf::Vector2f pos, const rectangleShapeData& data,
 				sf::Texture& image, float iconScale, mode buttonMode, Switch* owner);
 
-			imageSwitchButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, float buttonScale,
+			imageSwitchButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
 				sf::Texture& image, float iconScale, const soundData& mouseEnteredSound,
 				const soundData& clickSound, mode buttonMode, Switch* owner);
 
@@ -195,23 +197,23 @@ namespace SFS {
 		Switch() = default;
 		~Switch() = default;
 
-		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData,
-			const rectangleShapeData& buttonMouseOut, const rectangleShapeData& buttonMouseOn, float buttonScale,
-			sf::Font& buttonFont, textData buttonMouseOutText, textData buttonMouseOnText,
+		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, textData optionTextData,
+			const rectangleShapeData& buttonMouseOut, const rectangleShapeData& buttonMouseOn,
+			textData buttonMouseOutText, textData buttonMouseOnText,
 			const soundData& buttonSpottedSound, const soundData& buttonClickSound, std::wstring leftButtonText, std::wstring rightButtonText,
 			SwitchStates states);
 
-		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, const rectangleShapeData& buttonData,
-			float buttonScale, sf::Font& buttonFont, textData buttonTextData, 
+		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, textData optionTextData, const rectangleShapeData& buttonData,
+			textData buttonTextData, 
 			std::wstring leftButtonText, std::wstring rightButtonText, SwitchStates states);
 
-		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData,
-			const rectangleShapeData& buttonMouseOut, const rectangleShapeData& buttonMouseOn, float buttonScale,
+		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, textData optionTextData,
+			const rectangleShapeData& buttonMouseOut, const rectangleShapeData& buttonMouseOn,
 			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, float buttonIconScale, const soundData& buttonSpottedSound,
 			const soundData& buttonClickSound, SwitchStates states);
 
-		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, sf::Font& textFont, textData optionTextData, const rectangleShapeData& buttonTex,
-			float buttonScale, sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, float buttonIconScale,
+		Switch(sf::Vector2f pos, rectangleShapeData backgroundData, textData optionTextData, const rectangleShapeData& buttonTex,
+			sf::Texture& leftButtonImage, sf::Texture& rightButtonImage, float buttonIconScale,
 			 SwitchStates states);
 
 
@@ -237,7 +239,7 @@ namespace SFS {
 
 	private:
 
-		void optionTextInit(const SwitchStates& states, const sf::Font& font, const textData& data);
+		void optionTextInit(const SwitchStates& states, const textData& data);
 
 		sf::RectangleShape background;
 		ptr<baseSwitchButton> leftButton;

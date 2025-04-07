@@ -4,13 +4,13 @@
 namespace SFS {
 
 
-	toolTip::toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::Font& textFont, sf::FloatRect fieldWhenVisible,
+	toolTip::toolTip(rectangleShapeData backgroundData, textData tipTextData, sf::Vector2f pos, std::wstring text, sf::FloatRect fieldWhenVisible,
 		sf::Time timeToActivate) {
 		setRectangleData(backgroundData, this->background);
 
 		this->background.setPosition(pos);
 		this->fieldWhenActive = fieldWhenVisible;
-		this->text.setFont(textFont);
+
 		setTextData(tipTextData, this->text);
 		this->text.setString(text);
 		this->text.setPosition(centerText(this->text, background));

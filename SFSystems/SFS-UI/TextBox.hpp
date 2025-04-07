@@ -23,18 +23,17 @@ namespace SFS {
 		sf::Text text;
 		ClippedView textView;
 		sf::RectangleShape background;
-		bool isChecked;
+		bool isChecked = false;
 
 		rectangleShapeData notActiveTextBoxData;
 		rectangleShapeData activeTextBoxData;
 
 		void textBoxUpdate(bool isActive = false) {
-			if (isActive) {
+			if (isActive)
 				setRectangleData(activeTextBoxData, this->background);
-			}
-			else {
+			else
 				setRectangleData(notActiveTextBoxData, this->background);
-			}
+
 			this->text.setPosition(centerText(this->text, this->background));
 			this->textView.setBounds(this->background.getGlobalBounds());
 		}
@@ -44,7 +43,7 @@ namespace SFS {
 		TextBox() = default;
 		~TextBox() = default;
 
-		TextBox(sf::Vector2f pos, rectangleShapeData boxData, rectangleShapeData activeBoxData, textData textData, sf::Font& font);
+		TextBox(sf::Vector2f pos, rectangleShapeData boxData, rectangleShapeData activeBoxData, textData textData);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 

@@ -6,14 +6,13 @@ namespace SFS {
 	//TextBox
 
 
-	TextBox::TextBox(sf::Vector2f pos, rectangleShapeData boxData, rectangleShapeData activeBoxData, textData textData, sf::Font& font) : isChecked(false) {
+	TextBox::TextBox(sf::Vector2f pos, rectangleShapeData boxData, rectangleShapeData activeBoxData, textData textData) : isChecked(false) {
 		this->notActiveTextBoxData = boxData;
 		this->activeTextBoxData = activeBoxData;
 
 		this->background.setPosition(pos);
 		setRectangleData(notActiveTextBoxData, this->background);
 
-		this->text.setFont(font);
 		setTextData(textData, this->text);
 
 		this->textView.setObject(&this->text);
@@ -31,6 +30,7 @@ namespace SFS {
 				if (background.getGlobalBounds().contains(mousePos)) {
 					textBoxUpdate(true);
 					isChecked = true;
+					deactivateEvent(e);
 				}
 				else {
 					isChecked = false;

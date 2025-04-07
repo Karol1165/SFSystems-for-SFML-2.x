@@ -41,10 +41,11 @@ namespace SFS {
 
 	template<typename F>
 	Scene::Scene(F func) {
-		if(func)
-			this->initFunc = func;
-		else 
+		if(!func)
 			this->initFunc = nullptr;
+
+		this->initFunc = func;
+		 
 		this->owner = nullptr;
 	}
 
@@ -55,18 +56,17 @@ namespace SFS {
 	}
 
 	void Scene::SetActive(sf::RenderWindow* owner) {
-		if (owner) {
-			this->owner = owner;
-			if(!this->initFunc)
-				throw std::runtime_error("Trying to activate scene without initialization");
-
-
-			this->initFunc(*this);
-
-			this->sceneTheme.play();
-		}
-		else
+		if (!owner) 
 			throw std::runtime_error("Trying to activate scene without owner window");
+
+		this->owner = owner;
+
+		if(!this->initFunc)
+			throw std::runtime_error("Trying to activate scene without initialization");
+
+		this->initFunc(*this);
+
+		this->sceneTheme.play();
 	}
 
 	void Scene::DisableActive() {
@@ -106,14 +106,14 @@ namespace SFS {
 	}
 
 	Window::Window(sf::VideoMode mode, const sf::String& title, uint32_t style, const WindowSettings& settings) 
-		: sf::RenderWindow(mode, title, style) {
-		this->changeWindowSettings(settings);
+		: sf::RenderWindow(mode, title, style, settings.contextSettings) {
+		this->changeNonContextSettings(settings);
 		this->initManager();
 	}
 
 	Window::Window(sf::WindowHandle handle, const WindowSettings& settings)
-		: sf::RenderWindow(handle) {
-		this->changeWindowSettings(settings);
+		: sf::RenderWindow(handle, settings.contextSettings) {
+		this->changeNonContextSettings(settings);
 		this->initManager();
 	}
 
@@ -121,17 +121,13 @@ namespace SFS {
 
 	void Window::create(sf::VideoMode mode, const sf::String& title, uint32_t style, const WindowSettings& settings) {
 		sf::RenderWindow::create(mode, title, style, settings.contextSettings);
-		this->setVerticalSyncEnabled(settings.vSyncEnabled);
-		this->setKeyRepeatEnabled(settings.keyRepeatEnabled);
-		this->setFramerateLimit(settings.framerateLimit);
+		this->changeNonContextSettings(settings);
 		this->initManager();
 	}
 
 	void Window::create(sf::WindowHandle handle, const WindowSettings& settings) {
 		sf::RenderWindow::create(handle, settings.contextSettings);
-		this->setVerticalSyncEnabled(settings.vSyncEnabled);
-		this->setKeyRepeatEnabled(settings.keyRepeatEnabled);
-		this->setFramerateLimit(settings.framerateLimit);
+		this->changeNonContextSettings(settings);
 		this->initManager();
 	}
 
@@ -146,9 +142,7 @@ namespace SFS {
 			this->getSettings().minorVersion == settings.contextSettings.minorVersion &&
 			this->getSettings().sRgbCapable == settings.contextSettings.sRgbCapable &&
 			this->getSettings().stencilBits == settings.contextSettings.stencilBits) {
-			this->setFramerateLimit(settings.framerateLimit);
-			this->setVerticalSyncEnabled(settings.vSyncEnabled);
-			this->setKeyRepeatEnabled(settings.keyRepeatEnabled);
+			this->changeNonContextSettings(settings);
 		}
 		else {
 			this->create(this->getSystemHandle(), settings);
@@ -164,9 +158,6 @@ namespace SFS {
 				this->initFunc(*this);
 
 			this->doTasks();
-
-
-
 
 			sf::Event e;
 			sf::Vector2f mousePos;

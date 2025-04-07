@@ -171,7 +171,11 @@ namespace SFS {
 			}
 		}
 
-		
+		void changeNonContextSettings(const WindowSettings& settings) {
+			this->setVerticalSyncEnabled(settings.vSyncEnabled);
+			this->setKeyRepeatEnabled(settings.keyRepeatEnabled);
+			this->setFramerateLimit(settings.framerateLimit);
+		}
 		
 	public:
 		Window();
