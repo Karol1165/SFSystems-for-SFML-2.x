@@ -9,84 +9,147 @@
 #include<ranges>
 #include <functional>
 #include <queue>
+#include "Task.hpp"
+#include "Registrar.hpp"
 #include "framework.h"
 
 namespace SFS {
 
-	//template <typename T>
-	//using ptr = std::unique_ptr<T>;
+	template <typename Derived>
+	class BaseScene : public sf::Drawable {
+	public:
+		using InitFunc = void (*) (Derived&);
+		using Task = BaseTask<Derived>;
+		using TaskQueue = TaskQueue<Derived>;
 
+		BaseScene() = default;
+		~BaseScene() = default;
+		BaseScene(const BaseScene&);
+		BaseScene& operator=(const BaseScene&);
 
+		virtual void SetActive();
+		virtual void DisableActive() = 0;
+		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) = 0;
+		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) = 0;
 
-	class SFS_S_API Scene : public sf::Drawable {
+		void setInitFunc(InitFunc func) { this->initFunc = func; }
+
+		void setView(const sf::View& view) { this->SceneView = view; }
+
+		[[nodiscard]]
+		bool getIsActive() const { return this->isActive; }
+
+		[[nodiscard]]
+		sf::View getView() const { return this->SceneView; }
+
+		[[nodiscard]]
+		sf::Time getDeltaTime() const { return this->clock.getElapsedTime(); }
+
+		[[nodiscard]]
+		bool hasInitFunc() const { return this->initFunc; }
+		
 	protected:
+		InitFunc initFunc = nullptr;
 
-		bool isLeftMousePressed = false;
-		bool isRightMousePressed = false;
-		sf::Vector2f mousePos;
+		bool isActive = false;
 
 		sf::View SceneView;
 
 		sf::Clock clock;
-		sf::Clock uiClock;
 
-		typedef void(*sceneInit) (Scene&);
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
 
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		template<typename T>
+		void addObject(idVector<ptr<T>>& container, T* newElement, std::vector<std::weak_ptr<Registrar<T>>> registrarContainer,
+			std::optional<std::string> id);
+		template<typename T>
+		void addRegistrar(std::vector<std::weak_ptr<Registrar<T>>>& container, std::weak_ptr<Registrar<T>> newElement);
+	};
+
+	class SFS_S_API UIScene : public BaseScene<UIScene> {
 	public:
-		idVector<ptr<sf::Drawable>> staticUI;
+
+		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) override;
+		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) override {}
+		virtual void DisableActive() override;
+
+		void addStaticUI(SceneElement* newElement);
+		void addStaticUI(std::string id, SceneElement* newElement);
+		void addStaticUIRegistrar(std::weak_ptr<Registrar<SceneElement>> registrar);
+
+		void addUI(UI* newElement);
+		void addUI(std::string id, UI* newElement);
+		void addUIRegistrar(std::weak_ptr<Registrar<UI>> registrar);
+	private:
+
+		std::vector<std::weak_ptr<Registrar<SceneElement>>> staticUIRegistrars;
+		std::vector<std::weak_ptr<Registrar<UI>>> UIRegistrars;
+
+	protected:
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+		idVector<ptr<SceneElement>> staticUI;
 		idVector<ptr<UI>> ui;
-		idVector<ptr<GameObject>> gameObjects;
-		idVector<ptr<BaseController>> controllers;
 
-
-
-
-		[[maybe_unused]]
-		sf::Music sceneTheme;
-
-		sf::RenderWindow* owner;
-
-		sceneInit initFunc;
-
+	};
+	
+	class SFS_S_API Scene : public BaseScene<Scene> {
+	public:
 
 		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos);
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos);
-		template<typename F>
-		void SetInitFunc(F func) { this->initFunc = func; }
-		virtual void SetActive(sf::RenderWindow* owner);
-		virtual void DisableActive();
+		virtual void SetActive() override;
+		virtual void DisableActive() override;
 
-		
-
-
-		Scene() : owner(nullptr), initFunc(nullptr) {}
+		Scene() = default;
 		~Scene() = default;
-
-		template<typename F>
-		Scene(F func);
+		Scene(InitFunc func);
 
 
+		void addStaticUI(SceneElement* newElement);
+		void addStaticUI(std::string id, SceneElement* newElement);
+		void addStaticUIRegistrar(std::weak_ptr<Registrar<SceneElement>> registrar);
 
-		Scene(const Scene& scene);
+		void addUI(UI* newElement);
+		void addUI(std::string id, UI* newElement);
+		void addUIRegistrar(std::weak_ptr<Registrar<UI>> registrar);
 
-		Scene& operator=(const Scene& scene);
+		void addGameObject(GameObject* newElement);
+		void addGameObject(std::string id, GameObject* newElement);
+		void addGameObjectRegistrar(std::weak_ptr<Registrar<GameObject>> registrar);
+
+		void addController(BaseController* controller);
+		void addController(std::string id, BaseController* controller);
+
+		void setGUIView(const sf::View& view) { this->GUI.setView(view); }
+
+		void setGUIInitFunc(UIScene::InitFunc func) { this->GUI.setInitFunc(func); }
 
 		[[nodiscard]]
-		sf::Vector2f getMousePos() const {
-			return this->mousePos;
-		}
-
-		[[nodiscard]]
-		sf::Time getDeltaTime() const {
-			return this->clock.getElapsedTime();
-		}
-		[[nodiscard]]
-		sf::RenderWindow* getOwner() const {
-			return this->owner;
-		}
+		sf::Time getGUIDeltaTime() const { return this->GUI.getDeltaTime(); }
 		
+		[[nodiscard]]
+		bool hasGUIInitFunc() const { return this->GUI.hasInitFunc(); }
+
+		[[nodiscard]]
+		sf::View getGUIView() const { return this->GUI.getView(); }
+
+	private:
+
+		std::vector<std::weak_ptr<Registrar<GameObject>>> gameObjectRegistrars;
+		std::vector<std::weak_ptr<Registrar<BaseController>>> controllerRegistrars;
+
+	protected:
+
+		UIScene GUI;
+
+		idVector<ptr<GameObject>> gameObjects;
+		idVector<ptr<BaseController>> controllers;
+
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};
+
+
 
 	class SFS_S_API SceneManager {
 	private:
@@ -100,14 +163,14 @@ namespace SFS {
 		SceneManager(sf::RenderWindow* owner);
 
 		void setScene(Scene& scene) {
-			if (this->scene != nullptr)
+			if (this->scene)
 				this->scene->DisableActive();
 			this->scene = &scene;
 		}
 
 		void activateScene() {
-			if (this->scene != nullptr)
-				this->scene->SetActive(this->owner);
+			if (this->scene)
+				this->scene->SetActive();
 			else
 				throw std::runtime_error("trying to activate not existing scene");
 		}
@@ -118,15 +181,16 @@ namespace SFS {
 		}
 
 
-		void setOwner(sf::RenderWindow* owner) { if (owner != nullptr) this->owner = owner; }
+		void setOwner(sf::RenderWindow* owner) { if (owner) this->owner = owner; }
 
 		[[nodiscard]]
-		bool hasOwner() const { return this->owner != nullptr; }
+		bool hasOwner() const { return this->owner; }
 
 		[[nodiscard]]
-		bool hasScene() const { return this->scene != nullptr; }
+		bool hasScene() const { return this->scene; }
 
-		Scene* getCurrentScene() { return this->scene; }
+		[[nodiscard]]
+		Scene* getCurrentScene() const { return this->scene; }
 	};
 
 
@@ -141,43 +205,22 @@ namespace SFS {
 	};
 
 	class SFS_S_API Window : public sf::RenderWindow {
-	private:
-		SceneManager manager;
-		void initManager() noexcept;
-		bool isWindowRunning = false;
+	public:
+		using InitFunc = void(*) (Window&);
+		using Task = BaseTask<Window>;
+		using TaskQueue = TaskQueue<Window>;
 
-		using windowInit = void(*) (Window&);
-		windowInit initFunc;
-
-		sf::Color clearColor = sf::Color::White;
-
-		struct WindowTask {
-			virtual void doTask(Window& window) = 0;
-		};
-		struct ChangeScene : WindowTask {
+		class ChangeScene : public Task {
+		private:
 			Scene* sceneToSet;
+		public:
 			ChangeScene(Scene* scene) : sceneToSet(scene) {}
 			void doTask(Window& window) override {
-				if (sceneToSet != nullptr) 
+				if (sceneToSet != nullptr)
 					window.manager.changeScene(*sceneToSet);
-				
 			}
 		};
-		std::queue<std::unique_ptr<WindowTask>> tasks;
-		void doTasks() {
-			while (!this->tasks.empty()) {
-				this->tasks.front()->doTask(*this);
-				this->tasks.pop();
-			}
-		}
 
-		void changeNonContextSettings(const WindowSettings& settings) {
-			this->setVerticalSyncEnabled(settings.vSyncEnabled);
-			this->setKeyRepeatEnabled(settings.keyRepeatEnabled);
-			this->setFramerateLimit(settings.framerateLimit);
-		}
-		
-	public:
 		Window();
 		~Window() = default;
 
@@ -197,17 +240,15 @@ namespace SFS {
 
 		void setClearColor(const sf::Color& color) { this->clearColor = color; }
 
-		template<typename F>
-		void setInitFunc(F initFunc) {
+		void setInitFunc(InitFunc initFunc) {
 			if (initFunc != nullptr)
 				this->initFunc = initFunc;
 		}
 
 		void changeWindowSettings(const WindowSettings& settings);
 
-		void setScene(Scene& scene) { 
-			this->tasks.push(std::unique_ptr<WindowTask>(new ChangeScene(&scene)));
-		}
+		void setScene(Scene& newScene) { this->tasks.addTask(new ChangeScene(&newScene)); }
+		void addTask(Task* newTask) { this->tasks.addTask(newTask); }
 
 
 		/// <summary>
@@ -215,7 +256,30 @@ namespace SFS {
 		/// </summary>
 		void run();
 		
+	private:
+		SceneManager manager;
+		void initManager() noexcept;
+		bool isWindowRunning = false;
 
+		InitFunc initFunc;
+
+		sf::Color clearColor = sf::Color::White;
+
+		TaskQueue tasks;
+		void doTasks() {
+			this->tasks.executeAll(*this);
+		}
+
+		void changeNonContextSettings(const WindowSettings& settings) {
+			this->setVerticalSyncEnabled(settings.vSyncEnabled);
+			this->setKeyRepeatEnabled(settings.keyRepeatEnabled);
+			this->setFramerateLimit(settings.framerateLimit);
+		}
 	};
+
+
 }
+
+#include "Scene.inl"
+
 #endif

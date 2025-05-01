@@ -61,7 +61,7 @@ namespace SFS {
 		object.setTexture(data.texture);
 	}
 	struct SFS_C_API soundData {
-		sf::SoundBuffer* buffer;
+		sf::SoundBuffer* buffer = nullptr;
 		float volume = 100.0f;
 		float pitch = 1.0f;
 		bool loop = false;

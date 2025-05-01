@@ -5,4 +5,6 @@
 
 void optionsBtnFunc();
 
+void menuBackBtnFunc();
+
 #endif // !FUNC_HPP_

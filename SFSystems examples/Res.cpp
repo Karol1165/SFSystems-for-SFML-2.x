@@ -41,6 +41,7 @@ void loadStaticResources() {
 	toolTipTextData.characterSize = 10;
 	toolTipTextData.fillColor = sf::Color::Black;
 	toolTipTextData.outlineThickness = 0;
+	toolTipTextData.font = &globalFont;
 
 	buttonBackgroundData.fillColor = sf::Color(50, 200, 200);
 	buttonBackgroundData.outlineColor = sf::Color::Black;
@@ -55,11 +56,13 @@ void loadStaticResources() {
 	buttonTextData.characterSize = 20;
 	buttonTextData.fillColor = sf::Color::Black;
 	buttonTextData.outlineThickness = 0;
+	buttonTextData.font = &globalFont;
 
 	buttonSpottedTextData.characterSize = 18;
 	buttonSpottedTextData.fillColor = sf::Color::Blue;
 	buttonSpottedTextData.outlineThickness = 2;
 	buttonSpottedTextData.outlineColor = sf::Color::Black;
+	buttonSpottedTextData.font = &globalFont;
 }
 
 void initializeManagers() {

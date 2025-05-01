@@ -4,5 +4,7 @@
 
 #include "framework.h"
 #include <SFML\Graphics.hpp>
+#include <memory>
+#include <string>
 
-#endif //PCH_H
+#endif

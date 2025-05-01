@@ -2,16 +2,60 @@
 #include "Scene.hpp"
 
 namespace SFS {
+
+	void UIScene::UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) {
+		for (auto& i : std::ranges::reverse_view(ui)) {
+			i->CheckStatus(event, this->clock.getElapsedTime(), mousePos);
+		}
+		this->clock.restart();
+	}
+
+	void UIScene::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+		for (auto& i : this->staticUI) {
+			target.draw(*i, states);
+		}
+		for (auto& i : this->ui) {
+			target.draw(*i, states);
+		}
+	}
+
+	void UIScene::DisableActive() {
+		this->ui.clear();
+		this->staticUI.clear();
+
+		this->staticUIRegistrars.clear();
+		this->UIRegistrars.clear();
+	}
+
+	void UIScene::addStaticUI(SceneElement* newElement) {
+		this->addObject(this->staticUI, newElement, this->staticUIRegistrars, std::nullopt);
+	}
+
+	void UIScene::addStaticUI(std::string id, SceneElement* newElement) {
+		this->addObject(this->staticUI, newElement, this->staticUIRegistrars, id);
+	}
+
+	void UIScene::addStaticUIRegistrar(std::weak_ptr<Registrar<SceneElement>> registrar) {
+		this->addRegistrar(this->staticUIRegistrars, registrar);
+	}
+
+	void UIScene::addUI(UI* newElement) {
+		this->addObject(this->ui, newElement, this->UIRegistrars, std::nullopt);
+	}
+
+	void UIScene::addUI(std::string id, UI* newElement) {
+		this->addObject(this->ui, newElement, this->UIRegistrars, id);
+	}
+
+	void UIScene::addUIRegistrar(std::weak_ptr<Registrar<UI>> registrar) {
+		this->addRegistrar(this->UIRegistrars, registrar);
+	}
+
 	///Scene
 
 	void Scene::UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) {
-		for (auto& i : std::ranges::reverse_view(ui)) {
-			i->CheckStatus(event, this->uiClock.getElapsedTime(), mousePos);
-		}
-		this->uiClock.restart();
+		this->GUI.UpdateUI(event, mousePos);
 	}
-
-
 
 	void Scene::Update(sf::Event& event, const sf::Vector2f& mousePos) {
 		for (auto& i : std::ranges::reverse_view(gameObjects)) {
@@ -23,68 +67,76 @@ namespace SFS {
 		clock.restart();
 	}
 
-
-
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-		for (auto& i : this->staticUI) {
-			target.draw(*i, states);
-		}
-		for (auto& i : this->ui) {
-			target.draw(*i, states);
-		}
 		for (auto& i : this->gameObjects) {
 			target.draw(*i, states);
 		}
+		target.draw(this->GUI, states);
 	}
 
-
-
-	template<typename F>
-	Scene::Scene(F func) {
-		if(!func)
-			this->initFunc = nullptr;
-
-		this->initFunc = func;
-		 
-		this->owner = nullptr;
+	Scene::Scene(InitFunc func) {
+		this->setInitFunc(func);
 	}
 
+	void Scene::SetActive() {
+		BaseScene<Scene>::SetActive();
 
-
-	Scene::Scene(const Scene& scene) : Scene(scene.initFunc) {
-		this->owner = nullptr;
-	}
-
-	void Scene::SetActive(sf::RenderWindow* owner) {
-		if (!owner) 
-			throw std::runtime_error("Trying to activate scene without owner window");
-
-		this->owner = owner;
-
-		if(!this->initFunc)
-			throw std::runtime_error("Trying to activate scene without initialization");
-
-		this->initFunc(*this);
-
-		this->sceneTheme.play();
+		this->GUI.SetActive();
 	}
 
 	void Scene::DisableActive() {
-		this->owner = nullptr;
-		sceneTheme.pause();
-		this->ui.clear();
-		this->staticUI.clear();
+		this->GUI.DisableActive();
+
 		this->gameObjects.clear();
 		this->controllers.clear();
+
+		this->gameObjectRegistrars.clear();
+		this->controllerRegistrars.clear();
 	}
 
-	Scene& Scene::operator=(const Scene& scene) {
-		if (scene.initFunc)
-			this->initFunc = scene.initFunc;
-		this->owner = nullptr;
-		return *this;
+	void Scene::addStaticUI(SceneElement* newElement) {
+		this->GUI.addStaticUI(newElement);
 	}
 
+	void Scene::addStaticUI(std::string id, SceneElement* newElement) {
+		this->GUI.addStaticUI(id, newElement);
+	}
+
+	void Scene::addStaticUIRegistrar(std::weak_ptr<Registrar<SceneElement>> registrar) {
+		this->GUI.addStaticUIRegistrar(registrar);
+	}
+
+	void Scene::addUI(UI* newElement) {
+		this->GUI.addUI(newElement);
+	}
+
+	void Scene::addUI(std::string id, UI* newElement) {
+		this->GUI.addUI(id, newElement);
+	}
+
+	void Scene::addUIRegistrar(std::weak_ptr<Registrar<UI>> registrar) {
+		this->GUI.addUIRegistrar(registrar);
+	}
+
+	void Scene::addGameObject(GameObject* newElement) {
+		this->addObject(this->gameObjects, newElement, this->gameObjectRegistrars, std::nullopt);
+	}
+
+	void Scene::addGameObject(std::string id, GameObject* newElement) {
+		this->addObject(this->gameObjects, newElement, this->gameObjectRegistrars, id);
+	}
+
+	void Scene::addGameObjectRegistrar(std::weak_ptr<Registrar<GameObject>> registrar) {
+		this->addRegistrar(this->gameObjectRegistrars, registrar);
+	}
+
+	void Scene::addController(BaseController* controller) {
+		this->addObject(this->controllers, controller, this->controllerRegistrars, std::nullopt);
+	}
+
+	void Scene::addController(std::string id, BaseController* controller) {
+		this->addObject(this->controllers, controller, this->controllerRegistrars, id);
+	}
 
 	//////////////////////////////////////////////
 	/// SceneManager
@@ -149,12 +201,14 @@ namespace SFS {
 		}
 	}
 
+
+
 	void Window::run() {
 		if (this->isWindowRunning)
 			return;
 		this->isWindowRunning = true;
 		try {
-			if (this->initFunc != nullptr)
+			if (this->initFunc)
 				this->initFunc(*this);
 
 			this->doTasks();
@@ -179,7 +233,6 @@ namespace SFS {
 						break;
 					}
 					manager.getCurrentScene()->UpdateUI(e, mousePos);
-
 				}
 				if (!hasEvents) {
 					manager.getCurrentScene()->UpdateUI(fakeEvent, mousePos);

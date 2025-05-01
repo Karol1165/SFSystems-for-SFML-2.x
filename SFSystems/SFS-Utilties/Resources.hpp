@@ -15,10 +15,8 @@
 namespace SFS {
 	
 	class SFS_U_API FileConfig {
-	protected:
-		std::filesystem::path fileDirectory;
-		std::string fileExtension;
 	public:
+
 		[[nodiscard]]
 		std::filesystem::path getDirectory() const {
 			return this->fileDirectory;
@@ -34,15 +32,25 @@ namespace SFS {
 		}
 
 		void setDirectory(const std::string& newDirectory);
+
+	protected:
+
+		std::filesystem::path fileDirectory;
+		std::string fileExtension;
+
 	};
 
 	class SFS_U_API baseResourcesManager {
-	protected:
-		FileConfig config;
 	public:
+
 		baseResourcesManager() = default;
 		~baseResourcesManager() = default;
 		baseResourcesManager(const std::string& directory, const std::string& extension);
+
+	protected:
+
+		FileConfig config;
+
 	};
 
 	class LanguageResource {
