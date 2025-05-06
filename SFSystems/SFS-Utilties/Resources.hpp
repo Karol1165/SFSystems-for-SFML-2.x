@@ -7,6 +7,7 @@
 #include<unordered_map>
 #include<filesystem>
 #include<locale>
+#include<variant>
 #include<SFML/Graphics.hpp>
 #include "framework.h"
 
@@ -53,30 +54,30 @@ namespace SFS {
 
 	};
 
-	class LanguageResource {
-	private:
-		std::unordered_map<std::string, std::wstring> translations;
-	public:
-		void loadResource(const std::filesystem::path path);
-
-		[[nodiscard]]
-		std::wstring getTranslation(const std::string& languageID);
+	struct Translation {
+		std::variant<std::wstring, std::vector<std::wstring>> msgstr;
 	};
+
+	using TranslationKey = std::pair<std::string, std::optional<std::string>>;
+	
 
 
 	class SFS_U_API LanguageResourcesManager : public baseResourcesManager {
 	public:
-
-		LanguageResourcesManager() = default;
-		LanguageResourcesManager(const std::string& directory, const std::string& extension) : baseResourcesManager(directory, extension) {}
+		LanguageResourcesManager(const std::string& directory);
 		~LanguageResourcesManager() = default;
 
-		[[nodiscard]]
-		LanguageResource getResource(const std::string& resourceName) const;
+		void loadFromFile(const std::string& path);
 
 		[[nodiscard]]
-		std::wstring getTranslation(const std::string& resourceName, const std::string& languageID) const;
+		Translation getTranslation(TranslationKey key) const;
+		
+		[[nodiscard]]
+		std::wstring getText(TranslationKey key, int pluralCount = 1);
 
+
+	private:
+		std::unordered_map<TranslationKey, Translation> translations;
 	};
 
 	class SFS_U_API TextureManager : public baseResourcesManager {
