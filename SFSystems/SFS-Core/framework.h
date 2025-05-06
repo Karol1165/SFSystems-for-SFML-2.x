@@ -4,6 +4,10 @@
 #define NOMINMAX
 #include <windows.h>
 
+#ifdef _DEBUG
+#include<iostream>
+#endif
+
 #ifdef SFSCORE_EXPORTS
 #define SFS_C_API __declspec(dllexport)
 #else
