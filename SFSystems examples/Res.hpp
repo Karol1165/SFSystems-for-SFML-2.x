@@ -24,7 +24,7 @@ extern SFS::textData titleTextData;
 extern SFS::textData buttonTextData;
 extern SFS::textData buttonSpottedTextData;
 
-extern SFS::LanguageResourcesManager languageManager;
+//extern SFS::LanguageResourcesManager languageManager;
 
 
 

@@ -9,6 +9,7 @@
 #include<locale>
 #include<variant>
 #include<SFML/Graphics.hpp>
+#include "GettextParser.hpp"
 #include "framework.h"
 
 
@@ -28,9 +29,7 @@ namespace SFS {
 			return this->fileExtension;
 		}
 
-		void setExtension(const std::string& newExtension) {
-			this->fileExtension = newExtension;
-		}
+		void setExtension(const std::string& newExtension);
 
 		void setDirectory(const std::string& newDirectory);
 
@@ -54,11 +53,7 @@ namespace SFS {
 
 	};
 
-	struct Translation {
-		std::variant<std::wstring, std::vector<std::wstring>> msgstr;
-	};
-
-	using TranslationKey = std::pair<std::string, std::optional<std::string>>;
+	
 	
 
 
@@ -67,19 +62,17 @@ namespace SFS {
 		LanguageResourcesManager(const std::string& directory);
 		~LanguageResourcesManager() = default;
 
-		void loadFromFile(const std::string& path);
+		void loadLanguage(const std::string& fileName);
 
 		[[nodiscard]]
-		Translation getTranslation(TranslationKey key) const;
-		
-		[[nodiscard]]
-		std::wstring getText(TranslationKey key, int pluralCount = 1);
+		std::wstring Translate(const std::string& msgid, const int number = 1);
+
 
 
 	private:
-		std::unordered_map<TranslationKey, Translation> translations;
+		std::map<GettextParser::TranslationKey, GettextParser::Translation> translations;
 	};
-
+	
 	class SFS_U_API TextureManager : public baseResourcesManager {
 	public:
 		TextureManager() = default;

@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025 Example Corp.
+# This file is distributed under the same license as the Example project.
+# FIRST AUTHOR <author@example.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Example 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-09 12:00+0000\n"
+"PO-Revision-Date: 2025-07-09 12:00+0000\n"
+"Last-Translator: John Doe <john@example.com>\n"
+"Language-Team: English <en@example.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2));\n"
+
+# Komentarz translatorski dotyczący tego wpisu
+msgctxt "Menu"
+msgid "File"
+msgstr "Plik"
+
+msgctxt "Menu"
+msgid "Edit"
+msgstr "Edytuj"
+
+# Przykład bez kontekstu
+msgid "Open"
+msgstr "Otwórz"
+
+# Przykład wpisu z liczbą mnogą (plural)
+msgid "There is %d file."
+msgid_plural "There are %d files."
+msgstr[0] "Jest %d plik."
+msgstr[1] "Są %d pliki."
+msgstr[2] "Jest %d plików."
+
+# Przykład wpisu z pustym tłumaczeniem (oznacza do przetłumaczenia)
+msgid "Save"
+msgstr ""
+
+# Przykład wielolinijkowego tłumaczenia
+msgid "Welcome to the program."
+msgstr ""
+"Witamy w programie.\n"
+"Miłego użytkowania!"
+
+# Przykład wpisu z polskimi znakami UTF-8
+msgid "Special characters"
+msgstr "Znaki specjalne: ąćęłńóśźż"
+
+# Przykład wpisu z kontekstem i pustym tłumaczeniem
+msgctxt "Button"
+msgid "Cancel"
+msgstr ""

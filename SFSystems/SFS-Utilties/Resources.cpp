@@ -3,7 +3,13 @@
 
 
 namespace SFS {
-
+	
+	void FileConfig::setExtension(const std::string& newExtension) {
+		if (newExtension[0] != '.')
+			this->fileExtension = '.' + newExtension;
+		else
+			this->fileExtension = newExtension;
+	}
 
 	void FileConfig::setDirectory(const std::string& newDirectory) {
 		this->fileDirectory = std::filesystem::current_path();
@@ -15,6 +21,10 @@ namespace SFS {
 		this->config.setDirectory(directory);
 	}
 
+
+	LanguageResourcesManager::LanguageResourcesManager(const std::string& directory) : baseResourcesManager(directory, ".po") {
+		
+	}
 
 
 	 void TextureManager::loadTexture(const std::string& fileName, sf::Texture& texture) const {

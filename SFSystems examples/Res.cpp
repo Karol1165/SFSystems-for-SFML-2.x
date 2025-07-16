@@ -19,7 +19,7 @@ SFS::textData titleTextData;
 SFS::textData buttonTextData;
 SFS::textData buttonSpottedTextData;
 
-SFS::LanguageResourcesManager languageManager;
+//SFS::LanguageResourcesManager languageManager;
 
 void loadStaticResources() {
 	globalFont.loadFromFile("C:/Windows/Fonts/Arial.ttf");
@@ -66,5 +66,5 @@ void loadStaticResources() {
 }
 
 void initializeManagers() {
-	languageManager = SFS::LanguageResourcesManager("Resources", ".txt");
+	//languageManager = SFS::LanguageResourcesManager("Resources", ".txt");
 }
