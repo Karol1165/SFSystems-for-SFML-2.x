@@ -7,6 +7,7 @@ SFSystems is a C++ library built on top of SFML, offering a simple and extensibl
 Required C++20
 
 Minimum required SFML version: 2.5
+
 Racomendated SFML version: 2.6.2
 
 PL
@@ -18,4 +19,5 @@ SFSystems to biblioteka C++ bazująca na SFML. Oferuje prosty i rozszerzalny sys
 Wymagany C++20
 
 Minimalna wymagana wersja SFML: 2.5
+
 Zalecana wersja SFML: 2.6.2
