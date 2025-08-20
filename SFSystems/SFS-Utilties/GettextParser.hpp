@@ -7,9 +7,8 @@
 #include <variant>
 #include <fstream>
 #include "framework.h"
+#include <SFML/System.hpp>
 
-
-//TODO: Do conversions from bytes to UTF-8 in get text methods. Add [[depractaded]] to old methods that return std::string and add new methods that return sf::String.
 
 namespace SFS {
 	namespace GettextParser {
@@ -40,7 +39,7 @@ namespace SFS {
 			void addTranslation(const std::string& translation);
 
 			[[nodiscard]]
-			SingularTranstlation getTranslation(unsigned int form = 0) const;
+			SingularTranstlation getRawTranslation(int64_t form = 0) const;
 
 			[[nodiscard]]
 			PluralTranslation getTranslations() const;
@@ -77,18 +76,16 @@ namespace SFS {
 		public:
 			TranslationMap() = default;
 
+			//This method returns translation with text in raw UTF-8 bytes, make sure to handle encoding properly, or use getText() instead.
 			[[nodiscard]]
-			Translation getTranslation(const TranslationKey& key) const;
+			Translation getRawTranslation(const TranslationKey& key) const;
+
+			//This method returns text in raw UTF-8 bytes, make sure to handle encoding properly, or use getText() instead.
+			[[nodiscard]]
+			std::string getRawText(const TranslationKey& key, const int64_t& count = 0) const;
 
 			[[nodiscard]]
-			Translation getTranslation(const std::string& id, const std::optional<std::string>& context) const;
-
-			[[nodiscard]]
-			std::string getText(const TranslationKey& key, const int64_t& count = 0) const;
-
-			[[nodiscard]]
-			std::string getText(const std::string& id, const std::optional<std::string>& context, const int64_t& count = 0) const;
-		
+			sf::String getText(const TranslationKey& key, const int64_t& count = 0) const;
 
 			void LoadFromFile(const fs::path& filePath);
 

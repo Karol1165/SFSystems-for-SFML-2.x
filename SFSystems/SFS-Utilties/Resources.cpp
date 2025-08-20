@@ -26,8 +26,19 @@ namespace SFS {
 		
 	}
 
+	void LanguageResourcesManager::loadLanguage(const std::string& fileName) {
+		this->translations.LoadFromFile(this->config.getDirectory() / (fileName + this->config.getExtension()));
+	}
 
-	 void TextureManager::loadTexture(const std::string& fileName, sf::Texture& texture) const {
+	sf::String LanguageResourcesManager::getText(const std::string& msgid, const std::string& msgctxt, const int& count) const {
+		return this->translations.getText({msgid, msgctxt}, count);
+	}
+
+	sf::String LanguageResourcesManager::getText(const std::string& msgid, const int& count) const {
+		return this->getText(msgid, "", count);
+	}
+
+	void TextureManager::loadTexture(const std::string& fileName, sf::Texture& texture) const {
 		std::filesystem::path Path(this->config.getDirectory() / (fileName + this->config.getExtension()));
 		texture.loadFromFile(Path.string());
 	}

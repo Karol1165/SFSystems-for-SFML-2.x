@@ -28,7 +28,7 @@ namespace SFS {
 				return  { std::get<std::string>(translations) };
 		}
 
-		std::string Translation::getTranslation(unsigned int form) const {
+		std::string Translation::getRawTranslation(int64_t form) const {
 			if (isPlural())
 				return std::get<std::vector<std::string>>(translations)[form];
 			else 
@@ -59,7 +59,7 @@ namespace SFS {
 
 		static std::string extractString(const std::string& line, size_t& pos) {
 			std::string rawData;
-			while (!match(line, pos, "\"")) {
+			while (line.at(pos) != '\"') {
 				rawData += line[pos++];
 			}
 			return parseEscapeSequences(rawData);
@@ -243,26 +243,17 @@ namespace SFS {
 			file.close();
 		}
 
-		Translation TranslationMap::getTranslation(const TranslationKey& key) const {
+		Translation TranslationMap::getRawTranslation(const TranslationKey& key) const {
 			return this->translations.at(key);
 		}
 
-		Translation TranslationMap::getTranslation(const std::string& id, const std::optional<std::string>& context) const {
-			if(context)
-				return this->translations.at({ id, context.value() });
-			else
-				return this->translations.at({ id, "" });
+		std::string TranslationMap::getRawText(const TranslationKey& key, const int64_t& count) const {
+			return this->getRawTranslation(key).getRawTranslation(this->Header.pluralForm->evaluate(count));
 		}
 
-		std::string TranslationMap::getText(const TranslationKey& key, const int64_t& count) const {
-			return this->getTranslation(key).getTranslation(this->Header.pluralForm->evaluate(count));
-		}
-
-		std::string TranslationMap::getText(const std::string& id, const std::optional<std::string>& context, const int64_t& count) const {
-			if (context) 
-				return this->getTranslation({ id, context.value() }).getTranslation(this->Header.pluralForm->evaluate(count));
-			else
-				return this->getTranslation({ id, "" }).getTranslation(this->Header.pluralForm->evaluate(count));
+		sf::String TranslationMap::getText(const TranslationKey& key, const int64_t& count) const {
+			std::string rawText = this->getRawText(key, count);
+			return sf::String::fromUtf8(rawText.begin(), rawText.end());
 		}
 
 	}

@@ -56,7 +56,7 @@ namespace SFS {
 	
 	
 
-
+	//Language resources manager for loading and managing translations from .po files in gettext format. 
 	class SFS_U_API LanguageResourcesManager : public baseResourcesManager {
 	public:
 		LanguageResourcesManager(const std::string& directory);
@@ -65,12 +65,15 @@ namespace SFS {
 		void loadLanguage(const std::string& fileName);
 
 		[[nodiscard]]
-		std::wstring Translate(const std::string& msgid, const int number = 1);
+		sf::String getText(const std::string& msgid, const std::string& msgctxt = "", const int& count = 1) const;
 
-
+		[[nodiscard]]
+		sf::String getText(const std::string& msgid, const int& count) const;
 
 	private:
-		std::map<GettextParser::TranslationKey, GettextParser::Translation> translations;
+
+		GettextParser::TranslationMap translations;
+
 	};
 	
 	class SFS_U_API TextureManager : public baseResourcesManager {

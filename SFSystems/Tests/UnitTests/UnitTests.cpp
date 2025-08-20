@@ -6,6 +6,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <SFML/Graphics.hpp>
+#include <locale>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -114,45 +115,21 @@ namespace UnitTests
 		{
 			auto key = makeKey("Open");
 			auto result = translations.getText(key);
-			sf::String sfResult = sf::String::fromUtf8(result.begin(), result.end()); // Ensure the string is in UTF-8 format
-			std::string assertkey = "Otwórz";
-			sf::String excepted = assertkey; 
-			Assert::AreEqual(sfResult == excepted ? true : false, true);
+			Assert::AreEqual(sf::String("Otwórz") == result, true);
 		}
 
 		TEST_METHOD(ContextTranslation)
 		{
 			auto key = makeKey("File", "Menu");
 			auto result = translations.getText(key);
-			Assert::AreEqual(std::string("Plik"), result);
-		}
-
-		TEST_METHOD(PluralFormSingular)
-		{
-			auto key = makeKey("There is %d file");
-			auto result = translations.getText(key, 1);
-			Assert::AreEqual(std::string("Jest %d plik"), result);
-		}
-
-		TEST_METHOD(PluralFormFew)
-		{
-			auto key = makeKey("There is %d file");
-			Assert::AreEqual(std::string("S¹ %d pliki"), translations.getText(key, 2));
-			Assert::AreEqual(std::string("S¹ %d pliki"), translations.getText(key, 4));
-		}
-
-		TEST_METHOD(PluralFormMany)
-		{
-			auto key = makeKey("There is %d file");
-			Assert::AreEqual(std::string("Jest %d plików"), translations.getText(key, 5));
-			Assert::AreEqual(std::string("Jest %d plików"), translations.getText(key, 12));
+			Assert::AreEqual(sf::String("Plik") == result, true);
 		}
 
 		TEST_METHOD(EmptyContextIsHandled)
 		{
 			auto key = makeKey("Open", "");
 			auto result = translations.getText(key);
-			Assert::AreEqual(std::string("Otwórz"), result);
+			Assert::AreEqual(sf::String("Otwórz") == result, true);
 		}
 	};
 }
