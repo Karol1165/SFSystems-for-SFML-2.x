@@ -2,11 +2,17 @@
 #include "CppUnitTest.h"
 #include "CExpressionParser.hpp"
 #include "GettextParser.hpp"
+#include "Resources.hpp"
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <SFML/Graphics.hpp>
 #include <locale>
+#include <chrono>
+#include "Base.hpp"
+#include "Registrar.hpp"
+#include "Button.hpp"
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -130,6 +136,56 @@ namespace UnitTests
 			auto key = makeKey("Open", "");
 			auto result = translations.getText(key);
 			Assert::AreEqual(sf::String("Otwórz") == result, true);
+		}
+	};
+
+	TEST_CLASS(ResourcesManagerTests) {
+	private:
+		LanguageResourcesManager resourcesManager;
+
+	public:
+		TEST_METHOD_INITIALIZE(Setup) {
+			resourcesManager.loadLanguage("test");
+		}
+
+		TEST_METHOD(SimpleTest) {
+			Assert::AreEqual(sf::String("Otwórz") == resourcesManager.getText("Open"), true);
+		}
+
+		TEST_METHOD(SimpleTest2) {
+			Assert::AreEqual(sf::String("Plik") == resourcesManager.getText("File", "Menu"), true);
+		}
+	};
+
+	TEST_CLASS(RegistrarTests) {
+		public:
+		TEST_METHOD(NullTest) {
+			SFS::Registrar<SFS::SceneElement> reg(ptr<SFS::SceneElement>(nullptr));
+			Assert::AreEqual(true, reg.getAsBase().expired());
+			Assert::AreEqual(true, reg.getAs<SFS::SceneElement>().expired());
+		}
+		TEST_METHOD(DerivedTest) {
+			auto start = std::chrono::high_resolution_clock::now();
+
+
+			auto end = std::chrono::high_resolution_clock::now();
+
+
+
+
+			auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
+			Assert::AreEqual(false, false);
+			Logger::WriteMessage((L"Duration: " + std::to_wstring(duration) + L" ns").c_str());
+		}
+		TEST_METHOD(DerivedWithDynamicCastTest) {
+			auto start = std::chrono::high_resolution_clock::now();
+
+			auto end = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
+			Assert::AreEqual(false, false);
+			Logger::WriteMessage((L"Duration: " + std::to_wstring(duration) + L" ns").c_str());
 		}
 	};
 }

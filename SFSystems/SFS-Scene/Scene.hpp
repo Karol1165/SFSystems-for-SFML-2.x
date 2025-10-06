@@ -15,6 +15,8 @@
 
 namespace SFS {
 
+	class SceneInitializer;
+
 	template <typename Derived>
 	class BaseScene : public sf::Drawable {
 	public:
@@ -29,9 +31,11 @@ namespace SFS {
 
 		virtual void SetActive();
 		virtual void DisableActive() = 0;
+
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) = 0;
 		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) = 0;
 
+		//To change
 		void setInitFunc(InitFunc func) { this->initFunc = func; }
 
 		void setView(const sf::View& view) { this->SceneView = view; }
@@ -45,10 +49,12 @@ namespace SFS {
 		[[nodiscard]]
 		sf::Time getDeltaTime() const { return this->clock.getElapsedTime(); }
 
+		//To change
 		[[nodiscard]]
 		bool hasInitFunc() const { return this->initFunc; }
 		
 	protected:
+		//To change
 		InitFunc initFunc = nullptr;
 
 		bool isActive = false;
@@ -59,11 +65,6 @@ namespace SFS {
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
 
-		template<typename T>
-		void addObject(idVector<ptr<T>>& container, T* newElement, std::vector<std::weak_ptr<Registrar<T>>> registrarContainer,
-			std::optional<std::string> id);
-		template<typename T>
-		void addRegistrar(std::vector<std::weak_ptr<Registrar<T>>>& container, std::weak_ptr<Registrar<T>> newElement);
 	};
 
 	class SFS_S_API UIScene : public BaseScene<UIScene> {
@@ -73,24 +74,17 @@ namespace SFS {
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) override {}
 		virtual void DisableActive() override;
 
-		void addStaticUI(SceneElement* newElement);
-		void addStaticUI(std::string id, SceneElement* newElement);
-		void addStaticUIRegistrar(std::weak_ptr<Registrar<SceneElement>> registrar);
+		void addStaticUI(SceneElement* newElement, std::optional<std::string> id = std::nullopt);
 
-		void addUI(UI* newElement);
-		void addUI(std::string id, UI* newElement);
-		void addUIRegistrar(std::weak_ptr<Registrar<UI>> registrar);
+		void addUI(UI* newElement, std::optional<std::string> id = std::nullopt);
+
 	private:
-
-		std::vector<std::weak_ptr<Registrar<SceneElement>>> staticUIRegistrars;
-		std::vector<std::weak_ptr<Registrar<UI>>> UIRegistrars;
 
 	protected:
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-		idVector<ptr<SceneElement>> staticUI;
-		idVector<ptr<UI>> ui;
-
+		idVector<Registrar<SceneElement>> staticUI;
+		idVector<Registrar<UI>> ui;
 	};
 	
 	class SFS_S_API Scene : public BaseScene<Scene> {
@@ -103,48 +97,26 @@ namespace SFS {
 
 		Scene() = default;
 		~Scene() = default;
+		//To change
 		Scene(InitFunc func);
 
 
-		void addStaticUI(SceneElement* newElement);
-		void addStaticUI(std::string id, SceneElement* newElement);
-		void addStaticUIRegistrar(std::weak_ptr<Registrar<SceneElement>> registrar);
+		void addGameObject(GameObject* newElement, std::optional<std::string> id = std::nullopt);
 
-		void addUI(UI* newElement);
-		void addUI(std::string id, UI* newElement);
-		void addUIRegistrar(std::weak_ptr<Registrar<UI>> registrar);
-
-		void addGameObject(GameObject* newElement);
-		void addGameObject(std::string id, GameObject* newElement);
-		void addGameObjectRegistrar(std::weak_ptr<Registrar<GameObject>> registrar);
-
-		void addController(BaseController* controller);
-		void addController(std::string id, BaseController* controller);
-
-		void setGUIView(const sf::View& view) { this->GUI.setView(view); }
-
-		void setGUIInitFunc(UIScene::InitFunc func) { this->GUI.setInitFunc(func); }
-
-		[[nodiscard]]
-		sf::Time getGUIDeltaTime() const { return this->GUI.getDeltaTime(); }
+		void addController(BaseController* controller, std::optional<std::string> id = std::nullopt);
 		
-		[[nodiscard]]
-		bool hasGUIInitFunc() const { return this->GUI.hasInitFunc(); }
-
-		[[nodiscard]]
-		sf::View getGUIView() const { return this->GUI.getView(); }
+		UIScene& getUIScene() { return this->GUI; }
 
 	private:
 
-		std::vector<std::weak_ptr<Registrar<GameObject>>> gameObjectRegistrars;
-		std::vector<std::weak_ptr<Registrar<BaseController>>> controllerRegistrars;
+
 
 	protected:
 
 		UIScene GUI;
 
-		idVector<ptr<GameObject>> gameObjects;
-		idVector<ptr<BaseController>> controllers;
+		idVector<Registrar<GameObject>> gameObjects;
+		idVector<Registrar<BaseController>> controllers;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};
@@ -194,9 +166,9 @@ namespace SFS {
 	};
 
 
-	/// <summary>
+
 	/// All settings for window
-	/// </summary>
+
 	struct SFS_S_API WindowSettings {
 		sf::ContextSettings contextSettings = sf::ContextSettings();
 		bool vSyncEnabled = false;
@@ -251,9 +223,9 @@ namespace SFS {
 		void addTask(Task* newTask) { this->tasks.addTask(newTask); }
 
 
-		/// <summary>
+
 		/// Activates window, runs start function and main loop of program
-		/// </summary>
+
 		void run();
 		
 	private:

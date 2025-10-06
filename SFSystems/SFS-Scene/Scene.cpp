@@ -22,34 +22,11 @@ namespace SFS {
 	void UIScene::DisableActive() {
 		this->ui.clear();
 		this->staticUI.clear();
-
-		this->staticUIRegistrars.clear();
-		this->UIRegistrars.clear();
 	}
 
-	void UIScene::addStaticUI(SceneElement* newElement) {
-		this->addObject(this->staticUI, newElement, this->staticUIRegistrars, std::nullopt);
-	}
 
-	void UIScene::addStaticUI(std::string id, SceneElement* newElement) {
-		this->addObject(this->staticUI, newElement, this->staticUIRegistrars, id);
-	}
 
-	void UIScene::addStaticUIRegistrar(std::weak_ptr<Registrar<SceneElement>> registrar) {
-		this->addRegistrar(this->staticUIRegistrars, registrar);
-	}
 
-	void UIScene::addUI(UI* newElement) {
-		this->addObject(this->ui, newElement, this->UIRegistrars, std::nullopt);
-	}
-
-	void UIScene::addUI(std::string id, UI* newElement) {
-		this->addObject(this->ui, newElement, this->UIRegistrars, id);
-	}
-
-	void UIScene::addUIRegistrar(std::weak_ptr<Registrar<UI>> registrar) {
-		this->addRegistrar(this->UIRegistrars, registrar);
-	}
 
 	///Scene
 
@@ -89,54 +66,17 @@ namespace SFS {
 
 		this->gameObjects.clear();
 		this->controllers.clear();
-
-		this->gameObjectRegistrars.clear();
-		this->controllerRegistrars.clear();
 	}
 
-	void Scene::addStaticUI(SceneElement* newElement) {
-		this->GUI.addStaticUI(newElement);
+	void Scene::addGameObject(GameObject* newElement, std::optional<std::string> id) {
+	
 	}
 
-	void Scene::addStaticUI(std::string id, SceneElement* newElement) {
-		this->GUI.addStaticUI(id, newElement);
+	void Scene::addController(BaseController* controller, std::optional<std::string> id) {
+	
 	}
 
-	void Scene::addStaticUIRegistrar(std::weak_ptr<Registrar<SceneElement>> registrar) {
-		this->GUI.addStaticUIRegistrar(registrar);
-	}
 
-	void Scene::addUI(UI* newElement) {
-		this->GUI.addUI(newElement);
-	}
-
-	void Scene::addUI(std::string id, UI* newElement) {
-		this->GUI.addUI(id, newElement);
-	}
-
-	void Scene::addUIRegistrar(std::weak_ptr<Registrar<UI>> registrar) {
-		this->GUI.addUIRegistrar(registrar);
-	}
-
-	void Scene::addGameObject(GameObject* newElement) {
-		this->addObject(this->gameObjects, newElement, this->gameObjectRegistrars, std::nullopt);
-	}
-
-	void Scene::addGameObject(std::string id, GameObject* newElement) {
-		this->addObject(this->gameObjects, newElement, this->gameObjectRegistrars, id);
-	}
-
-	void Scene::addGameObjectRegistrar(std::weak_ptr<Registrar<GameObject>> registrar) {
-		this->addRegistrar(this->gameObjectRegistrars, registrar);
-	}
-
-	void Scene::addController(BaseController* controller) {
-		this->addObject(this->controllers, controller, this->controllerRegistrars, std::nullopt);
-	}
-
-	void Scene::addController(std::string id, BaseController* controller) {
-		this->addObject(this->controllers, controller, this->controllerRegistrars, id);
-	}
 
 	//////////////////////////////////////////////
 	/// SceneManager
@@ -186,7 +126,7 @@ namespace SFS {
 
 
 	void Window::changeWindowSettings(const WindowSettings& settings) {
-		//Checking if settings that need recreation of the window are the same
+		//Check if context-related settings have changed (requires full window recreation)
 		if (this->getSettings().antialiasingLevel == settings.contextSettings.antialiasingLevel &&
 			this->getSettings().attributeFlags == settings.contextSettings.attributeFlags &&
 			this->getSettings().depthBits == settings.contextSettings.depthBits &&

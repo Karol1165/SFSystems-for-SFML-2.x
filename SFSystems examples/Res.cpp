@@ -1,6 +1,5 @@
 #include"Res.hpp"
 
-
 SFS::Window window;
 
 SFS::Scene mainScene;

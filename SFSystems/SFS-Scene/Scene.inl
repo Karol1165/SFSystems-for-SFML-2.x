@@ -23,34 +23,8 @@ namespace SFS {
 		this->isActive = true;
 	}
 
-	template <typename Derived>
-	template<typename T>
-	void BaseScene<Derived>::addObject(idVector<ptr<T>>& container, T* newElement, std::vector<std::weak_ptr<Registrar<T>>> registrarContainer,
-		std::optional<std::string> id) {
-		if (!newElement)
-			throw std::invalid_argument("Trying to add null element to scene");
 
-		ptr<T> element = ptr<T>(newElement);
 
-		if (id.has_value())
-			container.push_back(id.value(), element);
-		else
-			container.push_back(element);
 
-		if (registrarContainer.size() > 0) {
-			for (auto& i : registrarContainer) {
-				i.lock()->Register(element, &container, id);
-			}
-		}
-	}
-
-	template<typename Derived>
-	template<typename T>
-	void BaseScene<Derived>::addRegistrar(std::vector<std::weak_ptr<Registrar<T>>>& container, std::weak_ptr<Registrar<T>> newElement) {
-		if (newElement.expired())
-			throw std::invalid_argument("Trying to add expired registrar to scene");
-
-		container.push_back(newElement);
-	}
 
 }
