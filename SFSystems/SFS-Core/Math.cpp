@@ -8,7 +8,7 @@ namespace SFS {
 		A = a.x - b.x;
 		B = a.y - b.y;
 		C = std::pow(A * A + B * B, 0.5);
-		return std::asin(A / C) * M_RADIANS_TO_DEGREES_CONVERTER;
+		return std::asin(A / C) * radiansToDegrees;
 	}
 
 	sf::Vector2f center(const sf::FloatRect& boundsToCenter, const sf::FloatRect& background) {

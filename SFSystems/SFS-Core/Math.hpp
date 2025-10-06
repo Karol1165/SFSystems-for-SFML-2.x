@@ -2,10 +2,11 @@
 #ifndef MATH_H_
 #define MATH_H_
 #include<SFML/Graphics.hpp>
+#include <numbers>
 #include "framework.h"
 
-#define M_PI 3.14159265358979323846
-#define M_RADIANS_TO_DEGREES_CONVERTER 180 / M_PI 
+constexpr double pi = std::numbers::pi;
+constexpr double radiansToDegrees = 180.0 / pi;
 
 namespace SFS {
 
