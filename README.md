@@ -1,5 +1,7 @@
 EN
 
+!!! Project under heavy refactorization, even a master branch may not work correctly !!!
+
 This is a version of the library for SFML 2.x.
 
 SFSystems is a C++ library built on top of SFML, offering a simple and extensible scene management system along with a collection of UI elements prefabs, and also resource managers, data structures and other tools. It is designed to streamline 2D game development.
@@ -11,6 +13,8 @@ Minimum required SFML version: 2.5
 Racomendated SFML version: 2.6.2
 
 PL
+
+!!! Projekt podczas intensywnej refaktoryzacji, nawet gałąź master może nie działać poprawnie !!!
 
 Ta wersja biblioteki jest dla SFML 2.x
 
