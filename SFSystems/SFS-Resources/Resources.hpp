@@ -2,15 +2,16 @@
 #ifndef RESOURCES_HPP_
 #define RESOURCES_HPP_
 
-#include<string>
-#include<fstream>
-#include<unordered_map>
-#include<filesystem>
-#include<locale>
-#include<variant>
-#include<SFML/Graphics.hpp>
-#include "GettextParser.hpp"
+#include <string>
+#include <fstream>
+#include <unordered_map>
+#include <filesystem>
+#include <locale>
+#include <variant>
+#include <SFML/Graphics.hpp>
+
 #include "framework.h"
+#include "GettextParser.hpp"
 
 
 

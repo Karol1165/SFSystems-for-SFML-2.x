@@ -4,7 +4,7 @@
 namespace SFS {
 
 	template <typename Derived>
-	BaseScene<Derived>::BaseScene(const BaseScene& scene) : initFunc(scene.initFunc) {}
+	BaseScene<Derived>::BaseScene(const BaseScene& scene) : initializer(scene.initializer) {}
 
 	template <typename Derived>
 	BaseScene<Derived>& BaseScene<Derived>::operator=(const BaseScene& scene) {

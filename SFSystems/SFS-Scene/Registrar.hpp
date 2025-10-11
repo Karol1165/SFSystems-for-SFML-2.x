@@ -7,14 +7,9 @@
 #include <concepts>
 #include<typeindex>
 #include <memory>
-#include "Base.hpp"
-#include "Data.hpp"
 #include "framework.h"
 
 namespace SFS {
-	template <typename T, typename U>
-	concept DerivedFrom = std::derived_from<U, T>;
-
 
 	//Template class to store and manage objects
 
@@ -26,6 +21,8 @@ namespace SFS {
 		~Registrar() = default;
 
 		explicit Registrar(ptr<T> object) : object(object) {}
+
+		explicit Registrar(T* object) : object(std::make_shared<T>(object)) {}
 
 		[[nodiscard]]
 		std::weak_ptr<T> getAsBase() const { return std::weak_ptr<T>(object); }

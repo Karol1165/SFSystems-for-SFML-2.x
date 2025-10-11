@@ -1,31 +1,54 @@
 #pragma once
 #ifndef SCENE_HPP_
 #define SCENE_HPP_
-#include "Data.hpp"
-#include "Base.hpp"
+
 #include <SFML/Graphics.hpp>
 #include<SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include<ranges>
 #include <functional>
 #include <queue>
+
+#include "framework.h"
 #include "Task.hpp"
 #include "Registrar.hpp"
-#include "framework.h"
+
 
 namespace SFS {
 
-	class SceneInitializer;
+	template <typename Target>
+	class SceneInitializer {
+	private:
+
+		struct Resources {
+
+		};
+
+	protected:
+		Target& target;
+
+
+
+	public:
+		explicit SceneInitializer(Target& target) : target(target) {}
+		virtual ~SceneInitializer() = default;
+		
+		virtual void LoadSharedResources() {}
+		virtual void LoadSceneResources() {}
+		virtual void InitializeScene() = 0;
+		virtual void UnloadSceneResources() {}
+
+	};
 
 	template <typename Derived>
 	class BaseScene : public sf::Drawable {
 	public:
-		using InitFunc = void (*) (Derived&);
+
 		using Task = BaseTask<Derived>;
 		using TaskQueue = TaskQueue<Derived>;
 
 		BaseScene() = default;
-		~BaseScene() = default;
+		virtual ~BaseScene() = default;
 		BaseScene(const BaseScene&);
 		BaseScene& operator=(const BaseScene&);
 
@@ -34,9 +57,6 @@ namespace SFS {
 
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) = 0;
 		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) = 0;
-
-		//To change
-		void setInitFunc(InitFunc func) { this->initFunc = func; }
 
 		void setView(const sf::View& view) { this->SceneView = view; }
 
@@ -48,14 +68,10 @@ namespace SFS {
 
 		[[nodiscard]]
 		sf::Time getDeltaTime() const { return this->clock.getElapsedTime(); }
-
-		//To change
-		[[nodiscard]]
-		bool hasInitFunc() const { return this->initFunc; }
 		
 	protected:
-		//To change
-		InitFunc initFunc = nullptr;
+
+		SceneInitializer<Derived>* initializer = nullptr;
 
 		bool isActive = false;
 
@@ -73,10 +89,6 @@ namespace SFS {
 		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) override;
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) override {}
 		virtual void DisableActive() override;
-
-		void addStaticUI(SceneElement* newElement, std::optional<std::string> id = std::nullopt);
-
-		void addUI(UI* newElement, std::optional<std::string> id = std::nullopt);
 
 	private:
 
@@ -97,15 +109,6 @@ namespace SFS {
 
 		Scene() = default;
 		~Scene() = default;
-		//To change
-		Scene(InitFunc func);
-
-
-		void addGameObject(GameObject* newElement, std::optional<std::string> id = std::nullopt);
-
-		void addController(BaseController* controller, std::optional<std::string> id = std::nullopt);
-		
-		UIScene& getUIScene() { return this->GUI; }
 
 	private:
 

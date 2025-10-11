@@ -9,9 +9,11 @@ namespace SFS {
 
 	using SceneElement = sf::Drawable;
 
-	/// <summary>
-	/// Base class for all UI elements
-	/// </summary>
+	template <typename T, typename U>
+	concept DerivedFrom = std::derived_from<U, T>;
+
+
+	// Interface class for all UI elements
 
 	class SFS_C_API UI : public SceneElement {
 	public:
@@ -23,10 +25,9 @@ namespace SFS {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 	};
 
-	/// <summary>
-	/// Base class for game objects
-	/// </summary>
-	
+
+	// Interface class for game objects
+		
 	class SFS_C_API GameObject : public SceneElement {
 	public:
 		GameObject() = default;
@@ -37,16 +38,45 @@ namespace SFS {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 	};
 
-	/// <summary>
-	/// Base class for controllers
-	/// </summary>
-	
+
+	// Interface class for controllers
+
 	class SFS_C_API BaseController {
 	public:
-		BaseController();
-		virtual ~BaseController();
+		BaseController() = default;
+		virtual ~BaseController() = default;
 
 	    virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) = 0;
+	};
+
+	//TODO: Complete the interfaces
+
+	// Interface class for texture manager
+
+	class SFS_C_API BaseTextrureManager {
+	public:
+
+	};
+
+	// Interface class for localisation manager
+
+	class SFS_C_API BaseLocalisationManager {
+	public:
+
+	};
+
+	// Interface class for sound manager
+
+	class SFS_C_API BaseSoundManager {
+	public:
+
+	};
+
+	// Interface class for shader manager
+
+	class SFS_C_API BaseShaderManager {
+	public:
+
 	};
 
 }

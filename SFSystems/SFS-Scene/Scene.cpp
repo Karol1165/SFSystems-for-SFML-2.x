@@ -51,10 +51,6 @@ namespace SFS {
 		target.draw(this->GUI, states);
 	}
 
-	Scene::Scene(InitFunc func) {
-		this->setInitFunc(func);
-	}
-
 	void Scene::SetActive() {
 		BaseScene<Scene>::SetActive();
 
@@ -66,14 +62,6 @@ namespace SFS {
 
 		this->gameObjects.clear();
 		this->controllers.clear();
-	}
-
-	void Scene::addGameObject(GameObject* newElement, std::optional<std::string> id) {
-	
-	}
-
-	void Scene::addController(BaseController* controller, std::optional<std::string> id) {
-	
 	}
 
 
