@@ -8,9 +8,11 @@
 #include <filesystem>
 #include <locale>
 #include <variant>
+
 #include <SFML/Graphics.hpp>
 
 #include "framework.h"
+
 #include "GettextParser.hpp"
 
 
@@ -28,6 +30,11 @@ namespace SFS {
 		[[nodiscard]]
 		std::string getExtension() const {
 			return this->fileExtension;
+		}
+
+		[[nodiscard]]
+		std::filesystem::path getPath(const std::string& fileName) const {
+			return this->fileDirectory / (fileName + this->fileExtension);
 		}
 
 		void setExtension(const std::string& newExtension);
@@ -84,7 +91,17 @@ namespace SFS {
 		TextureManager(const std::string& directory, const std::string& extension) : baseResourcesManager(directory, extension) {}
 		~TextureManager() = default;
 
-		void loadTexture(const std::string& fileName, sf::Texture& texture) const;
+		void loadTexture(const std::string& fileName, std::optional<std::string> name = std::nullopt);
+
+		[[nodiscard]]
+		const sf::Texture& getTexture(const std::string& name) const {
+			return this->textures.at(name);
+		}
+
+	private:
+
+		std::unordered_map<std::string, sf::Texture> textures;
+
 	};
 
 }

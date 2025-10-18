@@ -2,12 +2,13 @@
 #ifndef TOOLTIP_HPP_
 #define TOOLTIP_HPP_
 
-#include "framework.h"
-#include "Base.hpp"
-#include "Data.hpp"
-#include "Math.hpp"
-#include "UIViews.hpp"
 #include <optional>
+
+#include "framework.h"
+
+#include "UIViews.hpp"
+
+
 
 namespace SFS {
 	////////////////////////////////////////

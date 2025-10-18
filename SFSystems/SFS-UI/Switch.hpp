@@ -3,8 +3,7 @@
 #define SWITCH_HPP_
 
 #include "framework.h"
-#include "Base.hpp"
-#include "Data.hpp"
+
 #include "Button.hpp"
 #
 namespace SFS {

@@ -24,10 +24,6 @@ namespace SFS {
 		this->staticUI.clear();
 	}
 
-
-
-
-
 	///Scene
 
 	void Scene::UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) {
@@ -145,8 +141,8 @@ namespace SFS {
 			sf::Vector2f mousePos;
 			bool hasEvents;
 
-			sf::Event fakeEvent;
-			fakeEvent.type = sf::Event::Count;
+			sf::Event fakeEvent = sf::Event();
+			deactivateEvent(fakeEvent);
 
 			while (this->isOpen()) {
 

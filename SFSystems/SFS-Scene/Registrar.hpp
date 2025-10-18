@@ -1,12 +1,14 @@
 #pragma once
 #ifndef REGISTRAR_HPP_
 #define REGISTRAR_HPP_
+
 #include<optional>
 #include <string>
 #include <vector>
 #include <concepts>
 #include<typeindex>
 #include <memory>
+
 #include "framework.h"
 
 namespace SFS {

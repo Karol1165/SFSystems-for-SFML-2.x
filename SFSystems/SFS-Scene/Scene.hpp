@@ -2,12 +2,13 @@
 #ifndef SCENE_HPP_
 #define SCENE_HPP_
 
-#include <SFML/Graphics.hpp>
-#include<SFML/Window.hpp>
-#include <SFML/Audio.hpp>
 #include<ranges>
 #include <functional>
 #include <queue>
+
+#include <SFML/Graphics.hpp>
+#include<SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 
 #include "framework.h"
 #include "Task.hpp"
@@ -21,16 +22,25 @@ namespace SFS {
 	private:
 
 		struct Resources {
-
+			BaseTextrureManager* textureManager = nullptr;
+			BaseLocalisationManager* localisationManager = nullptr;
+			BaseShaderManager* shaderManager = nullptr;
+			BaseSoundManager* soundManager = nullptr;
 		};
 
+		static Resources sharedResources;
+
+		Resources resources;
+
 	protected:
+
 		Target& target;
 
-
-
 	public:
-		explicit SceneInitializer(Target& target) : target(target) {}
+
+		explicit SceneInitializer(Target& target) : target(target) {
+			LoadSharedResources();
+		}
 		virtual ~SceneInitializer() = default;
 		
 		virtual void LoadSharedResources() {}
@@ -44,11 +54,14 @@ namespace SFS {
 	class BaseScene : public sf::Drawable {
 	public:
 
+		friend class SceneInitializer<Derived>;
+
 		using Task = BaseTask<Derived>;
 		using TaskQueue = TaskQueue<Derived>;
 
 		BaseScene() = default;
 		virtual ~BaseScene() = default;
+
 		BaseScene(const BaseScene&);
 		BaseScene& operator=(const BaseScene&);
 
@@ -90,8 +103,6 @@ namespace SFS {
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) override {}
 		virtual void DisableActive() override;
 
-	private:
-
 	protected:
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -109,10 +120,6 @@ namespace SFS {
 
 		Scene() = default;
 		~Scene() = default;
-
-	private:
-
-
 
 	protected:
 

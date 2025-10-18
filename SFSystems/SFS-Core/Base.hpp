@@ -1,7 +1,9 @@
 #pragma once
 #ifndef BASE_HPP_
 #define BASE_HPP_
+
 #include <SFML/Graphics.hpp>
+
 #include "framework.h"
 
 

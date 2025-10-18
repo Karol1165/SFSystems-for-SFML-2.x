@@ -8,18 +8,18 @@ namespace SFS {
 
 	template <typename Derived>
 	BaseScene<Derived>& BaseScene<Derived>::operator=(const BaseScene& scene) {
-		this->initFunc = scene.initFunc;
+		this->initializer = scene.initializer;
 		return *this;
 	}
 
 	template <typename Derived>
 	void BaseScene<Derived>::SetActive() {
-		if (this->initFunc)
-			this->initFunc(*static_cast<Derived*>(this));
+		if (this->initializer)
+			this->initializer->InitializeScene();
 #ifdef _DEBUG
 		else
-			std::cerr << "Scene has no init function" << std::endl;
-#endif // _DEBUG
+			std::cerr << "Scene has no initializer" << std::endl;
+#endif
 		this->isActive = true;
 	}
 

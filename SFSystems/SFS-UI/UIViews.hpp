@@ -1,9 +1,9 @@
 #pragma once
 #ifndef UIVIEWS_HPP_
 #define UIVIEWS_HPP_
-#include "Base.hpp"
-#include "Data.hpp"
+
 #include "framework.h"
+
 
 namespace SFS {
 

@@ -1,12 +1,12 @@
 #pragma once
 #ifndef BUTTON_HPP_
 #define BUTTON_HPP_
-#include "Data.hpp"
-#include "Base.hpp"
-#include "SFML/Graphics.hpp"
-#include "SFML/Audio.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 #include "framework.h"
-#include "Math.hpp"
+
 #include "UIViews.hpp"
 
 namespace SFS {
