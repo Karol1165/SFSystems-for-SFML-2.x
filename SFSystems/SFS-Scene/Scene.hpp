@@ -13,42 +13,12 @@
 #include "framework.h"
 #include "Task.hpp"
 #include "Registrar.hpp"
+#include "SceneInitailizer.hpp"
 
 
 namespace SFS {
 
-	template <typename Target>
-	class SceneInitializer {
-	private:
 
-		struct Resources {
-			BaseTextrureManager* textureManager = nullptr;
-			BaseLocalisationManager* localisationManager = nullptr;
-			BaseShaderManager* shaderManager = nullptr;
-			BaseSoundManager* soundManager = nullptr;
-		};
-
-		static Resources sharedResources;
-
-		Resources resources;
-
-	protected:
-
-		Target& target;
-
-	public:
-
-		explicit SceneInitializer(Target& target) : target(target) {
-			LoadSharedResources();
-		}
-		virtual ~SceneInitializer() = default;
-		
-		virtual void LoadSharedResources() {}
-		virtual void LoadSceneResources() {}
-		virtual void InitializeScene() = 0;
-		virtual void UnloadSceneResources() {}
-
-	};
 
 	template <typename Derived>
 	class BaseScene : public sf::Drawable {

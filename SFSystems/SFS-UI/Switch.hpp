@@ -241,8 +241,8 @@ namespace SFS {
 		void optionTextInit(const SwitchStates& states, const textData& data);
 
 		sf::RectangleShape background;
-		ptr<baseSwitchButton> leftButton;
-		ptr<baseSwitchButton> rightButton;
+		sptr<baseSwitchButton> leftButton;
+		sptr<baseSwitchButton> rightButton;
 		sf::Text text;
 		ClippedView textView;
 		SwitchStates states;

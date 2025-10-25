@@ -22,7 +22,7 @@ namespace SFS {
 
 		~Registrar() = default;
 
-		explicit Registrar(ptr<T> object) : object(object) {}
+		explicit Registrar(sptr<T> object) : object(object) {}
 
 		explicit Registrar(T* object) : object(std::make_shared<T>(object)) {}
 
@@ -45,7 +45,7 @@ namespace SFS {
 		T& operator*() const { return *object; }
 
 	private:
-		ptr<T> object;
+		sptr<T> object;
 	};
 
 }

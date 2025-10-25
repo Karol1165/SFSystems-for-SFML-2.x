@@ -263,7 +263,7 @@ namespace SFS {
 
 	class RadioButtonGroup : public UI {
 	public:
-		std::vector<ptr<RadioButton>> buttons;
+		std::vector<sptr<RadioButton>> buttons;
 	};
 
 	class SFS_UI_API RadioButton : public BaseButton {

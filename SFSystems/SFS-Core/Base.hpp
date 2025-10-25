@@ -53,6 +53,11 @@ namespace SFS {
 
 	//TODO: Complete the interfaces
 
+	class BaseManager {
+	public:
+		
+	};
+
 	// Interface class for texture manager
 
 	class SFS_C_API BaseTextrureManager {
