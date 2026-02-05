@@ -6,10 +6,7 @@
 #include<Data.hpp>
 #include<Resources.hpp>
 
-extern SFS::Window window;
-
-extern SFS::Scene mainScene;
-extern SFS::Scene optionsScene;
+extern 	SFS::Window w;
 
 extern sf::Font globalFont;
 

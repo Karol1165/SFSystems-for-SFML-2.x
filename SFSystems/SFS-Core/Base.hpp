@@ -11,8 +11,14 @@ namespace SFS {
 
 	using SceneElement = sf::Drawable;
 
-	template <typename T, typename U>
-	concept DerivedFrom = std::derived_from<U, T>;
+	template <typename T>
+	using InitFunc = void(*) (T&);
+
+	template <typename B, typename D>
+	concept DerivedFrom = std::derived_from<D, B>;
+
+	template <template <typename> typename Base, typename D>
+	concept CRTP = std::is_base_of_v<Base<D>, D>;
 
 
 	// Interface class for all UI elements
@@ -51,40 +57,7 @@ namespace SFS {
 	    virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) = 0;
 	};
 
-	//TODO: Complete the interfaces
 
-	class BaseManager {
-	public:
-		
-	};
-
-	// Interface class for texture manager
-
-	class SFS_C_API BaseTextrureManager {
-	public:
-
-	};
-
-	// Interface class for localisation manager
-
-	class SFS_C_API BaseLocalisationManager {
-	public:
-
-	};
-
-	// Interface class for sound manager
-
-	class SFS_C_API BaseSoundManager {
-	public:
-
-	};
-
-	// Interface class for shader manager
-
-	class SFS_C_API BaseShaderManager {
-	public:
-
-	};
 
 }
 #endif

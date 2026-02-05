@@ -16,7 +16,7 @@ namespace SFS {
 	template<typename T>
 	class TaskQueue {
 	private:
-		std::queue<std::unique_ptr<BaseTask<T>>> tasks;
+		std::queue<std::shared_ptr<BaseTask<T>>> tasks;
 	public:
 		void addTask(BaseTask<T>* newTask);
 		void executeTask(T& executor);

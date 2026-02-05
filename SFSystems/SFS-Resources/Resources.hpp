@@ -64,7 +64,8 @@ namespace SFS {
 	
 	
 
-	//Language resources manager for loading and managing translations from .po files in gettext format. 
+	//Language resources sceneManager for loading and managing translations from .po files in gettext format. 
+
 	class SFS_U_API LanguageResourcesManager : public baseResourcesManager {
 	public:
 		LanguageResourcesManager();

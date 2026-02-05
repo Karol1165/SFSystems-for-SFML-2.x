@@ -30,7 +30,7 @@ namespace SFS {
 
 
 	void BaseButton::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
-		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+		if (this->CheckClick(mousePos, e.type == sf::Event::MouseButtonPressed && sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			//Do button function
 			if (this->func)
 				this->func();
@@ -219,7 +219,7 @@ namespace SFS {
 
 
 	void CheckBox::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
-		if (this->CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+		if (this->CheckClick(mousePos, e.type == sf::Event::MouseButtonPressed && sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->isChecked)
 				this->isChecked = false;
 			else

@@ -30,7 +30,8 @@ namespace SFS {
 				if (background.getGlobalBounds().contains(mousePos)) {
 					textBoxUpdate(true);
 					isChecked = true;
-					deactivateEvent(e);
+					// Mark event as technical to avoid further processing
+					markEventAsTechnical(e);
 				}
 				else {
 					isChecked = false;

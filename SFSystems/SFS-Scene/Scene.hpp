@@ -13,38 +13,44 @@
 #include "framework.h"
 #include "Task.hpp"
 #include "Registrar.hpp"
-#include "SceneInitailizer.hpp"
+#include "Builder.hpp"
 
 
 namespace SFS {
-
-
+	class SceneManager;
 
 	template <typename Derived>
 	class BaseScene : public sf::Drawable {
 	public:
 
-		friend class SceneInitializer<Derived>;
+		friend class SceneManager;
 
 		using Task = BaseTask<Derived>;
 		using TaskQueue = TaskQueue<Derived>;
 
+		template <typename T>
+		class Remove : public Task {
+		private:
+			std::string id;
+			idVector<Registrar<T>>& container;
+		public:
+			Remove(const std::string& id, idVector<Registrar<T>>& container) : id(id), container(container) {}
+			~Remove() = default;
+			Remove& operator=(const Remove&) = default;
+			Remove(const Remove&) = default;
+
+			void doTask(Derived& scene) override {
+				container.erase(id);
+			}
+		};
+
 		BaseScene() = default;
 		virtual ~BaseScene() = default;
-
-		BaseScene(const BaseScene&);
-		BaseScene& operator=(const BaseScene&);
-
-		virtual void SetActive();
-		virtual void DisableActive() = 0;
 
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) = 0;
 		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) = 0;
 
 		void setView(const sf::View& view) { this->SceneView = view; }
-
-		[[nodiscard]]
-		bool getIsActive() const { return this->isActive; }
 
 		[[nodiscard]]
 		sf::View getView() const { return this->SceneView; }
@@ -54,13 +60,13 @@ namespace SFS {
 		
 	protected:
 
-		SceneInitializer<Derived>* initializer = nullptr;
-
 		bool isActive = false;
 
 		sf::View SceneView;
 
 		sf::Clock clock;
+
+		TaskQueue tasks;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
 
@@ -68,10 +74,29 @@ namespace SFS {
 
 	class SFS_S_API UIScene : public BaseScene<UIScene> {
 	public:
+		friend class SceneInitializer<UIScene>;
 
 		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) override;
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) override {}
-		virtual void DisableActive() override;
+
+		void addStaticUI(SceneElement* element) { this->staticUI.push_back(Registrar(element)); }
+
+		void addStaticUI(const std::string& id, SceneElement* element) { this->staticUI.push_back(Registrar(element), id); }
+
+		void addUI(UI* element) { this->ui.push_back(Registrar(element)); }
+
+		void addUI(const std::string& id, UI* element) { this->ui.push_back(Registrar(element), id); }
+
+
+		void removeStaticUI(const std::string& id) { this->tasks.addTask(new Remove<SceneElement>(id, staticUI)); }
+
+		void removeUI(const std::string& id) { this->tasks.addTask(new Remove<UI>(id, ui)); }
+
+		[[nodiscard]]
+		const idVector<Registrar<SceneElement>>& getStaticUI() { return this->staticUI; }
+
+		[[nodiscard]]
+		const idVector<Registrar<UI>>& getUI() { return this->ui; }
 
 	protected:
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -81,15 +106,36 @@ namespace SFS {
 	};
 	
 	class SFS_S_API Scene : public BaseScene<Scene> {
+	private:
+
 	public:
+		friend class SceneInitializer<Scene>;
 
 		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos);
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos);
-		virtual void SetActive() override;
-		virtual void DisableActive() override;
 
 		Scene() = default;
 		~Scene() = default;
+
+		UIScene& getUIScene() { return this->GUI; }
+
+		void addGameObject(GameObject* gameObject) { this->gameObjects.push_back(Registrar(gameObject)); }
+
+		void addGameObject(const std::string& id, GameObject* gameObject) { this->gameObjects.push_back(Registrar(gameObject), id); }
+
+		void addController(BaseController* controller) { this->controllers.push_back(Registrar<BaseController>(controller)); }
+
+		void addController(const std::string& id, BaseController* controller) { this->controllers.push_back(Registrar(controller), id); }
+
+		void removeGameObject(const std::string& id) { this->tasks.addTask(new Remove(id, gameObjects)); }
+
+		void removeController(const std::string& id) { this->tasks.addTask(new Remove(id, controllers)); }
+
+		[[nodiscard]]
+		const idVector<Registrar<GameObject>>& getGameObjects() { return this->gameObjects; }
+
+		[[nodiscard]]
+		const idVector<Registrar<BaseController>>& getControllers() { return this->controllers; }
 
 	protected:
 
@@ -101,48 +147,47 @@ namespace SFS {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};
 
+	// TODO:  Naprawiæ sposób dodawania nowych scen do managera
 
+	struct SceneEntry {
+		enum class State { Unloaded, Loaded, Active };
+		State state = State::Unloaded;
+		Scene scene;
+		sptr<SceneInitializer<Scene>> builder;
+		~SceneEntry() {
+			if (builder)
+				builder->UnloadSceneResources();
+		}
+	};
 
 	class SFS_S_API SceneManager {
 	private:
-		sf::RenderWindow* owner;
-		Scene* scene;
+		std::map<sf::String, SceneEntry> scenes;
+		sf::String activeSceneID;
 	public:
-		SceneManager() {
-			this->owner = nullptr;
-			this->scene = nullptr;
-		}
-		SceneManager(sf::RenderWindow* owner);
+		SceneManager() = default;
 
-		void setScene(Scene& scene) {
-			if (this->scene)
-				this->scene->DisableActive();
-			this->scene = &scene;
-		}
-
-		void activateScene() {
-			if (this->scene)
-				this->scene->SetActive();
-			else
-				throw std::runtime_error("trying to activate not existing scene");
+		template <typename T>
+			requires std::derived_from<T, SceneInitializer<Scene>>
+		void addScene(const sf::String& id) {
+			scenes.emplace(id, SceneEntry{ SceneEntry::State::Unloaded, Scene(), nullptr });
+			scenes[id].builder = std::shared_ptr<T>(new T(&scenes[id].scene));
+			if(scenes.size() == 1) {
+				buildScene(id);
+				scenes[id].builder->StartScene();
+				scenes[id].state = SceneEntry::State::Active;
+				activeSceneID = id;
+			}
 		}
 
-		void changeScene(Scene& scene) {
-			this->setScene(scene);
-			this->activateScene();
-		}
+		void changeScene(const sf::String& id);
 
+		void buildScene(const sf::String& id);
 
-		void setOwner(sf::RenderWindow* owner) { if (owner) this->owner = owner; }
+		void unloadScene(const sf::String& id);
 
 		[[nodiscard]]
-		bool hasOwner() const { return this->owner; }
-
-		[[nodiscard]]
-		bool hasScene() const { return this->scene; }
-
-		[[nodiscard]]
-		Scene* getCurrentScene() const { return this->scene; }
+		Scene& getCurrentScene() { return scenes[activeSceneID].scene; }
 	};
 
 
@@ -158,31 +203,27 @@ namespace SFS {
 
 	class SFS_S_API Window : public sf::RenderWindow {
 	public:
-		using InitFunc = void(*) (Window&);
+		using Init = InitFunc<Window>;
 		using Task = BaseTask<Window>;
 		using TaskQueue = TaskQueue<Window>;
 
 		class ChangeScene : public Task {
 		private:
-			Scene* sceneToSet;
+			sf::String sceneID;
 		public:
-			ChangeScene(Scene* scene) : sceneToSet(scene) {}
+			ChangeScene(sf::String id) : sceneID(std::move(id)) {}
 			void doTask(Window& window) override {
-				if (sceneToSet != nullptr)
-					window.manager.changeScene(*sceneToSet);
+				window.sceneManager.changeScene(sceneID);
 			}
 		};
+
+		friend class ChangeScene;
 
 		Window();
 		~Window() = default;
 
 		Window(sf::VideoMode mode, const sf::String& title, uint32_t style = sf::Style::Default, const WindowSettings& settings = WindowSettings());
 		Window(sf::WindowHandle handle, const WindowSettings& settings = WindowSettings());
-		template <typename F>
-		Window(F initFunc) {
-			this->setInitFunc(initFunc);
-			this->initManager();
-		}
 
 		void create(sf::VideoMode mode, const sf::String& title, uint32_t style = sf::Style::Default, const WindowSettings& settings = WindowSettings());
 		void create(sf::WindowHandle handle, const WindowSettings& settings);
@@ -192,28 +233,28 @@ namespace SFS {
 
 		void setClearColor(const sf::Color& color) { this->clearColor = color; }
 
-		void setInitFunc(InitFunc initFunc) {
-			if (initFunc != nullptr)
-				this->initFunc = initFunc;
-		}
 
 		void changeWindowSettings(const WindowSettings& settings);
 
-		void setScene(Scene& newScene) { this->tasks.addTask(new ChangeScene(&newScene)); }
+		//TODO: set scene functions
+
 		void addTask(Task* newTask) { this->tasks.addTask(newTask); }
 
+		void setScene(sf::String id) {
+			this->addTask(new ChangeScene(std::move(id)));
+		}
 
+		[[nodiscard]]
+		SceneManager& getSceneManager() { return this->sceneManager; }
 
 		/// Activates window, runs start function and main loop of program
 
 		void run();
 		
 	private:
-		SceneManager manager;
-		void initManager() noexcept;
-		bool isWindowRunning = false;
+		SceneManager sceneManager = SceneManager();
 
-		InitFunc initFunc;
+		bool isRunning = false;
 
 		sf::Color clearColor = sf::Color::White;
 

@@ -20,8 +20,16 @@ namespace SFS {
 	template <typename T>
 	using uptr = std::unique_ptr<T>;
 
-	inline void deactivateEvent(sf::Event& e) {
+
+
+	inline void markEventAsTechnical(sf::Event& e) {
 		e.type = sf::Event::Count;
+	}
+
+	inline sf::Event technicalEvent() {
+		sf::Event e;
+		markEventAsTechnical(e);
+		return e;
 	}
 
 	struct SFS_C_API textData {

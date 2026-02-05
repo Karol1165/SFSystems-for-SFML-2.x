@@ -24,7 +24,10 @@ namespace SFS {
 
 		explicit Registrar(sptr<T> object) : object(object) {}
 
-		explicit Registrar(T* object) : object(std::make_shared<T>(object)) {}
+		
+		explicit Registrar(T* object) {
+			this->object = std::shared_ptr<T>(object);
+		}
 
 		[[nodiscard]]
 		std::weak_ptr<T> getAsBase() const { return std::weak_ptr<T>(object); }
