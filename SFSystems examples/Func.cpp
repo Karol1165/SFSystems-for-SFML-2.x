@@ -1,9 +1,10 @@
 #include"Func.hpp"
 
+
 void optionsBtnFunc() {
-	window.setScene(optionsScene);
+	w.setScene("Options");
 }
 
 void menuBackBtnFunc() {
-	window.setScene(mainScene);
+	w.setScene("MainMenu");
 }

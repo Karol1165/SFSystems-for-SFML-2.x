@@ -37,8 +37,8 @@ namespace SFS {
 		return this->getText(msgid, "", count);
 	}
 
-	void TextureManager::loadTexture(const std::string& fileName, sf::Texture& texture) const {
-		std::filesystem::path Path(this->config.getDirectory() / (fileName + this->config.getExtension()));
-		texture.loadFromFile(Path.string());
+	void TextureManager::loadTexture(const std::string& fileName, std::optional<std::string> name) {
+		textures[name.value_or(fileName)].loadFromFile(config.getPath(fileName).string());
 	}
+
 }

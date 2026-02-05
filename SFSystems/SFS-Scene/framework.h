@@ -8,6 +8,9 @@
 #include <iostream>
 #endif
 
+#include "../SFS-Core/Base.hpp"
+#include "../SFS-Core/Data.hpp"
+
 #ifdef SFSSCENE_EXPORTS
 #define SFS_S_API __declspec(dllexport)
 #else

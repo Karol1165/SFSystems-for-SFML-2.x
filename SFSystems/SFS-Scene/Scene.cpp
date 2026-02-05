@@ -19,13 +19,6 @@ namespace SFS {
 		}
 	}
 
-	void UIScene::DisableActive() {
-		this->ui.clear();
-		this->staticUI.clear();
-	}
-
-
-
 
 
 	///Scene
@@ -35,6 +28,7 @@ namespace SFS {
 	}
 
 	void Scene::Update(sf::Event& event, const sf::Vector2f& mousePos) {
+		tasks.executeAll(*this);
 		for (auto& i : std::ranges::reverse_view(gameObjects)) {
 			i->Update(event, clock.getElapsedTime(), mousePos);
 		}
@@ -51,62 +45,62 @@ namespace SFS {
 		target.draw(this->GUI, states);
 	}
 
-	Scene::Scene(InitFunc func) {
-		this->setInitFunc(func);
-	}
-
-	void Scene::SetActive() {
-		BaseScene<Scene>::SetActive();
-
-		this->GUI.SetActive();
-	}
-
-	void Scene::DisableActive() {
-		this->GUI.DisableActive();
-
-		this->gameObjects.clear();
-		this->controllers.clear();
-	}
-
-	void Scene::addGameObject(GameObject* newElement, std::optional<std::string> id) {
-	
-	}
-
-	void Scene::addController(BaseController* controller, std::optional<std::string> id) {
-	
-	}
-
 
 
 	//////////////////////////////////////////////
 	/// SceneManager
 
-	SceneManager::SceneManager(sf::RenderWindow* owner) {
-		this->setOwner(owner);
-		this->scene = nullptr;
+	void SceneManager::changeScene(const sf::String& id) {
+		if (activeSceneID == id)
+			return;
+
+		if(scenes.find(id) == scenes.end())
+			throw std::runtime_error("Scene with ID '" + id.toAnsiString() + "' does not exist in SceneManager.");
+
+
+		scenes[activeSceneID].builder->PauseScene();
+		scenes[activeSceneID].state = SceneEntry::State::Loaded;
+
+		if(scenes[id].state == SceneEntry::State::Unloaded)
+			buildScene(id);
+
+		scenes[id].builder->StartScene();
+		scenes[id].state = SceneEntry::State::Active;
+
+		activeSceneID = id;
 	}
 
+	void SceneManager::buildScene(const sf::String& id) {
+		auto& entry = scenes[id];
+		if (entry.state == SceneEntry::State::Active)
+			return;
 
+		if(entry.state == SceneEntry::State::Unloaded)
+			entry.builder->LoadSceneResources();
+	
+		entry.builder->BuildScene();
+	}
 
-	void Window::initManager() noexcept {
-		if(!this->manager.hasOwner())
-			this->manager = SceneManager(this);
+	void SceneManager::unloadScene(const sf::String& id) {
+		auto& entry = scenes[id];
+		if (entry.state == SceneEntry::State::Unloaded)
+			return;
+		entry.builder->UnloadScene();
+		entry.builder->UnloadSceneResources();
+		entry.state = SceneEntry::State::Unloaded;
 	}
 
 	Window::Window() : sf::RenderWindow() {
-		this->initManager();
 	}
 
 	Window::Window(sf::VideoMode mode, const sf::String& title, uint32_t style, const WindowSettings& settings) 
 		: sf::RenderWindow(mode, title, style, settings.contextSettings) {
 		this->changeNonContextSettings(settings);
-		this->initManager();
 	}
 
 	Window::Window(sf::WindowHandle handle, const WindowSettings& settings)
 		: sf::RenderWindow(handle, settings.contextSettings) {
 		this->changeNonContextSettings(settings);
-		this->initManager();
 	}
 
 
@@ -114,13 +108,13 @@ namespace SFS {
 	void Window::create(sf::VideoMode mode, const sf::String& title, uint32_t style, const WindowSettings& settings) {
 		sf::RenderWindow::create(mode, title, style, settings.contextSettings);
 		this->changeNonContextSettings(settings);
-		this->initManager();
+
 	}
 
 	void Window::create(sf::WindowHandle handle, const WindowSettings& settings) {
 		sf::RenderWindow::create(handle, settings.contextSettings);
 		this->changeNonContextSettings(settings);
-		this->initManager();
+
 	}
 
 
@@ -144,21 +138,17 @@ namespace SFS {
 
 
 	void Window::run() {
-		if (this->isWindowRunning)
+		if (this->isRunning)
 			return;
-		this->isWindowRunning = true;
+		this->isRunning = true;
 		try {
-			if (this->initFunc)
-				this->initFunc(*this);
 
 			this->doTasks();
 
 			sf::Event e;
 			sf::Vector2f mousePos;
 			bool hasEvents;
-
-			sf::Event fakeEvent;
-			fakeEvent.type = sf::Event::Count;
+			sf::Event heartBeatEvent = technicalEvent();
 
 			while (this->isOpen()) {
 
@@ -172,16 +162,16 @@ namespace SFS {
 						this->close();
 						break;
 					}
-					manager.getCurrentScene()->UpdateUI(e, mousePos);
+					sceneManager.getCurrentScene().UpdateUI(e, mousePos);
 				}
 				if (!hasEvents) {
-					manager.getCurrentScene()->UpdateUI(fakeEvent, mousePos);
+					sceneManager.getCurrentScene().UpdateUI(heartBeatEvent, mousePos);
 				}
-				manager.getCurrentScene()->Update(e, mousePos);
+				sceneManager.getCurrentScene().Update(e, mousePos);
 
 				this->clear(this->clearColor);
 
-				this->draw(*manager.getCurrentScene());
+				this->draw(sceneManager.getCurrentScene());
 
 				this->display();
 			}
@@ -189,7 +179,7 @@ namespace SFS {
 		catch (const std::exception) {
 			this->close();
 		}
-		this->isWindowRunning = false;
+		this->isRunning = false;
 	}
 	
 }

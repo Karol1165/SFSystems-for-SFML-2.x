@@ -1,9 +1,6 @@
 #include"Res.hpp"
 
-SFS::Window window;
-
-SFS::Scene mainScene;
-SFS::Scene optionsScene;
+SFS::Window w;
 
 sf::Font globalFont;
 

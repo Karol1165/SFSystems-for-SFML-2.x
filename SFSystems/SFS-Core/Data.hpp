@@ -6,15 +6,30 @@
 #include<unordered_map>
 #include "framework.h"
 #include <memory>
+#include <optional>
 
 
 namespace SFS {
 
 	template <typename T>
-	using ptr = std::shared_ptr<T>;
+	using sptr = std::shared_ptr<T>;
 
-	inline void deactivateEvent(sf::Event& e) {
+	template <typename T>
+	using wptr = std::weak_ptr<T>;
+
+	template <typename T>
+	using uptr = std::unique_ptr<T>;
+
+
+
+	inline void markEventAsTechnical(sf::Event& e) {
 		e.type = sf::Event::Count;
+	}
+
+	inline sf::Event technicalEvent() {
+		sf::Event e;
+		markEventAsTechnical(e);
+		return e;
 	}
 
 	struct SFS_C_API textData {
@@ -82,10 +97,10 @@ namespace SFS {
 	public:
 
 		inline void push_back(const T& object);
-		inline void push_back(const std::string& id, const T& object);
+		inline void push_back(const T& object, const std::string& id);
 		inline void push_back(T&& object);
 		inline void push_back(const std::string& id, T&& object);
-		inline void erase(std::string id);
+		inline void erase(const std::string& id);
 		inline void erase(size_t index);
 
 		[[nodiscard]]

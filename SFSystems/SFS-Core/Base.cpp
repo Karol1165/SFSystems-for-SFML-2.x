@@ -2,10 +2,5 @@
 #include "Base.hpp"
 
 namespace SFS {
-	BaseController::BaseController() {
 
-	}
-	BaseController::~BaseController() {
-
-	}
 }

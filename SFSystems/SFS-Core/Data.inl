@@ -10,7 +10,7 @@ namespace SFS {
 	}
 	
 	template<typename T>
-	void idVector<T>::push_back(const std::string& id, const T& object) {
+	void idVector<T>::push_back(const T& object, const std::string& id) {
 		if (this->ids.contains(id))
 			throw std::invalid_argument("ID: " + id + " already exist");
 		this->ids[id] = this->objects.size();
@@ -33,7 +33,7 @@ namespace SFS {
 	}
 
 	template<typename T>
-	void idVector<T>::erase(std::string id) {
+	void idVector<T>::erase(const std::string& id) {
 		if (this->ids.contains(id)) {
 			this->ids.erase(id);
 			this->objects.erase(this->objects.begin() + this->ids.at(id));

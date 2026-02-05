@@ -1,9 +1,9 @@
 #pragma once
 #ifndef UIVIEWS_HPP_
 #define UIVIEWS_HPP_
-#include "Base.hpp"
-#include "Data.hpp"
+
 #include "framework.h"
+
 
 namespace SFS {
 
@@ -66,7 +66,7 @@ namespace SFS {
 	* TODO:
 	class SFS_UI_API ScroolView : public UI {
 	private:
-		std::vector<ptr<UI>> elements;
+		std::vector<sptr<UI>> elements;
 
 		sf::RectangleShape scroolBackground;
 		sf::CircleShape scroolCircle;
@@ -74,7 +74,7 @@ namespace SFS {
 		ScroolView() = default;
 		~ScroolView() = default;
 
-		void AddElement(ptr<UI> newElement);
+		void AddElement(sptr<UI> newElement);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
 	};

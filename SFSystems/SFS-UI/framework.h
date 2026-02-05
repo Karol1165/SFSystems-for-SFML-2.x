@@ -8,6 +8,10 @@
 #include<iostream>
 #endif
 
+#include "../SFS-Core/Base.hpp"
+#include "../SFS-Core/Data.hpp"
+#include "../SFS-Core/Math.hpp"
+
 #ifdef SFSUI_EXPORTS
 #define SFS_UI_API __declspec(dllexport)
 #else
