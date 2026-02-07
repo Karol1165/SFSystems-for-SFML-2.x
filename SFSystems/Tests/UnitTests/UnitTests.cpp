@@ -160,7 +160,7 @@ namespace UnitTests
 	TEST_CLASS(RegistrarTests) {
 		public:
 		TEST_METHOD(NullTest) {
-			SFS::Registrar<SFS::SceneElement> reg(ptr<SFS::SceneElement>(nullptr));
+			SFS::Registrar<SFS::SceneElement> reg(sptr<SFS::SceneElement>(nullptr));
 			Assert::AreEqual(true, reg.getAsBase().expired());
 			Assert::AreEqual(true, reg.getAs<SFS::SceneElement>().expired());
 		}

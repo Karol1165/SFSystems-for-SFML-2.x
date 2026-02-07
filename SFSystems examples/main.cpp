@@ -3,7 +3,6 @@
 #include <Data.hpp>
 #include "Res.hpp"
 #include"SceneInitialization.hpp"
-#include"Window.hpp"
 
 int main() {
 	initializeManagers();

@@ -1,9 +1,9 @@
 #pragma once
 #ifndef CONTROLLER_HPP_
 #define CONTROLLER_HPP_
-#include "Base.hpp"
-#include "Scene.hpp"
+
 #include "framework.h"
+#include "Scene.hpp"
 
 namespace SFS {
 

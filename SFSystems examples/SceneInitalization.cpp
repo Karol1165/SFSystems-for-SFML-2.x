@@ -2,13 +2,15 @@
 
 using namespace SFS;
 
-void makeTitle(Scene& scene) {
+/*
+
+void makeTitle(UIScene& scene) {
 	sf::RectangleShape background = sf::RectangleShape();
 	background.setPosition(0, 0);
 	SFS::setRectangleData(titleBackgroundData, background);
 
 
-	scene.addStaticUI("titleBgr", new sf::RectangleShape(background));
+	scene.addStaticUI(new sf::RectangleShape(background), "titleBgr");
 
 	sf::Text text;
 	SFS::setTextData(titleTextData, text);
@@ -21,14 +23,16 @@ void makeTitle(Scene& scene) {
 void mainSceneInitialization(Scene& scene) {
 	makeTitle(scene);
 
-	scene.addUI("OptionsBtn", new TextButton(sf::Vector2f(200, 500), buttonBackgroundData, buttonSpottedBackgroundData,
-		buttonTextData, buttonSpottedTextData, L"Options", optionsBtnFunc));
+	scene.getUIScene().addUI( new TextButton(sf::Vector2f(200, 500), buttonBackgroundData, buttonSpottedBackgroundData,
+		buttonTextData, buttonSpottedTextData, L"Options", optionsBtnFunc), "OptionsBtn");
 
 }
 
 void optionsSceneInitialization(Scene& scene) {
 	makeTitle(scene);
 
-	scene.addUI("BackBtn", new TextButton(sf::Vector2f(200, 500), buttonBackgroundData, buttonSpottedBackgroundData,
-		buttonTextData, buttonSpottedTextData, L"Back", menuBackBtnFunc));
+	scene.getUIScene().addUI(new TextButton(sf::Vector2f(200, 500), buttonBackgroundData, buttonSpottedBackgroundData,
+		buttonTextData, buttonSpottedTextData, L"Back", menuBackBtnFunc), "BackBtn");
 }
+
+*/

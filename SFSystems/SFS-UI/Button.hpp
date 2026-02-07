@@ -1,12 +1,12 @@
 #pragma once
 #ifndef BUTTON_HPP_
 #define BUTTON_HPP_
-#include "Data.hpp"
-#include "Base.hpp"
-#include "SFML/Graphics.hpp"
-#include "SFML/Audio.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 #include "framework.h"
-#include "Math.hpp"
+
 #include "UIViews.hpp"
 
 namespace SFS {
@@ -263,7 +263,7 @@ namespace SFS {
 
 	class RadioButtonGroup : public UI {
 	public:
-		std::vector<ptr<RadioButton>> buttons;
+		std::vector<sptr<RadioButton>> buttons;
 	};
 
 	class SFS_UI_API RadioButton : public BaseButton {

@@ -5,15 +5,15 @@
 #include <Data.hpp>
 #include <UI.hpp>
 #include <Scene.hpp>
+#include <Builder.hpp>
 #include "Res.hpp"
 #include "Func.hpp"
 #include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 
 using SFS::Registrar;
 using SFS::Scene;
 using SFS::SceneInitializer;
-
-
 
 class MainSceneInitializer : public SceneInitializer<Scene> {
 public:

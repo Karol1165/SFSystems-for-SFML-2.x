@@ -3,11 +3,8 @@
 #define TEXTBOX_HPP_
 
 #include "framework.h"
-#include "Data.hpp"
-#include "Base.hpp"
-#include <SFML/Graphics.hpp>
+
 #include "UIViews.hpp"
-#include "Math.hpp"
 
 namespace SFS {
 
