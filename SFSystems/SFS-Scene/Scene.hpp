@@ -81,11 +81,11 @@ namespace SFS {
 
 		void addStaticUI(SceneElement* element) { this->staticUI.push_back(Registrar(element)); }
 
-		void addStaticUI(const std::string& id, SceneElement* element) { this->staticUI.push_back(Registrar(element), id); }
+		void addStaticUI(const std::string& id, SceneElement* element) { this->staticUI.push_back(id, Registrar(element)); }
 
 		void addUI(UI* element) { this->ui.push_back(Registrar(element)); }
 
-		void addUI(const std::string& id, UI* element) { this->ui.push_back(Registrar(element), id); }
+		void addUI(const std::string& id, UI* element) { this->ui.push_back(id, Registrar(element)); }
 
 
 		void removeStaticUI(const std::string& id) { this->tasks.addTask(new Remove<SceneElement>(id, staticUI)); }
@@ -121,11 +121,11 @@ namespace SFS {
 
 		void addGameObject(GameObject* gameObject) { this->gameObjects.push_back(Registrar(gameObject)); }
 
-		void addGameObject(const std::string& id, GameObject* gameObject) { this->gameObjects.push_back(Registrar(gameObject), id); }
+		void addGameObject(const std::string& id, GameObject* gameObject) { this->gameObjects.push_back(id, Registrar(gameObject)); }
 
 		void addController(BaseController* controller) { this->controllers.push_back(Registrar<BaseController>(controller)); }
 
-		void addController(const std::string& id, BaseController* controller) { this->controllers.push_back(Registrar(controller), id); }
+		void addController(const std::string& id, BaseController* controller) { this->controllers.push_back(id, Registrar(controller)); }
 
 		void removeGameObject(const std::string& id) { this->tasks.addTask(new Remove(id, gameObjects)); }
 

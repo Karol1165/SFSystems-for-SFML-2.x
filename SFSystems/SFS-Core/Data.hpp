@@ -97,7 +97,7 @@ namespace SFS {
 	public:
 
 		inline void push_back(const T& object);
-		inline void push_back(const T& object, const std::string& id);
+		inline void push_back(const std::string& id, const T& object);
 		inline void push_back(T&& object);
 		inline void push_back(const std::string& id, T&& object);
 		inline void erase(const std::string& id);

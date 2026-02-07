@@ -10,7 +10,7 @@ namespace SFS {
 	}
 	
 	template<typename T>
-	void idVector<T>::push_back(const T& object, const std::string& id) {
+	void idVector<T>::push_back(const std::string& id, const T& object) {
 		if (this->ids.contains(id))
 			throw std::invalid_argument("ID: " + id + " already exist");
 		this->ids[id] = this->objects.size();
