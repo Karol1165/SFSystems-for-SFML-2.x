@@ -8,12 +8,10 @@ SFS::rectangleShapeData toolTipBackgroundData;
 SFS::textData toolTipTextData;
 
 SFS::rectangleShapeData titleBackgroundData;
-SFS::rectangleShapeData buttonBackgroundData;
-SFS::rectangleShapeData buttonSpottedBackgroundData;
 
 SFS::textData titleTextData;
-SFS::textData buttonTextData;
-SFS::textData buttonSpottedTextData;
+
+SFS::TextButton::StyleData buttonStyleData;
 
 //SFS::LanguageResourcesManager languageManager;
 
@@ -39,26 +37,26 @@ void loadStaticResources() {
 	toolTipTextData.outlineThickness = 0;
 	toolTipTextData.font = &globalFont;
 
-	buttonBackgroundData.fillColor = sf::Color(50, 200, 200);
-	buttonBackgroundData.outlineColor = sf::Color::Black;
-	buttonBackgroundData.outlineThickness = 2;
-	buttonBackgroundData.size = sf::Vector2f(200, 50);
+	buttonStyleData.mouseOutBgrData.fillColor = sf::Color(50, 200, 200);
+	buttonStyleData.mouseOutBgrData.outlineColor = sf::Color::Black;
+	buttonStyleData.mouseOutBgrData.outlineThickness = 2;
+	buttonStyleData.mouseOutBgrData.size = sf::Vector2f(200, 50);
 
-	buttonSpottedBackgroundData.fillColor = sf::Color(50, 120, 120);
-	buttonSpottedBackgroundData.outlineColor = sf::Color::Black;
-	buttonSpottedBackgroundData.outlineThickness = 2;
-	buttonSpottedBackgroundData.size = sf::Vector2f(250, 50);
+	buttonStyleData.mouseOnBgrData.fillColor = sf::Color(50, 120, 120);
+	buttonStyleData.mouseOnBgrData.outlineColor = sf::Color::Black;
+	buttonStyleData.mouseOnBgrData.outlineThickness = 2;
+	buttonStyleData.mouseOnBgrData.size = sf::Vector2f(250, 50);
 
-	buttonTextData.characterSize = 20;
-	buttonTextData.fillColor = sf::Color::Black;
-	buttonTextData.outlineThickness = 0;
-	buttonTextData.font = &globalFont;
+	buttonStyleData.mouseOutTextData.characterSize = 20;
+	buttonStyleData.mouseOutTextData.fillColor = sf::Color::Black;
+	buttonStyleData.mouseOutTextData.outlineThickness = 0;
+	buttonStyleData.mouseOutTextData.font = &globalFont;
 
-	buttonSpottedTextData.characterSize = 18;
-	buttonSpottedTextData.fillColor = sf::Color::Blue;
-	buttonSpottedTextData.outlineThickness = 2;
-	buttonSpottedTextData.outlineColor = sf::Color::Black;
-	buttonSpottedTextData.font = &globalFont;
+	buttonStyleData.mouseOnTextData.characterSize = 18;
+	buttonStyleData.mouseOnTextData.fillColor = sf::Color::Blue;
+	buttonStyleData.mouseOnTextData.outlineThickness = 2;
+	buttonStyleData.mouseOnTextData.outlineColor = sf::Color::Black;
+	buttonStyleData.mouseOnTextData.font = &globalFont;
 }
 
 void initializeManagers() {

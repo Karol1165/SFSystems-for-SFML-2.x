@@ -40,8 +40,7 @@ public:
 
 		target->getUIScene().addStaticUI(new sf::Text(text));
 
-		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(200, 500), buttonBackgroundData, buttonSpottedBackgroundData,
-			buttonTextData, buttonSpottedTextData, L"Options", optionsBtnFunc));
+		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(200, 500), buttonStyleData, L"Options", optionsBtnFunc));
 	}
 
 	// Executed when the scene becomes active (enters update loop)
@@ -93,8 +92,7 @@ public:
 
 		target->getUIScene().addStaticUI(new sf::Text(text));
 
-		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(440, 500), buttonBackgroundData, buttonSpottedBackgroundData,
-			buttonTextData, buttonSpottedTextData, L"Back", menuBackBtnFunc));
+		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(440, 500), buttonStyleData, L"Back", menuBackBtnFunc));
 	}
 
 	// Executed when the scene becomes active (enters update loop)

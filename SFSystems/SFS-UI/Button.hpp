@@ -10,14 +10,12 @@
 #include "UIViews.hpp"
 
 namespace SFS {
-	/////////////////////////////////////////////////////////////////
-	//BaseButton
+
 
 	using buttonFunc = void(*) ();
 
-	/// <summary>
-	/// Base class for all buttons
-	/// </summary>
+
+	// Base class for all buttons
 
 	class SFS_UI_API BaseButton : public UI {
 	protected:
@@ -41,15 +39,17 @@ namespace SFS {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		virtual bool CheckClick(sf::Vector2f, bool);
 	public:
+		struct StyleData {
+			rectangleShapeData mouseOnBgrData;
+			rectangleShapeData mouseOutBgrData;
+			soundData mouseEnteredSoundData;
+			soundData clickSoundData;
+		};
+
 		BaseButton() = default;
 		~BaseButton() = default;
 
-		BaseButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, buttonFunc func);
-		BaseButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, buttonFunc func,
-			const soundData& mouseEnteredSound,
-			const soundData& clickSound);
-
-
+		BaseButton(const sf::Vector2f& pos, const StyleData& style, buttonFunc func);
 
 		[[nodiscard]]
 		sf::Vector2f getPos() const {
@@ -62,24 +62,14 @@ namespace SFS {
 		}
 
 
-		virtual void setPos(sf::Vector2f newPos) {
+		virtual void setPos(const sf::Vector2f& newPos) {
 			this->buttonBackground.setPosition(newPos);
 		}
-		virtual void setMouseOutButtonData(rectangleShapeData& newData) {
-			this->buttonBgrData.mouseOut = newData;
-		}
-		virtual void setMouseOnButtonData(rectangleShapeData& newData) {
-			this->buttonBgrData.mouseOn = newData;
-		}
-		virtual void setButtonData(rectangleShapeData& newData) {
-			this->buttonBgrData.mouseOn = newData;
-			this->buttonBgrData.mouseOut = newData;
-		}
-		virtual void setMouseEnteredSoundData(soundData& newData) {
-			setSoundData(newData, this->mouseEnteredSound);
-		}
-		virtual void setClickSoundData(soundData& newData) {
-			setSoundData(newData, this->clickSound);
+		void setStyle(const StyleData& newStyle) {
+			this->buttonBgrData.mouseOn = newStyle.mouseOnBgrData;
+			this->buttonBgrData.mouseOut = newStyle.mouseOutBgrData;
+			setSoundData(newStyle.mouseEnteredSoundData, this->mouseEnteredSound);
+			setSoundData(newStyle.clickSoundData, this->clickSound);
 		}
 
 		virtual void setFunction(buttonFunc newFunc) {
@@ -90,13 +80,10 @@ namespace SFS {
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 	};
 
-	///////////////////////////////////////////
-	// TextButton
 
 
-	/// <summary>
-	/// Class for a buttons that have text on it
-	/// </summary>
+	// Class for a buttons that have text on it
+
 
 	class SFS_UI_API TextButton : public BaseButton {
 	protected:
@@ -113,80 +100,54 @@ namespace SFS {
 		void BackgroundDataUpdate(bool isSpotted = false) override;
 
 		void TextInit(const textData& mouseOutText, const textData& mouseOnText);
-		void TextInit(const textData& mouseOutText, const textData& mouseOnText, std::wstring& string);
+		void TextInit(const textData& mouseOutText, const textData& mouseOnText, const sf::String& string);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 		virtual bool CheckClick(sf::Vector2f mousePos, bool isClicked);
 	public:
+		struct StyleData : public BaseButton::StyleData {
+			textData mouseOnTextData;
+			textData mouseOutTextData;
+		};
+
 		//Constructors
 		TextButton() = default;
 		~TextButton() = default;
 
-		TextButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
-			const textData& mouseOutText, const textData& mouseOnText,
-			std::wstring string, buttonFunc func = nullptr);
+		TextButton(const sf::Vector2f& pos, const StyleData& style,
+			const sf::String& string, buttonFunc func = nullptr);
 
-		TextButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
-			const textData& mouseOutText, const textData& mouseOnText, buttonFunc func = nullptr);
-
-		TextButton(sf::Vector2f pos, const rectangleShapeData& data,
-			const textData& textData, std::wstring string, buttonFunc func = nullptr);
-
-		TextButton(sf::Vector2f pos, const rectangleShapeData& data,
-			const textData& textData, buttonFunc func = nullptr);
-
-		TextButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
-			const textData& mouseOutText, const textData& mouseOnText, std::wstring string,
-			const soundData& mouseEnteredSound, const soundData& clickSound, buttonFunc func = nullptr);
+		TextButton(const sf::Vector2f& pos, const StyleData& style, buttonFunc func = nullptr);
 
 		//Get
 
 		[[nodiscard]]
-		std::wstring getString() const {
+		sf::String getString() const {
 			return buttonText.getString();
 		}
 
 		//Set
 
-		void setPos(sf::Vector2f newPos)  override {
+		void setPos(const sf::Vector2f& newPos)  override {
 			buttonBackground.setPosition(newPos);
 			TextPosUpdate();
 		}
-		void setMouseOutButtonData(rectangleShapeData& newData) override {
-			BaseButton::setMouseOutButtonData(newData);
-			TextPosUpdate();
+
+		void setStyle(const StyleData& newStyle) {
+			BaseButton::setStyle(newStyle);
+			this->mouseOutTxtData = newStyle.mouseOutTextData;
+			this->mouseOnTxtData = newStyle.mouseOnTextData;
+			TextDataUpdate();
 		}
-		void setMouseOnButtonData(rectangleShapeData& newData) override {
-			BaseButton::setMouseOnButtonData(newData);
-			TextPosUpdate();
-		}
-		void setButtonData(rectangleShapeData& newData) override {
-			BaseButton::setButtonData(newData);
-			TextPosUpdate();
-		}
-		void setMouseOnTextData(textData& newData) {
-			this->mouseOnTxtData = newData;
-		}
-		void setMouseOutTextData(textData& newData) {
-			this->mouseOutTxtData = newData;
-		}
-		void setButtonTextData(textData& newData) {
-			this->mouseOnTxtData = newData;
-			this->mouseOutTxtData = newData;
-		}
-		void setString(std::wstring newString) {
+
+		void setString(const sf::String& newString) {
 			buttonText.setString(newString);
 			TextPosUpdate();
 		}
 	};
 
-	///////////////////////////////////////////////////
-	//ImageButton
-
-	/// <summary>
-	/// Class for buttons that have icon/image on it
-	/// </summary>
+	// Class for buttons that have icon/image on it
 
 	class SFS_UI_API ImageButton : public BaseButton {
 	protected:
@@ -195,31 +156,28 @@ namespace SFS {
 		void ImagePosUpdate() { buttonImage.setPosition(centerSprite(buttonImage, buttonBackground)); }
 		void ImageInit(sf::Texture& image, float iconScale);
 
-		/// <summary>
-		/// Draws button
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="states"></param>
+	
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 
 	public:
+		struct StyleData : public BaseButton::StyleData {
+			float imageScale = 1.0f;
+		};
 
 		ImageButton() = default;
-
 		~ImageButton() = default;
 
-		ImageButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn, sf::Texture& image,
-			float iconScale, buttonFunc func = nullptr);
+		ImageButton(const sf::Vector2f& pos, const StyleData& style, sf::Texture& image,
+		 buttonFunc func = nullptr);
 
-		ImageButton(sf::Vector2f pos, const rectangleShapeData& backgroundData, sf::Texture& image, float iconScale, buttonFunc func = nullptr);
-
-		ImageButton(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
-			sf::Texture& image, float iconScale, const soundData& mouseEnteredSound, const soundData& clickSound, buttonFunc func = nullptr);
+		void setPos(const sf::Vector2f& newPos) override {
+			this->buttonBackground.setPosition(newPos);
+			ImagePosUpdate();
+		}
 	};
 
 
-	//////////////////////////////////////////////////////
-	//CheckBox
+	//Class for chcecboxes
 
 	class SFS_UI_API CheckBox : public ImageButton {
 	protected:
@@ -228,15 +186,14 @@ namespace SFS {
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	public:
+		struct StyleData : public ImageButton::StyleData {
+			sf::Texture* checkIcon = nullptr;
+		};
+
 		CheckBox() = default;
 		~CheckBox() = default;
 
-		CheckBox(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
-			sf::Texture& checkIcon, float iconScale, bool isChecked = false, buttonFunc whenStateChanges = nullptr);
-
-		CheckBox(sf::Vector2f pos, const rectangleShapeData& mouseOut, const rectangleShapeData& mouseOn,
-			sf::Texture& checkIcon, float iconScale, const soundData& mouseEnteredSound, const soundData& clickSound,
-			bool isChecked = false, buttonFunc whenStateChanges = nullptr);
+		CheckBox(const sf::Vector2f& pos, const StyleData& style, bool isChecked = false, buttonFunc whenStateChanges = nullptr);
 
 		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
 
@@ -248,11 +205,9 @@ namespace SFS {
 		void setState(bool isChecked) {
 			this->isChecked = isChecked;
 		}
-
 	};
 
-	///////////////////////////////////////////////////
-	//RadioButton
+
 	//TODO:
 
 	/*

@@ -14,12 +14,10 @@ extern SFS::rectangleShapeData toolTipBackgroundData;
 extern SFS::textData toolTipTextData;
 
 extern SFS::rectangleShapeData titleBackgroundData;
-extern SFS::rectangleShapeData buttonBackgroundData;
-extern SFS::rectangleShapeData buttonSpottedBackgroundData;
 
 extern SFS::textData titleTextData;
-extern SFS::textData buttonTextData;
-extern SFS::textData buttonSpottedTextData;
+
+extern SFS::TextButton::StyleData buttonStyleData;
 
 //extern SFS::LanguageResourcesManager languageManager;
 
