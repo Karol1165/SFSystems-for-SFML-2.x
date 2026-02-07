@@ -42,7 +42,7 @@ void loadStaticResources() {
 	buttonStyleData.mouseOutBgrData.outlineThickness = 2;
 	buttonStyleData.mouseOutBgrData.size = sf::Vector2f(200, 50);
 
-	buttonStyleData.mouseOnBgrData.fillColor = sf::Color(50, 120, 120);
+	buttonStyleData.mouseOnBgrData.fillColor = sf::Color(60, 150, 160);
 	buttonStyleData.mouseOnBgrData.outlineColor = sf::Color::Black;
 	buttonStyleData.mouseOnBgrData.outlineThickness = 2;
 	buttonStyleData.mouseOnBgrData.size = sf::Vector2f(250, 50);
