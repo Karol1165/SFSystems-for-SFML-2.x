@@ -14,6 +14,7 @@
 #include "Task.hpp"
 #include "Registrar.hpp"
 #include "Builder.hpp"
+#include "Overlay.hpp"
 
 
 namespace SFS {
@@ -217,6 +218,8 @@ namespace SFS {
 			}
 		};
 
+
+
 		friend class ChangeScene;
 
 		Window();
@@ -236,8 +239,6 @@ namespace SFS {
 
 		void changeWindowSettings(const WindowSettings& settings);
 
-		//TODO: set scene functions
-
 		void addTask(Task* newTask) { this->tasks.addTask(newTask); }
 
 		void setScene(sf::String id) {
@@ -247,12 +248,16 @@ namespace SFS {
 		[[nodiscard]]
 		SceneManager& getSceneManager() { return this->sceneManager; }
 
+		void setDebugOverlay(uptr<DebugOverlay> newOverlay) { this->debugOverlay = std::move(newOverlay); }
+
 		/// Activates window, runs start function and main loop of program
 
 		void run();
 		
 	private:
 		SceneManager sceneManager = SceneManager();
+
+		uptr<DebugOverlay> debugOverlay;
 
 		bool isRunning = false;
 

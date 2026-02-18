@@ -89,6 +89,15 @@ namespace SFS {
 		object.setLoop(data.loop);
 	}
 
+	struct PerformanceData
+	{
+		float fps = 0.0f;
+		sf::Time frameTime;
+
+		sf::Time minFrameTime;
+		sf::Time maxFrameTime;
+	};
+
 	template <typename T>
 	class idVector {
 	private:

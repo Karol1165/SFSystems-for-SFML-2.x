@@ -90,6 +90,31 @@ namespace SFS {
 		entry.state = SceneEntry::State::Unloaded;
 	}
 
+	class Profiler {
+	private:
+		sf::Clock clock;
+		PerformanceData data;
+	public:
+		Profiler() = default;
+		~Profiler() = default;
+
+		void frameStart() {
+			clock.restart();
+		}
+		void frameEnd() {
+			data.fps = 1.f / clock.getElapsedTime().asSeconds();
+			data.frameTime = clock.getElapsedTime();
+			if (data.frameTime < data.minFrameTime || data.minFrameTime == sf::Time::Zero)
+				 data.minFrameTime = data.frameTime;
+			 if (data.frameTime > data.maxFrameTime)
+				 data.maxFrameTime = data.frameTime;
+		}
+		[[nodiscard]] 
+		PerformanceData getData() const {
+			return data;
+		}
+	};
+
 	Window::Window() : sf::RenderWindow() {
 	}
 
@@ -145,6 +170,8 @@ namespace SFS {
 
 			this->doTasks();
 
+			Profiler profiler;
+
 			sf::Event e;
 			sf::Vector2f mousePos;
 			bool hasEvents;
@@ -152,10 +179,13 @@ namespace SFS {
 
 			while (this->isOpen()) {
 
+				profiler.frameStart();
+
 				this->doTasks();
 
 				mousePos = this->mapPixelToCoords(sf::Mouse::getPosition(*this), this->getView());
 				hasEvents = false;
+
 				while (this->pollEvent(e)) {
 					hasEvents = true;
 					if (e.type == sf::Event::Closed) {
@@ -173,7 +203,14 @@ namespace SFS {
 
 				this->draw(sceneManager.getCurrentScene());
 
+				if (this->debugOverlay) {
+					 this->debugOverlay->setData(profiler.getData());
+					 this->draw(*this->debugOverlay);
+				}
+
 				this->display();
+
+				profiler.frameEnd();
 			}
 		}
 		catch (const std::exception) {

@@ -32,7 +32,7 @@ namespace SFS {
 		[[nodiscard]]
 		std::weak_ptr<T> getAsBase() const { return std::weak_ptr<T>(object); }
 
-		template <DerivedFrom<T> D>
+		template <typename D> requires DerivedFrom<T, D>
 		[[nodiscard]]
 		std::weak_ptr<D> getAs() const {
 			if (auto casted = std::dynamic_pointer_cast<D>(object)) [[likely]]

@@ -7,4 +7,8 @@ void optionsBtnFunc();
 
 void menuBackBtnFunc();
 
+void exitBtnFunc();
+
+void playBtnFunc();
+
 #endif // !FUNC_HPP_

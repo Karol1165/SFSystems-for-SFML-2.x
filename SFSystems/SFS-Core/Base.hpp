@@ -7,6 +7,7 @@
 #include "framework.h"
 
 
+
 namespace SFS {
 
 	using SceneElement = sf::Drawable;
@@ -56,8 +57,6 @@ namespace SFS {
 
 	    virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) = 0;
 	};
-
-
 
 }
 #endif
