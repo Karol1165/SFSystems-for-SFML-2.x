@@ -13,9 +13,9 @@ int main() {
 
 	w.create(sf::VideoMode(1280, 720), "Example");
 	
-	w.getSceneManager().addScene<MainSceneInitializer>(sf::String("MainMenu"));
-	w.getSceneManager().addScene<OptionsInitializer>(sf::String("Options"));
-	w.getSceneManager().addScene<Example1Initializer>(sf::String("Example 1"));
+	w.addScene<MainSceneInitializer>(sf::String("MainMenu"));
+	w.addScene<OptionsInitializer>(sf::String("Options"));
+	w.addScene<Example1Initializer>(sf::String("Example 1"));
 
 	w.run();
 	return 0;

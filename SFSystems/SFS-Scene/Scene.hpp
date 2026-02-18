@@ -2,7 +2,7 @@
 #ifndef SCENE_HPP_
 #define SCENE_HPP_
 
-#include<ranges>
+#include <ranges>
 #include <functional>
 #include <queue>
 
@@ -243,6 +243,12 @@ namespace SFS {
 
 		void setScene(sf::String id) {
 			this->addTask(new ChangeScene(std::move(id)));
+		}
+
+		template <typename T>
+			requires std::derived_from<T, SceneInitializer<Scene>>
+		void addScene(const sf::String& id) {
+			sceneManager.addScene<T>(id);
 		}
 
 		[[nodiscard]]

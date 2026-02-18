@@ -12,7 +12,7 @@ class Character : public SFS::GameObject {
 protected:
 	sf::CircleShape shape;
 	sf::Vector2f targetPos;
-
+	float speed = 0.1f;
 public:
 	Character(sf::Vector2f pos, circleShapeData style) {
 		setCircleData(style, shape);
@@ -26,7 +26,7 @@ public:
 
 	//TODO: make movement more complex, delete te relation between distacne and speed, add acceleration, etc
 	void move() {
-		shape.setPosition(shape.getPosition() + (targetPos - shape.getPosition()) * 0.1f);
+		shape.setPosition(shape.getPosition() + (targetPos - shape.getPosition()) * speed);
 	}
 
 	sf::Vector2f getPosition() const {
@@ -38,9 +38,7 @@ class Player : public Character {
 public:
 	Player(sf::Vector2f pos, circleShapeData style) : Character(pos, style) {}
 	virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) override {
-		if (e.type == sf::Event::MouseMoved) {
-			targetPos = mousePos;
-		}
+		
 		move();
 	}
 
@@ -52,7 +50,8 @@ private:
 
 public:
 	Enemy(sf::Vector2f pos, circleShapeData style, std::weak_ptr<Player> target) : Character(pos, style) {
-		target = target;
+		this->target = target;
+		this->speed = 0.05f;
 	}
 
 	virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) override {
