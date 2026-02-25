@@ -14,6 +14,12 @@ void makeTitle(SFS::UIScene& target, const sf::String& string) {
 	SFS::setTextData(titleTextData, text);
 	text.setString(string);
 	text.setPosition(SFS::centerText(text, background));
+	SFS::ClippedView titleView = SFS::ClippedView(background.getGlobalBounds());
+	titleView.setObject(new sf::Text(text));
+	target.addStaticUI(new SFS::ClippedView(titleView));
+}
 
-	target.addStaticUI(new sf::Text(text));
+void setView(Scene& target) {
+	target.getView().setSize(sf::Vector2f(viewWidth, viewHeight));
+	target.getView().setCenter(sf::Vector2f(viewWidth / 2, viewHeight / 2));
 }

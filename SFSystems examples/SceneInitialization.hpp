@@ -16,7 +16,11 @@ using SFS::Registrar;
 using SFS::Scene;
 using SFS::SceneInitializer;
 
+const float viewWidth = 1280;
+const float viewHeight = 720;
+
 void makeTitle(SFS::UIScene& target, const sf::String& string);
+void setView(Scene& target);
 
 class MainSceneInitializer : public SceneInitializer<Scene> {
 public:
@@ -28,6 +32,7 @@ public:
 
 	virtual void BuildScene() override {
 		makeTitle(target->getUIScene(), "SFSystems examples");
+		setView(*target);
 
 		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(200, 200), buttonStyleData, L"Play example", playBtnFunc));
 		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(200, 300), buttonStyleData, L"Options", optionsBtnFunc));
@@ -69,6 +74,18 @@ public:
 
 	virtual void BuildScene() override {
 		makeTitle(target->getUIScene(), "Options");
+		setView(*target);
+
+		sf::Text languageLabel;
+		SFS::setTextData(labelTextData, languageLabel);
+		languageLabel.setString("Language:");
+		languageLabel.setPosition(200, 200);
+
+		target->getUIScene().addStaticUI(new sf::Text(languageLabel));
+
+
+
+		//SFS::Switch languageSwitch(sf::Vector2f(400, 200), switchBgrData, switchTextData, buttonStyleData, L"English", L"Spanish", languageSwitchStates);
 
 		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(440, 500), buttonStyleData, L"Back", menuBackBtnFunc));
 	}
@@ -108,10 +125,13 @@ public:
 
 	virtual void BuildScene() override {
 		makeTitle(target->getUIScene(), "Example 1");
+		setView(*target);
 
 		target->addGameObject("player", new Player(sf::Vector2f(100, 100), *playerStyle));
 
 		target->addGameObject(new Enemy(sf::Vector2f(700, 100), *enemyStyle, target->getGameObjects()["player"].getAs<Player>()));
+
+		target->addController(new Camera(&target->getView(), target->getGameObjects()["player"].getAs<Player>()));
 
 		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(440, 500), buttonStyleData, L"Back", menuBackBtnFunc));
 	}

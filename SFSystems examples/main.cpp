@@ -8,7 +8,7 @@
 
 int main() {
 	initializeManagers();
-	loadStaticResources();
+	loadFont();
 
 
 	w.create(sf::VideoMode(1280, 720), "Example");

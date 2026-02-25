@@ -12,7 +12,7 @@ namespace SFS {
 
 
 
-	class ClippedView : public sf::Drawable {
+	class SFS_UI_API ClippedView : public sf::Drawable {
 	private:
 		sf::FloatRect bounds;
 		sf::Drawable* object;

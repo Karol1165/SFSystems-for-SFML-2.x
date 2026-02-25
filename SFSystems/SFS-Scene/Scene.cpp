@@ -11,12 +11,15 @@ namespace SFS {
 	}
 
 	void UIScene::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+		sf::View currentView = target.getView();
+		target.setView(this->SceneView);
 		for (auto& i : this->staticUI) {
 			target.draw(*i, states);
 		}
 		for (auto& i : this->ui) {
 			target.draw(*i, states);
 		}
+		target.setView(currentView);
 	}
 
 
@@ -39,9 +42,12 @@ namespace SFS {
 	}
 
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
+		sf::View currentView = target.getView();
+		target.setView(this->SceneView);
 		for (auto& i : this->gameObjects) {
 			target.draw(*i, states);
 		}
+		target.setView(currentView);
 		target.draw(this->GUI, states);
 	}
 
@@ -174,6 +180,7 @@ namespace SFS {
 
 			sf::Event e;
 			sf::Vector2f mousePos;
+			sf::Vector2f uiMousePos;
 			bool hasEvents;
 			sf::Event heartBeatEvent = technicalEvent();
 
@@ -183,7 +190,8 @@ namespace SFS {
 
 				this->doTasks();
 
-				mousePos = this->mapPixelToCoords(sf::Mouse::getPosition(*this), this->getView());
+				mousePos = this->mapPixelToCoords(sf::Mouse::getPosition(*this), sceneManager.getCurrentScene().getView());
+				uiMousePos = this->mapPixelToCoords(sf::Mouse::getPosition(*this), sceneManager.getCurrentScene().getUIScene().getView());
 				hasEvents = false;
 
 				while (this->pollEvent(e)) {
@@ -192,10 +200,10 @@ namespace SFS {
 						this->close();
 						break;
 					}
-					sceneManager.getCurrentScene().UpdateUI(e, mousePos);
+					sceneManager.getCurrentScene().UpdateUI(e, uiMousePos);
 				}
 				if (!hasEvents) {
-					sceneManager.getCurrentScene().UpdateUI(heartBeatEvent, mousePos);
+					sceneManager.getCurrentScene().UpdateUI(heartBeatEvent, uiMousePos);
 				}
 				sceneManager.getCurrentScene().Update(e, mousePos);
 

@@ -54,7 +54,7 @@ namespace SFS {
 		void setView(const sf::View& view) { this->SceneView = view; }
 
 		[[nodiscard]]
-		sf::View getView() const { return this->SceneView; }
+		sf::View& getView() { return this->SceneView; }
 
 		[[nodiscard]]
 		sf::Time getDeltaTime() const { return this->clock.getElapsedTime(); }

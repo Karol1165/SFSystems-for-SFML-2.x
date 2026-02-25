@@ -10,21 +10,23 @@ extern 	SFS::Window w;
 
 extern sf::Font globalFont;
 
-extern SFS::rectangleShapeData toolTipBackgroundData;
-extern SFS::textData toolTipTextData;
+extern const SFS::rectangleShapeData toolTipBackgroundData;
+extern const SFS::textData toolTipTextData;
 
-extern SFS::rectangleShapeData titleBackgroundData;
+extern const SFS::rectangleShapeData titleBackgroundData;
 
-extern SFS::textData titleTextData;
+extern const SFS::textData titleTextData;
 
-extern SFS::TextButton::StyleData buttonStyleData;
+extern const SFS::textData labelTextData;
+
+extern const SFS::TextButton::StyleData buttonStyleData;
 
 //extern SFS::LanguageResourcesManager languageManager;
 
 
 
-void loadStaticResources();
 void initializeManagers();
+void loadFont();
 
 
 #endif

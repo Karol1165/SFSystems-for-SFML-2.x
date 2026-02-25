@@ -4,8 +4,6 @@
 
 #include "framework.h"
 
-#include "Data.hpp"
-
 namespace SFS {
 
 	class SFS_S_API DebugOverlay : public sf::Drawable {

@@ -11,8 +11,8 @@ using namespace SFS;
 class Character : public SFS::GameObject {
 protected:
 	sf::CircleShape shape;
-	sf::Vector2f targetPos;
-	float speed = 0.1f;
+	sf::Vector2f velocity;
+	float maxSpeed = 10.0f;
 public:
 	Character(sf::Vector2f pos, circleShapeData style) {
 		setCircleData(style, shape);
@@ -26,7 +26,16 @@ public:
 
 	//TODO: make movement more complex, delete te relation between distacne and speed, add acceleration, etc
 	void move() {
-		shape.setPosition(shape.getPosition() + (targetPos - shape.getPosition()) * speed);
+		if(velocity.x > maxSpeed)
+			velocity.x = maxSpeed;
+		else if(velocity.x < -maxSpeed)
+			velocity.x = -maxSpeed;
+		if (velocity.y > maxSpeed)
+			velocity.y = maxSpeed;
+		else if (velocity.y < -maxSpeed)
+			velocity.y = -maxSpeed;
+
+		shape.setPosition(shape.getPosition().x + velocity.x, shape.getPosition().y + velocity.y);
 	}
 
 	sf::Vector2f getPosition() const {
@@ -35,9 +44,23 @@ public:
 };
 
 class Player : public Character {
+private:
+	
 public:
 	Player(sf::Vector2f pos, circleShapeData style) : Character(pos, style) {}
 	virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) override {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			velocity.y -= 5.f * deltaTime.asSeconds();
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			velocity.y += 5.f * deltaTime.asSeconds();
+		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			velocity.x -= 5.f * deltaTime.asSeconds();
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			velocity.x += 5.f * deltaTime.asSeconds();
+		}
 		
 		move();
 	}
@@ -47,17 +70,43 @@ public:
 class Enemy : public Character {
 private:
 	std::weak_ptr<Player> target;
-
+	sf::Vector2f targetPos;
 public:
 	Enemy(sf::Vector2f pos, circleShapeData style, std::weak_ptr<Player> target) : Character(pos, style) {
 		this->target = target;
-		this->speed = 0.05f;
+		maxSpeed = 5.0f;
 	}
 
 	virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) override {
-		if(target.lock())
+		if (target.lock()) 
 			targetPos = target.lock()->getPosition();
+		if(targetPos.x > shape.getPosition().x)
+			velocity.x += 5.f * deltaTime.asSeconds();
+		else if(targetPos.x < shape.getPosition().x)
+			velocity.x -= 5.f * deltaTime.asSeconds();
+		if (targetPos.y > shape.getPosition().y)
+			velocity.y += 5.f * deltaTime.asSeconds();
+		else if (targetPos.y < shape.getPosition().y)
+			velocity.y -= 5.f * deltaTime.asSeconds();
+		
 		move();
+	}
+};
+
+class Camera : public SFS::BaseController {
+private:
+	std::weak_ptr<Player> target;
+	sf::View* view;
+
+public:
+	Camera(sf::View* view, std::weak_ptr<Player> target) {
+		this->view = view;
+		this->target = target;
+	}
+	virtual void Update(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) override {
+		if (target.lock()) {
+			view->setCenter(target.lock()->getPosition());
+		}
 	}
 };
 
