@@ -99,7 +99,7 @@ namespace SFS {
 			[[nodiscard]]
 			virtual sf::FloatRect getGlobalBounds() const = 0;
 
-			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override = 0;
+			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) override = 0;
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {}
 		protected:
@@ -125,7 +125,7 @@ namespace SFS {
 			[[nodiscard]]
 			virtual sf::FloatRect getGlobalBounds() const override;
 
-			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
+			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) override;
 
 		};
 
@@ -146,7 +146,7 @@ namespace SFS {
 
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) override;
+			virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) override;
 		};
 
 		Switch() = default;
@@ -178,7 +178,7 @@ namespace SFS {
 
 		void setOptions(SwitchStates newOptions) { this->states = newOptions; }
 
-		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
+		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos);
 
 	private:
 

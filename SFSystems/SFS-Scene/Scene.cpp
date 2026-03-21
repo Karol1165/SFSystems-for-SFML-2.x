@@ -11,15 +11,12 @@ namespace SFS {
 	}
 
 	void UIScene::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-		sf::View currentView = target.getView();
-		target.setView(this->SceneView);
 		for (auto& i : this->staticUI) {
 			target.draw(*i, states);
 		}
 		for (auto& i : this->ui) {
 			target.draw(*i, states);
 		}
-		target.setView(currentView);
 	}
 
 
@@ -44,9 +41,13 @@ namespace SFS {
 	void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 		sf::View currentView = target.getView();
 		target.setView(this->SceneView);
+		for (auto& i : this->staticObj) {
+			target.draw(*i, states);
+		}
 		for (auto& i : this->gameObjects) {
 			target.draw(*i, states);
 		}
+
 		target.setView(currentView);
 		target.draw(this->GUI, states);
 	}
@@ -191,7 +192,7 @@ namespace SFS {
 				this->doTasks();
 
 				mousePos = this->mapPixelToCoords(sf::Mouse::getPosition(*this), sceneManager.getCurrentScene().getView());
-				uiMousePos = this->mapPixelToCoords(sf::Mouse::getPosition(*this), sceneManager.getCurrentScene().getUIScene().getView());
+				uiMousePos = this->mapPixelToCoords(sf::Mouse::getPosition(*this), this->getView());
 				hasEvents = false;
 
 				while (this->pollEvent(e)) {

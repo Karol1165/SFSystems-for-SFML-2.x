@@ -29,7 +29,7 @@ namespace SFS {
 		UI() = default;
 		virtual ~UI() = default;
 
-		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0)) = 0;
+		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) = 0;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 	};

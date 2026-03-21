@@ -51,10 +51,7 @@ namespace SFS {
 		virtual void Update(sf::Event& event, const sf::Vector2f& mousePos) = 0;
 		virtual void UpdateUI(sf::Event& event, const sf::Vector2f& mousePos) = 0;
 
-		void setView(const sf::View& view) { this->SceneView = view; }
 
-		[[nodiscard]]
-		sf::View& getView() { return this->SceneView; }
 
 		[[nodiscard]]
 		sf::Time getDeltaTime() const { return this->clock.getElapsedTime(); }
@@ -63,7 +60,7 @@ namespace SFS {
 
 		bool isActive = false;
 
-		sf::View SceneView;
+
 
 		sf::Clock clock;
 
@@ -120,6 +117,10 @@ namespace SFS {
 
 		UIScene& getUIScene() { return this->GUI; }
 
+		void addStaticObject(SceneElement* element) { this->staticObj.push_back(Registrar(element)); }
+
+		void addStaticObject(const std::string& id, SceneElement* element) { this->staticObj.push_back(id, Registrar(element)); }
+
 		void addGameObject(GameObject* gameObject) { this->gameObjects.push_back(Registrar(gameObject)); }
 
 		void addGameObject(const std::string& id, GameObject* gameObject) { this->gameObjects.push_back(id, Registrar(gameObject)); }
@@ -127,6 +128,8 @@ namespace SFS {
 		void addController(BaseController* controller) { this->controllers.push_back(Registrar<BaseController>(controller)); }
 
 		void addController(const std::string& id, BaseController* controller) { this->controllers.push_back(id, Registrar(controller)); }
+
+		void removeStaticObject(const std::string& id) { this->tasks.addTask(new Remove(id, staticObj)); }
 
 		void removeGameObject(const std::string& id) { this->tasks.addTask(new Remove(id, gameObjects)); }
 
@@ -138,10 +141,18 @@ namespace SFS {
 		[[nodiscard]]
 		const idVector<Registrar<BaseController>>& getControllers() { return this->controllers; }
 
+		void setView(const sf::View& view) { this->SceneView = view; }
+
+		[[nodiscard]]
+		sf::View& getView() { return this->SceneView; }
+
 	protected:
+
+		sf::View SceneView;
 
 		UIScene GUI;
 
+		idVector<Registrar<SceneElement>> staticObj;
 		idVector<Registrar<GameObject>> gameObjects;
 		idVector<Registrar<BaseController>> controllers;
 
@@ -217,8 +228,6 @@ namespace SFS {
 				window.sceneManager.changeScene(sceneID);
 			}
 		};
-
-
 
 		friend class ChangeScene;
 

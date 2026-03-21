@@ -77,7 +77,7 @@ namespace SFS {
 				this->func = newFunc;
 		}
 
-		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
+		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos);
 	};
 
 
@@ -195,7 +195,7 @@ namespace SFS {
 
 		CheckBox(const sf::Vector2f& pos, const StyleData& style, bool isChecked = false, buttonFunc whenStateChanges = nullptr);
 
-		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
+		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos);
 
 		[[nodiscard]]
 		bool getState() const {
@@ -245,7 +245,7 @@ namespace SFS {
 
 		void setActive();
 
-		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime = sf::Time(sf::seconds(0)), const sf::Vector2f& mousePos = sf::Vector2f(0, 0));
+		virtual void CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos);
 	};
 	*/
 }

@@ -12,12 +12,14 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
+//TODO: make something with views in UIScene
+
 using SFS::Registrar;
 using SFS::Scene;
 using SFS::SceneInitializer;
 
-const float viewWidth = 1280;
-const float viewHeight = 720;
+const float viewWidth = 1280.f;
+const float viewHeight = 720.f;
 
 void makeTitle(SFS::UIScene& target, const sf::String& string);
 void setView(Scene& target);
@@ -127,13 +129,15 @@ public:
 		makeTitle(target->getUIScene(), "Example 1");
 		setView(*target);
 
+
+
 		target->addGameObject("player", new Player(sf::Vector2f(100, 100), *playerStyle));
 
 		target->addGameObject(new Enemy(sf::Vector2f(700, 100), *enemyStyle, target->getGameObjects()["player"].getAs<Player>()));
 
 		target->addController(new Camera(&target->getView(), target->getGameObjects()["player"].getAs<Player>()));
 
-		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(440, 500), buttonStyleData, L"Back", menuBackBtnFunc));
+		target->getUIScene().addUI(new SFS::TextButton(sf::Vector2f(540, viewHeight * 0.8), buttonStyleData, L"Back", menuBackBtnFunc));
 	}
 
 	virtual void StartScene() {
