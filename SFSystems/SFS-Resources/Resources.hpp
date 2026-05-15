@@ -72,6 +72,12 @@ namespace SFS {
 		LanguageResourcesManager(const std::string& directory);
 		~LanguageResourcesManager() = default;
 
+		////Only configuration is copied, translations are not
+		LanguageResourcesManager(const LanguageResourcesManager&) = default;
+
+		//Only configuration is copied, translations are not
+		LanguageResourcesManager& operator=(const LanguageResourcesManager& other);
+
 		void loadLanguage(const std::string& fileName);
 
 		[[nodiscard]]

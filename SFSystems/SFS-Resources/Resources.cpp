@@ -25,6 +25,11 @@ namespace SFS {
 
 	LanguageResourcesManager::LanguageResourcesManager(const std::string& directory) : baseResourcesManager(directory, ".po") {}
 
+	LanguageResourcesManager& LanguageResourcesManager::operator=(const LanguageResourcesManager& other) {
+		this->config = other.config;
+		return *this;
+	}
+
 	void LanguageResourcesManager::loadLanguage(const std::string& fileName) {
 		this->translations.LoadFromFile(this->config.getDirectory() / (fileName + this->config.getExtension()));
 	}

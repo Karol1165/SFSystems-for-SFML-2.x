@@ -8,7 +8,7 @@ namespace SFS {
 	//Switch button
 
 	void Switch::textSwitchButton::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
-		if (this->TextButton::CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+		if (this->TextButton::CheckClick(mousePos, e.type == sf::Event::MouseButtonPressed && sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->buttonMode == mode::last) {
 				this->owner->states.Last();
 				this->owner->UpdateText();
@@ -35,7 +35,7 @@ namespace SFS {
 	}
 
 	void Switch::imageSwitchButton::CheckStatus(sf::Event& e, const sf::Time& deltaTime, const sf::Vector2f& mousePos) {
-		if (this->ImageButton::CheckClick(mousePos, sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
+		if (this->ImageButton::CheckClick(mousePos, e.type == sf::Event::MouseButtonPressed && sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
 			if (this->buttonMode == mode::last) {
 				this->owner->states.Last();
 				this->owner->UpdateText();

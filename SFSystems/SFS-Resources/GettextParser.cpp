@@ -248,7 +248,10 @@ namespace SFS {
 		}
 
 		std::string TranslationMap::getRawText(const TranslationKey& key, const int64_t& count) const {
-			return this->getRawTranslation(key).getRawTranslation(this->Header.pluralForm->evaluate(count));
+			Translation translation = this->getRawTranslation(key);
+			if(Header.pluralForm == nullptr)
+				return translation.getRawTranslation(0);
+			return translation.getRawTranslation(this->Header.pluralForm->evaluate(count));
 		}
 
 		sf::String TranslationMap::getText(const TranslationKey& key, const int64_t& count) const {
